@@ -15,4 +15,4 @@ You can then visit the following URLs on localhost:3000
 * /home/:id
 * /test
 
-**/test is a sample page that shows how to include bootstrap, jquery and font-awesome in other pages**
+**/test** is a sample page that shows how to include bootstrap, jquery and font-awesome in other pages
