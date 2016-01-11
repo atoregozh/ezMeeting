@@ -2,12 +2,9 @@
 <html>
   <head>
     <title>Home | {{ username }}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/css/style.css' />
   </head>
   <body>
     <h1>Homepage for user: {{ username }}</h1>
-    {{#each notifications}}
-		{{> notification_partial}}
-	{{/each }}
   </body>
 </html>

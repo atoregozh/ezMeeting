@@ -13,8 +13,7 @@ router.get('/', function(req, res, next) {
 
 /* GET homepage */
 router.get('/:username', function(req, res, next) {
-	notifications = [{'text': 'first notification'}, {'text': 'second notification'}]
- 	res.render('home', {'username': req.params.username, 'notifications': notifications})
+ 	res.render('home', {'username': req.params.username})
 });
 
 module.exports = router;

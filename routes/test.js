@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
-	res.render('test', {'key':'value'})
+	notifications = [{'text': 'first notification'}, {'text': 'second notification'}]
+	res.render('test', {'key':'value', 'notifications':notifications})
 });
 
 module.exports = router;
