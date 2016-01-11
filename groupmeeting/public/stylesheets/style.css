@@ -1,0 +1,26 @@
+body {
+	background-color: #aaaaaa;
+	font-family: sans-serif;
+}
+
+h1 {
+	margin: 10px;
+}
+
+ul {
+	width: 250px;
+	background-color: #ffffff;
+	margin: 10px;
+	padding: 10px;
+	border: black solid 1pt;
+	list-style-type: none;
+}
+
+li {
+	font-weight: bold;
+	margin: 10px;
+}
+
+div {
+	border: 1px solid gray;
+}
