@@ -41,12 +41,12 @@ li {
 /*~~~~~~ Start of debug CSS ~~~~~~*/
 /* Comment out this section after debugging */
 
-div {
+/*div {
 	border: 1px solid #ccc;
 }
 
 .row, .row > div {
 	min-height: 50px;
-}
+}*/
 
 /*~~~~~~ End of debug CSS ~~~~~~*/
