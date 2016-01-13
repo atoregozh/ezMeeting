@@ -1,0 +1,54 @@
+.row0 {
+	height: 100px;
+}
+
+.row1 {
+
+}
+
+.tab-header {
+	position: relative;
+	bottom: -2px; /* To hide the lower part of the buttons below the content */
+	width: 100%;
+	border: 1px solid green;
+}
+
+.tab-btn {
+    background-color: #ddd;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    width: 80px;
+    border: 1px solid #ccc;
+    position: relative;
+    z-index: 30;
+    display: inline-block;
+    text-align: center;
+    cursor: default;
+    height: 30px;
+    padding: 5px 10px;
+    margin: auto;
+}
+
+.tab-btn.two {
+	left: -10px;
+	z-index: 20;
+}
+
+.tab-btn.three {
+	left: -20px;
+	z-index: 10;
+}
+
+.tab-btn:hover, .tab-btn:focus {
+	background-color: #eee;
+}
+
+.tab-btn.active {
+	z-index: 40;
+	background-color: #fff;
+}
+
+.tab-content {
+	width: 100%;
+	border: 1px solid green;
+}
