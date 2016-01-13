@@ -34,7 +34,6 @@ li {
 }
 /*~~~~~~ Start of debug CSS ~~~~~~*/
 /* Comment out this section after debugging */
-
 div {
 	border: 1px solid #ccc;
 }
@@ -44,6 +43,10 @@ div {
 }
 
 /*~~~~~~ End of debug CSS ~~~~~~*/
+
+.dashboard-header {
+  text-align: center;
+}
 .participant-img {
     width:30px;
     height:30px;
@@ -63,7 +66,17 @@ div {
 
 .circle {
     border-radius: 50%;
-    display: inline-block;
+    display: block;
+}
+
+#btn-meeting {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.meeting-row {
+  margin-bottom: 10px;
 }
 
 .meeting-container {
