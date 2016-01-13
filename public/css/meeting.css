@@ -92,11 +92,12 @@
     position: relative; 
     overflow-x: auto;
     max-width: 100%;
-    height: 100px;
+    height: 98px;
     white-space: nowrap;
     overflow-y: hidden;
     border: 1px solid #ccc;
     padding: 1px;
+    margin-top: 1px;
 }
 
 .grid-person {
@@ -112,9 +113,9 @@
 	border-radius: 50px;
 	border: 1px solid #999;
 	position: relative;
-	width: 52px;
-	height: 52px;
-	top: 10px;
+	width: 50px;
+	height: 50px;
+	top: 8px;
 }
 
 .grid-name {
@@ -131,8 +132,8 @@
 .person-frame {
 	border-radius: 50%;
 	border: 1px solid #999;
-	width: 72px;
-	height: 72px;
+	width: 66px;
+	height: 66px;
 	text-align: center;
 	margin: 0 auto;
 	bottom: 0;
@@ -154,4 +155,19 @@
 
 .dp {
 	width: 80px;
+}
+
+/*button {
+	transition: .2s;
+}*/
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 5px;
+    height: 5px;
+    background-color: rgba(0,0,0,.1);
+}
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,.3);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.3);
 }

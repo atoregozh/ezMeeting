@@ -2,8 +2,8 @@ html, body {
     margin: 0px;
     padding: 0px;
     width: auto;
-    overflow: hidden;
-}
+/*    overflow: hidden;
+*/}
 
 body {
 	background-color: #e7e9ec;
