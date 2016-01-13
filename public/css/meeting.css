@@ -6,18 +6,12 @@
 
 }
 
-.tab-header {
-	position: relative;
-	bottom: -1px; /* To hide the lower part of the buttons below the content */
-	width: 100%;
-}
-
 .tab-btn {
     background-color: #ddd;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     width: 80px;
-    border: 1px solid #999;
+    border: 1px solid #aaa;
     border-bottom: 0;
     position: relative;
     z-index: 30;
@@ -46,26 +40,23 @@
 .tab-btn.active {
 	z-index: 40;
 	background-color: #fff;
+	top: 1px;
 }
 
 .tab-content {
 	width: 100%;
-	border: 1px solid #ccc;
+	border: 1px solid #aaa;
 }
 
 .grid-pics-panel {
 	height: 100px;
 }
 
-.grid-pics-panel > div {
-	/*border: 1px solid #ccc;*/ /* Todo: delete */
-}
-
 .grid-top-left {
 	width: 100px;
 	height: 100px;
 	text-align: center;
-	padding-top: 2px;
+	padding-top: 5px;
 	margin: 0;
 	float: left;
 	position: relative;
@@ -78,7 +69,7 @@
 }
 
 .grid-top-left button {
-	width: 80px;
+	width: 50px;
     height: 34px;
     border-radius: 7px;
     background-image: none;
@@ -86,11 +77,14 @@
     border: 1px solid #999;
     margin: 2px auto;
     font-size: 16px;
+    border-color: #008cc9;
+	color: #008cc9;
 }
 
-.grid-top-left button:hover {
-	border-color: #008cc9;
-	color: #008cc9;
+
+.grid-top-left button:hover, .grid-top-left button:focus {
+	background-color: #008cc9;
+	color: white;
 }
 
 .grid-top-right {
@@ -101,6 +95,8 @@
     height: 100px;
     white-space: nowrap;
     overflow-y: hidden;
+    border: 1px solid #ccc;
+    padding: 1px;
 }
 
 .grid-person {
@@ -116,8 +112,8 @@
 	border-radius: 50px;
 	border: 1px solid #999;
 	position: relative;
-	width: 56px;
-	height: 56px;
+	width: 52px;
+	height: 52px;
 	top: 10px;
 }
 
@@ -135,8 +131,8 @@
 .person-frame {
 	border-radius: 50%;
 	border: 1px solid #999;
-	width: 76px;
-	height: 76px;
+	width: 72px;
+	height: 72px;
 	text-align: center;
 	margin: 0 auto;
 	bottom: 0;
