@@ -5,30 +5,97 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/meeting.css'/>
+    <link rel='stylesheet' href='/css/bootstrap-datepicker.standalone.min.css'/>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type='text/javascript' src='/js/meeting.js'/></script>
+    <!-- Datepicker: http://bootstrap-datepicker.readthedocs.org/en/latest/# -->
+    <script type='text/javascript' src='/js/bootstrap-datepicker.min.js'/></script>
   </head>
   <body>
     <div class="container">
-    	<div class="row r0">
+    	<div class="row row0">
     		<div class="col-md-3 col-sm-4">
-    		Save
+                Save
     		</div>
     		<div class="col-md-9 col-sm-8">
-    		Event details
+                Event details
     		</div>
     	</div>
-    	<div class="row r1">
+    	<div class="row row1">
     		<div class="col-md-3 col-sm-4">
-    		People
+    		  People
     		</div>
     		<div class="col-md-9 col-sm-8">
-    		Grid
-    			<div class="calendar-panel">
-    			Calendar
-    			</div>
+                <div class="row">
+                    <span class="tab-btn one active" href="#tab1">Tab1</span>
+                    <span class="tab-btn two" href="#tab2">Tab2</span>
+                    <span class="tab-btn three" href="#tab3">Tab3</span>
+                    <div class="tab-content">
+                        <div id="tab1" class="tab-pane active">
+                            <div class="grid-pics-panel">
+                                <div class="grid-top-left">
+                                  <!-- <input type="date" min="2016-01-16"></input> -->
+                                  <input class="dp" id="dp1" placeholder="From">
+                                  <input class="dp" id="dp2" placeholder="To">
+                                  <button>
+                                      <i class="fa fa-refresh"></i>
+                                  </button>
+                                </div>
+                                <div class="grid-top-right">
+                                    <div class="grid-person">
+                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                        <div class="person-frame">
+                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                        </div>
+                                    </div>
+                                    <div class="grid-person">
+                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                        <div class="person-frame">
+                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                        </div>
+                                    </div>
+                                    <div class="grid-person">
+                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                        <div class="person-frame">
+                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                        </div>
+                                    </div>
+                                    <div class="grid-person">
+                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                        <div class="person-frame">
+                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                        </div>
+                                    </div>
+                                    <div class="grid-person">
+                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                        <div class="person-frame">
+                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                        </div>
+                                    </div>
+                                    <div class="grid-person">
+                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                        <div class="person-frame">
+                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="grid-panel">
+                                Grid
+                            </div>
+                        </div>
+                        <div id="tab2" class="tab-pane">
+                            Tab2
+                        </div>
+                        <div id="tab3" class="tab-pane">
+                            Tab3
+                        </div>                        
+                    </div>
+                </div>
     		</div>
     	</div>
     </div>

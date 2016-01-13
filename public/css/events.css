@@ -1,12 +1,6 @@
-html, body {
-    margin: 0px;
-    padding: 0px;
-    width: auto;
-/*    overflow: hidden;
-*/}
-
 body {
 	background-color: #e7e9ec;
+	/*font-family: sans-serif;*/
 }
 
 h1 {
@@ -41,12 +35,12 @@ li {
 /*~~~~~~ Start of debug CSS ~~~~~~*/
 /* Comment out this section after debugging */
 
-/*div {
+div {
 	border: 1px solid #ccc;
 }
 
 .row, .row > div {
 	min-height: 50px;
-}*/
+}
 
 /*~~~~~~ End of debug CSS ~~~~~~*/
