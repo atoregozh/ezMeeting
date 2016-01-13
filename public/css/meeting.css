@@ -66,11 +66,12 @@
 
 .grid-top-left input {
 	margin: 2px auto;
-	padding: 0 2px;
-	border: 1px solid #999;
+    padding: 2px 3px;
+    border: 1px solid #999;
+    font-size: 14px;
 }
 
-.grid-top-left button, .grid-top-left button.active {
+.grid-top-left .btn, .grid-top-left .btn.active {
 	width: 50px;
     height: 34px;
     border-radius: 7px;
@@ -84,7 +85,7 @@
 }
 
 
-.grid-top-left button:hover, .grid-top-left button:focus {
+.grid-top-left .btn:hover, .grid-top-left .btn:focus {
 	background-color: #008cc9;
 	color: white;
 }
