@@ -4,7 +4,7 @@
     <title>{{ title }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/dashboard.css' />
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -13,17 +13,58 @@
   <body>
     <div class="container">
       <div class="row">
+        <div class="col-md-3 col-sm-6 meeting-container">
+          <button type="button" class="btn btn-default meeting-options">
+              <i class="fa fa-ellipsis-v"></i>
+          </button>
+          <div class="meeting">
+            <div class="meeting-info">
+              <p class="meeting-name"> Really Long Meeting Name Comes </p>
+              <p class="meeting-time"> Sat, Jan 8 at 11am </p>
+            </div>
+            <div class="meeting-organizer">
+              <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
+            </div>
+            <div class="meeting-location">
+              <p> <a href="#"> <i class="fa fa-map-marker"></i> </a> 32 Vassar street, Cambridge, MA </p>
+            </div>
+            <div class="meeting-descrpt">
+              <p> Meeting Description </p>
+            </div>
+            <div class="participants-row">
+              <a href="#" class="team-link">
+                <div class="circle team-overlay-circle">
+                  <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                </div>
+              </a>
+            
+              <a href="#" class="team-link">
+                <div class="circle">
+                  <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                </div>
+              </a>
+              
+              <a href="#" class="team-link">
+                <div class="circle">
+                    <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                </div>
+              </a>
+              <small>+10</small>
+            </div>
+          </div>
+        </div>
+
+
+
+
         <div class="col-md-3 col-sm-6">
-          Event 1
+          Meeting 2
         </div>
         <div class="col-md-3 col-sm-6">
-          Event 2
+          Meeting 3
         </div>
         <div class="col-md-3 col-sm-6">
-          Event 3
-        </div>
-        <div class="col-md-3 col-sm-6">
-          Event 4
+          Meeting 4
         </div>
       </div>
       <div class="row">
