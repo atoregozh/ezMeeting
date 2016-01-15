@@ -173,6 +173,7 @@
 	transition: .2s;
 }*/
 
+
 ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 5px;
@@ -245,15 +246,16 @@
 	height: 100%;
 	margin-left: 50px;
 	margin-right: 50px;
-	overflow: scroll;
+	overflow: hidden;
 	border: 1px solid #ccc;
+	font-size: 0;
 }
 
 .calendar-header {
 	height: 20px;
 	white-space: nowrap;
 	display: inline-block; /*Ensures minimum width*/
-	border-bottom: 1px solid #ccc;
+	border-bottom: 2px solid #ccc;
 	font-size: 0;
 }
 
@@ -285,6 +287,43 @@
 	position: relative;
 	display: inline-block;
 }
+
+#tl {
+	width: 60px;
+	height: 20px;
+	float: left;
+}
+
+#tr {
+	display: inline-block;
+    height: 20px;
+    overflow: hidden;
+    max-width: 600px;
+    white-space: nowrap;
+}
+
+.clear-float {
+	clear: both;
+}
+
+#bl {
+	width: 60px;
+	width: 60px;
+	height: 430px;
+	float: left;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+#br {
+	height: 430px;
+	display: inline-block;
+    height: 430px;
+    overflow: scroll;
+    max-width: 600px;
+    white-space: nowrap;
+}
+
 
 
 

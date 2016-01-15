@@ -28,5 +28,29 @@ $(document).ready(function(){
 		console.log('clicked dp2');
 	}).data('datepicker');
 
+	$('#br').on('scroll', function (e) {
+	    $('#tr').scrollLeft($(this).scrollLeft());
+	    e.stopPropagation();
+	    e.preventDefault();
+	});
+
+	$('#tr').on('scroll', function (e) {
+	    $('#br').scrollLeft($(this).scrollLeft());
+	    e.stopPropagation();
+	    e.preventDefault();
+	});
+
+	$('#bl').on('scroll', function (e) {
+	    $('#br').scrollTop($(this).scrollTop());
+	    e.stopPropagation();
+	    e.preventDefault();
+	});
+
+	$('#br').on('scroll', function (e) {
+	    $('#bl').scrollTop($(this).scrollTop());
+	    e.stopPropagation();
+	    e.preventDefault();
+	});
+
 	// ~~~~~ End initialize .date-input ~~~~~
 });
