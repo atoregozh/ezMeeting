@@ -194,9 +194,9 @@
 .grid-panel2 {
 	height: 100%;
 	position: relative;
-	/*display: inline-block;*/ /*Ensures minimum width*/
+	display: inline-block; /*Ensures minimum width*/
 	overflow: hidden;
-	width: 100%;
+	max-width: 100%;
 }
 
 .grid-side-btn {
@@ -207,7 +207,6 @@
 	text-align: center;
 	height: 100%;
 	position: relative;
-	/*float: left;*/
 	border-radius: 0;
 }
 
@@ -234,18 +233,12 @@
 .grid-side-btn.left {
 	border-top-left-radius: 40px;
 	border-bottom-left-radius: 40px;
-	/*position: absolute;
-	top: 0;
-	left: 0;*/
 	float: left;
 }
 
 .grid-side-btn.right {
 	border-top-right-radius: 40px;
 	border-bottom-right-radius: 40px;
-	/*position: absolute;
-	top: 0;
-	right: 0;*/
 	float: right;
 }
 
@@ -253,9 +246,7 @@
 	height: 100%;
 	margin-left: 50px;
 	margin-right: 50px;
-	/*max-width: 100%;*/
 	overflow: scroll;
-	/*display: inline-block;*/ /*Ensures minimum width*/
 }
 
 .calendar {
@@ -270,7 +261,6 @@
 	border-right: 1px solid #eee;
 	width: 100px;
 	position: relative;
-	/*float: left;*/
 	display: inline-block;
 }
 
