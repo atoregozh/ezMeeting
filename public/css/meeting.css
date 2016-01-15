@@ -96,7 +96,6 @@
 }
 
 .grid-top-right {
-	margin-left: 100px;
     position: relative; 
     overflow-x: auto;
     max-width: 100%;
@@ -186,9 +185,9 @@
 }
 
 .grid-panel {
-	border: 1px solid blue; /* Todo: delete */
 	height: 450px;
 	text-align: center;
+	margin: 3px;
 }
 
 .grid-panel2 {
@@ -247,21 +246,47 @@
 	margin-left: 50px;
 	margin-right: 50px;
 	overflow: scroll;
+	border: 1px solid #ccc;
+}
+
+.calendar-header {
+	height: 20px;
+	white-space: nowrap;
+	display: inline-block; /*Ensures minimum width*/
+	border-bottom: 1px solid #ccc;
+	font-size: 0;
 }
 
 .calendar {
 	height: 1200px;
 	white-space: nowrap;
 	display: inline-block; /*Ensures minimum width*/
+	font-size: 0;
+}
+
+.h-col {
+	height: 20px;
+	border-right: 1px solid #eee;
+	width: 101px;
+	position: relative;
+	display: inline-block;
+	padding: 3px;
+    font-size: 13px;
+}
+
+.h-col.time, .g-col.time {
+	width: 60px;
 }
 
 .g-col {
 	height: 1200px;
 	border-right: 1px solid #eee;
-	width: 100px;
+	width: 101px;
 	position: relative;
 	display: inline-block;
 }
+
+
 
 .g-row {
 	height: 25px;
