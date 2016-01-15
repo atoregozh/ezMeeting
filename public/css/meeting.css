@@ -253,7 +253,6 @@
 	height: 1200px;
 	white-space: nowrap;
 	display: inline-block; /*Ensures minimum width*/
-	overflow: hidden;
 }
 
 .g-col {
