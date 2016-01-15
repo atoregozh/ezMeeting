@@ -6,6 +6,10 @@
 
 }
 
+.btn, .btn.active {
+	box-shadow: none;
+}
+
 .tab-btn {
     background-color: #ddd;
     border-top-left-radius: 20px;
@@ -215,7 +219,7 @@
 	border-color: #00aeef;
 }
 
-.grid-side-btn:hover i, .grid-side-btn:focus i{
+.grid-side-btn:hover i, .grid-side-btn:focus i, .grid-side-btn.active i{
 	color: #00aeef;
 }
 
@@ -255,7 +259,7 @@
 	height: 20px;
 	white-space: nowrap;
 	display: inline-block; /*Ensures minimum width*/
-	border-bottom: 2px solid #ccc;
+	border-bottom: 1px solid #ccc;
 	font-size: 0;
 }
 
@@ -288,18 +292,27 @@
 	display: inline-block;
 }
 
+.g-row {
+	height: 25px;
+	border-top: 1px solid #eee;
+	width: 100%;
+	position: relative;
+}
+
 #tl {
 	width: 60px;
 	height: 20px;
 	float: left;
+	border-right: 1px solid #ccc;
 }
 
 #tr {
 	display: inline-block;
     height: 20px;
-    overflow: hidden;
+    overflow: scroll;
     max-width: 600px;
     white-space: nowrap;
+    border-bottom: 1px solid #ccc;
 }
 
 .clear-float {
@@ -312,7 +325,8 @@
 	height: 430px;
 	float: left;
 	white-space: nowrap;
-	overflow: hidden;
+	overflow-y: scroll;
+	border-right: 1px solid #ccc;
 }
 
 #br {
@@ -324,12 +338,20 @@
     white-space: nowrap;
 }
 
-
-
-
-.g-row {
-	height: 25px;
-	border-top: 1px solid #eee;
-	width: 100%;
-	position: relative;
+#tr::-webkit-scrollbar, #bl::-webkit-scrollbar {
+	width: 0px;
+	height: 0px;
 }
+
+#br::-webkit-scrollbar {
+	width: 0px;
+	height: 0px;
+}
+
+/*#tr::-webkit-scrollbar-thumb {
+	background-color: blue;
+}
+
+#tr::-webkit-scrollbar-track {
+	background-color: green;
+}*/
