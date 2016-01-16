@@ -4,7 +4,7 @@ div {
 	border: 1px solid #ccc;
 }
 
-.row, .row > div {
+.row {
 	min-height: 50px;
 }
 
@@ -34,13 +34,62 @@ float: right!important;
   height: 60px;
 }
 
+.nav-link {
+  padding:18px;
+}
+
+.nav-text {
+  /*border: 1px solid;*/
+  display: inline-block;
+  text-align: right;
+  padding: 0;
+  font-size: 14px;
+  margin-right: 5px;
+  line-height: 17px;
+  top: -7px;
+  position: relative;
+}
+
+#fa-list-spec {
+  font-size: 25.5px;
+}
+
+.nav-item {
+  border-left: 1px solid #E0E0E0;
+}
+
+#nav-profile {
+  margin-right: 20px;
+}
+
+.nav-icons {
+/*  border: 1px solid;*/
+  width: 26px;
+  height:26px;
+  display: inline-block;
+}
+
+.nav-icons span {
+  position: absolute;
+}
+
+#nav-profile-img {
+  width: 27px;
+  height: 27px;
+  z-index: 20;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  position: relative;
+  top: -1px;
+}
+
 #app-logo {
   display: inline-block;
   padding: 18px;
 }
 
 .container {
-  margin-top: 20px;
+  margin-top: 60px;
 }
 
 .fa-navbar {
@@ -175,7 +224,7 @@ a.plain:hover, a.plain:focus {
 
 .meeting-name {
   font-weight: bold;
-  font-size: 20px;
+  font-size: 14px;
 }
 
 .meeting-time {
@@ -217,26 +266,23 @@ a.plain:hover, a.plain:focus {
 }
 
 .calendar-invite {
-  color: #4CAF50;
+  color: #1E88E5;
 }
 
 .calendar-reschedule {
   color: #FF9800;
 }
 
-.section-divider {
-    border: 0.5px solid #E0E0E0;
-    width: 95%;
-    margin: auto;
-    margin-top: 4px;
+.calendar-schedule {
+  color: #4CAF50;
 }
 
-.notification-info {
-  padding-top: 7px;
+.notification-div {
+  font-size: 14px;
 }
 
 @media (max-width: 1024px) { /* Phones and tablets */
-  .nav-item span {
+  .nav-item .nav-text {
     display: none;
   }
 }

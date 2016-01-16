@@ -21,17 +21,45 @@
         </span>
 
         <ul class="nav navbar-nav navbar-right">
-            <li class="nav-item">
-                <a class="nav-link" href="#"><span>New Meeting</span><i class="fa fa-calendar-plus-o fa-navbar"></i></a>
+            <li class="nav-item" id="nav-new-meeting">
+                <a class="nav-link" href="#">
+                  <div class="nav-text">New Meeting
+                  </div>
+                  <div class="nav-icons">
+                    <span class="fa fa-calendar-plus-o fa-navbar ">
+                    </span>
+                  </div>
+                </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#"><span>My Meetings</span><i class="fa fa-list-alt fa-navbar"></i></a>
+            <li class="nav-item" id="nav-my-meeting">
+                <a class="nav-link" href="#">
+                  <div class="nav-text">My Meetings
+                  </div>
+                  <div class="nav-icons">
+                    <span class="fa fa-list-alt" id="fa-list-spec"></span>
+                  </div>
+                </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#"><span>Notifications</span><i class="fa fa-bell fa-navbar"></i></a>
+            <li class="nav-item" id="nav-notification">
+                <a class="nav-link" href="#">
+                  <div class="nav-text">Notifications
+                  </div>
+                  <div class="nav-icons">
+                    <span class="fa fa-bell fa-navbar"></i>
+                    </span>
+                  </div>
+                </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#"><span>Aizhan</span><img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture"></a>
+            <li class="nav-item" id="nav-profile">
+                <a class="nav-link" href="#">
+                <div class="nav-text">Aizhan
+                </div>
+                <div class="nav-icons">
+                  <span ><img id="nav-profile-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
+                  </span>
+                </div>
+
+                </a>
             </li>
         </ul>
     </nav>
@@ -39,6 +67,9 @@
       <div class="row">
         <div class="col-md-9 col-sm-8">
           <div class="row">
+            <div class="row-fluid col-md-12 header-div">
+              <h2 class="dashboard-header">My Meetings</h2>
+            </div>
               <!-- Meeting 1 -->
               <div class="col-md-4 col-sm-6 meeting-container">
                 <button type="button" class="btn btn-default meeting-options">
@@ -100,28 +131,32 @@
               </div>
           </div>    
         </div>
-        
+        <!-- end Meetings -->
         <!-- Notifications -->
         <div class="col-md-3 col-sm-4">
-          <div class="row-fluid col-md-12 header-div">
+          <div class="header-div">
             <h2 class="dashboard-header">Notifications</h2>
           </div>
-          <div class="notification-div">
-            <p class="notification-info"><i class="fa fa-calendar calendar-cancel"></i> Organizer1 cancelled <a href="#">Meeting1</a>
-            </p>
-            <hr class="section-divider">
-          </div>
-          <div class="notification-div">
-            <p class="notification-info"><i class="fa fa-calendar calendar-invite"></i> Organizer2 invited you to <a href="#">Meeting2</a>
-            </p>
-            <hr class="section-divider">
-          </div>
-          <div class="notification-div">
-            <p class="notification-info"><i class="fa fa-calendar calendar-reschedule"></i> Connection3 rescheduled <a href="#">Meeting3</a>
-            </p>
-            <hr class="section-divider">
+          <div>
+            <div class="notification-div">
+              <p><i class="fa fa-calendar calendar-cancel"></i> Organizer1 cancelled <a href="#">Meeting1</a>.
+              </p>
+            </div>
+            <div class="notification-div">
+              <p><i class="fa fa-calendar calendar-invite"></i> Organizer2 invited you to <a href="#">Meeting2</a>.
+              </p>
+            </div>
+            <div class="notification-div">
+              <p><i class="fa fa-calendar calendar-reschedule"></i> Organizer3 rescheduled <a href="#">Meeting3</a>.
+              </p>
+            </div>
+            <div class="notification-div">
+              <p><i class="fa fa-calendar-check-o calendar-schedule"></i> Meeting <a href="#">MeetingName</a> is scheduled for Saturday, January 8 at 11am.
+              </p>
+            </div>
           </div>
         </div>
+        <!-- end Notifications -->
       </div>
     </div>
   </body>
