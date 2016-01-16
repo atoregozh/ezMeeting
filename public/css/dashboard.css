@@ -48,10 +48,11 @@ float: right!important;
   line-height: 17px;
   top: -7px;
   position: relative;
+  color:#616161;
 }
 
 #fa-list-spec {
-  font-size: 25.5px;
+  font-size: 26.5px;
 }
 
 .nav-item {
@@ -67,6 +68,8 @@ float: right!important;
   width: 26px;
   height:26px;
   display: inline-block;
+  font-size: 25px;
+  color: #BDBDBD;
 }
 
 .nav-icons span {
@@ -92,10 +95,6 @@ float: right!important;
   margin-top: 75px;
 }
 
-.fa-navbar {
-  font-size: 23px;
-}
-
 .dashboard-header {
   text-align: center;
   font-size: 1.5em;
@@ -115,15 +114,6 @@ float: right!important;
     border-radius: 50%;
     border: 1px solid #ccc;
     margin-right: 2px;
-}
-
-.organizer-img {
-    width:90%;
-    height:80%;
-    position: relative;
-    z-index: 20;
-    border-radius: 50%;
-    border: 1px solid #ccc;
 }
 
 .circle {
@@ -162,7 +152,7 @@ a.plain:hover, a.plain:focus {
 
 .meeting-info { 
   height: 70px;
-  margin-right: 60px;
+  margin-right: 45px;
 }
 
 .meeting-info > p {
@@ -178,10 +168,19 @@ a.plain:hover, a.plain:focus {
 
 .meeting-organizer {
   position: absolute;
-  width:60px;
+  width:45px;
   height: 70px;
   top: 0;
   right: 0;
+}
+
+.organizer-img {
+    width:45px;
+    height:45px;
+    position: relative;
+    z-index: 20;
+    border-radius: 50%;
+    border: 1px solid #ccc;
 }
 
 .meeting-location-div {
@@ -210,8 +209,8 @@ a.plain:hover, a.plain:focus {
     top: 0;
     right: 0;
     border: 0;
-    width: 23px;
-    padding: 5px;
+    width: 18px;
+    padding: 3px;
 
 }
 
