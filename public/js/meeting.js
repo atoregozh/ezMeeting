@@ -1,3 +1,8 @@
+var ALERT_TIMEOUT = 5000;
+var ALERT_FADEOUT = 2000;
+// Incremented when each new alert is displayed. Used to ensure unique ID for all alerts.
+var alertCount = 0;
+
 $(document).ready(function(){
 
 	$('.tab-btn').click(function(e){
@@ -73,6 +78,19 @@ $(document).ready(function(){
 		}
 	});
 
+	$('#alert-panel').on('click', '.close', function() {
+		$(this).parent().parent().remove();
+	});
+
+	$('#b1').click(function() {
+		showInfo('Yay! New info :)');
+	});
+
+	$('#b2').click(function() {
+		showError('Uh oh! New Error :(');
+	});
+
+
 	addTimesToGrid();
 	scrollCalendarToNineAm();
 	
@@ -86,6 +104,34 @@ function addTimesToGrid() {
 		col.append('<div class="c-row">' + addLeadingZero(i) + ':00</div>');
 		col.append('<div class="c-row thirty"></div>');
 	}
+}
+
+function showInfo(mssg) {
+	var id = 'info-' + alertCount++;
+	$('#alert-panel').append(
+		'<div>' +
+			'<div class="alert info" id="' + id + '">' + mssg + '<span class="close">X</span></div>' +
+		'</div>'
+	);
+	setTimeout(function() { 
+		$("#" + id).parent().fadeOut(ALERT_FADEOUT, function(){
+			$("#" + id).parent().remove();
+		});
+	}, ALERT_TIMEOUT);
+}
+
+function showError(mssg) {
+	var id = 'info-' + alertCount++;
+	$('#alert-panel').append(
+		'<div>' +
+			'<div class="alert error" id="' + id + '">' + mssg + '<span class="close">X</span></div>' +
+		'</div>'
+	);
+	setTimeout(function() { 
+		$("#" + id).parent().fadeOut(ALERT_FADEOUT, function(){
+			$("#" + id).parent().remove();
+		});
+	}, ALERT_TIMEOUT);
 }
 
 function scrollCalendarToNineAm() {
