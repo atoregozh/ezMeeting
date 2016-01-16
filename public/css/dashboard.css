@@ -89,7 +89,7 @@ float: right!important;
 }
 
 .container {
-  margin-top: 60px;
+  margin-top: 75px;
 }
 
 .fa-navbar {
@@ -257,6 +257,12 @@ a.plain:hover, a.plain:focus {
     color: #00aeef;
 }
 
+.notification-card {
+  border: 1px solid #BDBDBD;
+  min-height: 280px;
+  overflow: auto;
+}
+
 .header-div {
   padding: 0 0 5px 0;
 }
@@ -278,7 +284,31 @@ a.plain:hover, a.plain:focus {
 }
 
 .notification-div {
+  margin: 0 5px;
+  padding-top: 7px;
+  border-bottom: 1px solid #E0E0E0;
+  position: relative;
+}
+
+.notification-icon {
+  border: 1px solid;
+  width: 15px;
+  height:15px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  
+}
+
+.notification-text {
+  border: 1px solid;
+  display: inline-block;
   font-size: 14px;
+  position: relative;
+  left: 21px;
+  top: -3px;
+  max-width: 223px;
+
 }
 
 @media (max-width: 1024px) { /* Phones and tablets */
