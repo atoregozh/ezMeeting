@@ -54,27 +54,9 @@ $(document).ready(function(){
 
 	    // Horizontal scrolling
 	    // If the event originated in this item, the top right panel will be scrolled to the same location.
-	    var left = $(this).scrollLeft();
-	    $('#tr').scrollLeft(left);
+	    $('#tr').scrollLeft($(this).scrollLeft());
 	    
-		var threshold = 50;
-	    if((left + $(this).innerWidth()) >= ($(this)[0].scrollWidth - threshold)) {
-	    	// Enable right download
-            var rightBtn = '.grid-side-btn.right';
-		    if(!$(rightBtn).hasClass('active')) {
-		    	$(rightBtn).addClass('active');
-		    }
-        }
-        else if(left < threshold) {
-        	// Enable left download
-        	var leftBtn = '.grid-side-btn.left';
-			if(!$(leftBtn).hasClass('active')) {
-				$(leftBtn).addClass('active');
-			}
-        }else {
-        	// Disable both left and right download
-        	$('.grid-side-btn').removeClass('active');
-        }
+	    activateCalendarSideBtns();
 	});
 
 	$('.grid-side-btn.left').click(function() {
@@ -91,8 +73,60 @@ $(document).ready(function(){
 		}
 	});
 
+	addTimesToGrid();
+	scrollCalendarToNineAm();
+	
+
 	// ~~~~~ End initialize .date-input ~~~~~
 });
+
+function addTimesToGrid() {
+	var col = $('.c-col.time');
+	for(var i = 0; i < 24; i++) {
+		col.append('<div class="c-row">' + addLeadingZero(i) + ':00</div>');
+		col.append('<div class="c-row thirty"></div>');
+	}
+}
+
+function scrollCalendarToNineAm() {
+	var gridRowHeight = $($('.c-row')[0]).outerHeight()
+	$('#bl').scrollTop(gridRowHeight * 18); // Scroll to 9am
+}
+
+function activateCalendarSideBtns() {
+	var left = $('#br').scrollLeft();
+	var threshold = 50; // Activate the left or right btn if the distance from the scroll bar to the edge is less than this threshold.
+
+	var leftBtn = '.grid-side-btn.left';
+	if(left < threshold) {
+    	// Enable left download
+		if(!$(leftBtn).hasClass('active')) {
+			$(leftBtn).addClass('active');
+		}
+    } 
+    else {
+    	$(leftBtn).removeClass('active');
+    }
+
+    var rightBtn = '.grid-side-btn.right';
+    if((left + $('#br').innerWidth()) >= ($('#br')[0].scrollWidth - threshold)) {
+    	// Enable right download
+	    if(!$(rightBtn).hasClass('active')) {
+	    	$(rightBtn).addClass('active');
+	    }
+    }
+    else {
+		$(rightBtn).removeClass('active');
+	}
+}
+
+function addLeadingZero(int) {
+	if(int < 10) {
+		return '0' + int;
+	} else {
+		return '' + int;
+	}
+}
 
 function downloadEarlierDays() {
 	console.log('>>> TODO: implement downloadEarlierDays()');

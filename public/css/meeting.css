@@ -12,9 +12,9 @@
 
 .tab-btn {
     background-color: #ddd;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    width: 80px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    width: 70px;
     border: 1px solid #aaa;
     border-bottom: 0;
     position: relative;
@@ -22,7 +22,7 @@
     display: inline-block;
     text-align: center;
     cursor: default;
-    height: 30px;
+    height: 27px;
     padding: 5px 10px;
     margin: auto;
     top: 1px;
@@ -60,7 +60,7 @@
 }
 
 .grid-pics-panel {
-	height: 100px;
+	height: 90px;
 }
 
 .grid-top-left {
@@ -82,7 +82,7 @@
 
 .grid-top-left .btn {
 	width: 50px;
-    height: 34px;
+    height: 28px;
     border-radius: 7px;
     background-image: none;
     background-color: white;
@@ -90,7 +90,9 @@
     margin: 2px auto;
     font-size: 16px;
     border-color: #008cc9;
-	color: #008cc9;
+    color: #008cc9;
+    padding: 3px;
+    text-align: center;
 }
 
 
@@ -103,7 +105,7 @@
     position: relative; 
     overflow-x: auto;
     max-width: 100%;
-    height: 98px;
+    height: 90px;
     white-space: nowrap;
     overflow-y: hidden;
     border: 1px solid #ccc;
@@ -112,8 +114,8 @@
 }
 
 .grid-person {
-	width: 100px;
-	height: 100px;
+	width: 90px;
+	height: 90px;
 	padding-top: 2px;
 	text-align: center;
 	margin: 0 5px;
@@ -126,13 +128,13 @@
 	position: relative;
 	width: 50px;
 	height: 50px;
-	top: 8px;
+	top: 5px;
 }
 
 .grid-name {
 	margin: 2px 0px;
 	width: 100%;
-	font-size: 14px;
+	font-size: 13px;
 	overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -143,8 +145,8 @@
 .person-frame {
 	border-radius: 50%;
 	border: 1px solid #999;
-	width: 66px;
-	height: 66px;
+	width: 62px;
+	height: 62px;
 	text-align: center;
 	margin: 0 auto;
 	bottom: 0;
@@ -177,7 +179,7 @@
 	transition: .2s;
 }*/
 
-
+/*
 ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 5px;
@@ -188,6 +190,7 @@
     background-color: rgba(0,0,0,.3);
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.3);
 }
+*/
 
 .grid-panel {
 	height: 450px;
@@ -201,6 +204,7 @@
 	display: inline-block; /*Ensures minimum width*/
 	overflow: hidden;
 	max-width: 100%;
+	top: -6px;
 }
 
 .grid-side-btn {
@@ -261,6 +265,18 @@
 	display: inline-block; /*Ensures minimum width*/
 	border-bottom: 1px solid #ccc;
 	font-size: 0;
+	position: relative;
+	width: 100%;
+}
+
+.calendar-content {
+	height: 430px;
+	white-space: nowrap;
+	display: inline-block; /*Ensures minimum width*/
+	border-bottom: 1px solid #ccc;
+	font-size: 0;
+	position: relative;
+	width: 100%;
 }
 
 .calendar {
@@ -280,11 +296,11 @@
     font-size: 13px;
 }
 
-.h-col.time, .g-col.time {
+.h-col.time, .c-col.time {
 	width: 60px;
 }
 
-.g-col {
+.c-col {
 	height: 1200px;
 	border-right: 1px solid #eee;
 	width: 101px;
@@ -292,11 +308,25 @@
 	display: inline-block;
 }
 
-.g-row {
+.c-row {
 	height: 25px;
-	border-top: 1px solid #eee;
-	width: 100%;
-	position: relative;
+    border-top: 1px solid #eee;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    font-size: 14px;
+    text-align: left;
+    padding: 2px;
+    padding-bottom: 0;
+}
+
+.c-row.thirty {
+	border-top: none;
+}
+
+.time .c-row {
+    text-align: right;
+    padding: 3px;
 }
 
 #tl {
@@ -307,11 +337,10 @@
 }
 
 #tr {
-	display: inline-block;
     height: 20px;
     overflow: scroll;
-    max-width: 600px;
-    white-space: nowrap;
+    max-width: 100%;
+    margin-left: 60px;
     border-bottom: 1px solid #ccc;
 }
 
@@ -331,13 +360,11 @@
 
 #br {
 	height: 430px;
-	display: inline-block;
-    height: 430px;
     overflow: scroll;
-    max-width: 600px;
-    white-space: nowrap;
+    max-width: 100%;
+    margin-left: 60px;
 }
-
+/*
 #tr::-webkit-scrollbar, #bl::-webkit-scrollbar {
 	width: 0px;
 	height: 0px;
@@ -347,11 +374,4 @@
 	width: 0px;
 	height: 0px;
 }
-
-/*#tr::-webkit-scrollbar-thumb {
-	background-color: blue;
-}
-
-#tr::-webkit-scrollbar-track {
-	background-color: green;
-}*/
+*/
