@@ -59,6 +59,10 @@ float: right!important;
   border-left: 1px solid #E0E0E0;
 }
 
+.nav-item:hover {
+  background-color: #f5f5f5;
+}
+
 #nav-profile {
   margin-right: 20px;
 }
