@@ -110,40 +110,6 @@ float: right!important;
   padding-top: 0.2em;
 }
 
-.participants-row {
-  position: relative;
-  font-size: 0;
-}
-
-.participant-img {
-    width: 26px;
-    height: 26px;
-    position: relative;
-    z-index: 20;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    margin-right: 1.5px;
-}
-
-.circle {
-    border-radius: 50%;
-    display: inline-block;
-}
-
-a.plain:hover, a.plain:focus {
-  text-decoration: none;
-}
-
-.participant-link > .circle {
-    width: 35px;
-    height: 35px;
-    z-index: 10;
-    background-color: white;
-    border: 1px solid #00aeef;
-    text-align: center;
-    margin: auto;
-}
-
 #btn-meeting {
   position: absolute;
   top: 5px;
@@ -154,6 +120,8 @@ a.plain:hover, a.plain:focus {
   padding: 5px;
   position: relative;
   border: 2px solid #BDBDBD;
+  margin-top: 10px;
+  height: 226px;
 }
 
 .meeting {
@@ -171,6 +139,17 @@ a.plain:hover, a.plain:focus {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 45px;
+  line-height: 21px;
+}
+
+.meeting-info > p.meeting-time {
+/*make ellipsis for text*/ 
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   max-height: 45px;
@@ -207,6 +186,7 @@ a.plain:hover, a.plain:focus {
 .meeting-location-div {
   clear: both;
   position: relative;
+  margin-bottom: 5px;
 }
 
 .location-icon {
@@ -225,6 +205,17 @@ a.plain:hover, a.plain:focus {
   position: relative;
   left: 17px;
   max-width: 202px;
+}
+
+.location-text > p {
+/*make ellipsis for text*/ 
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 28px;
+  line-height: 14px;
 }
 
 .meeting-descrpt-div {
@@ -259,6 +250,41 @@ a.plain:hover, a.plain:focus {
   color: #E53935;
 }
 
+.participants-row {
+  position: relative;
+  font-size: 0;
+  margin-top: 7px;
+}
+
+.participant-img {
+    width: 26px;
+    height: 26px;
+    position: relative;
+    z-index: 20;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    margin-right: 1.5px;
+}
+
+.circle {
+    border-radius: 50%;
+    display: inline-block;
+}
+
+a.plain:hover, a.plain:focus {
+  text-decoration: none;
+}
+
+.participant-link > .circle {
+    width: 35px;
+    height: 35px;
+    z-index: 10;
+    background-color: white;
+    border: 1px solid #00aeef;
+    text-align: center;
+    margin: auto;
+}
+
 .participant-number {
     border: 1px solid #999;
     background-color: white;
@@ -269,8 +295,8 @@ a.plain:hover, a.plain:focus {
     display: inline-block;
     position: absolute;
     top: 0;
-    font-size: 12px;
-    padding: 6px 0px;
+    font-size: 11px;
+    padding: 7px 0px;
     text-align: center;
 }
 
@@ -306,8 +332,8 @@ a.plain:hover, a.plain:focus {
 }
 
 .notification-div {
-  margin: 0 5px;
-  padding-top: 7px;
+  margin: 5px 13px;
+  padding-top: 10px;
   border-bottom: 1px solid #E0E0E0;
   position: relative;
 }
