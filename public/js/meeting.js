@@ -17,7 +17,7 @@ $(document).ready(function(){
 	// ~~~~~ Start initializing datepicker ~~~~~
 	
 	$('.dp').datepicker({
-		format: 'mm/dd/yyyy',
+		format: 'D, M d, yyyy',
 		startDate: '0d'
 	});
 
@@ -61,7 +61,7 @@ $(document).ready(function(){
 		console.log('The meridian is ' + e.time.meridian);
 	});
 
-	$('#mstart').timepicker({
+	$('#m-start').timepicker({
 		minuteStep: 5,
 		template: 'modal',
 		appendWidgetTo: 'body',
@@ -70,12 +70,12 @@ $(document).ready(function(){
 		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
 	});
 
-	$('#mstart').timepicker().on('changeTime.timepicker', function(e) {
+	$('#m-start').timepicker().on('changeTime.timepicker', function(e) {
 		console.log('The start hour is ' + e.time.hours);
 		console.log('The start minute is ' + e.time.minutes);
 	});
 
-	$('#mend').timepicker({
+	$('#m-end').timepicker({
 		minuteStep: 5,
 		template: 'modal',
 		appendWidgetTo: 'body',
@@ -84,7 +84,7 @@ $(document).ready(function(){
 		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
 	});
 
-	$('#mend').timepicker().on('changeTime.timepicker', function(e) {
+	$('#m-end').timepicker().on('changeTime.timepicker', function(e) {
 		console.log('The end hour is ' + e.time.hours);
 		console.log('The end minute is ' + e.time.minutes);
 	});

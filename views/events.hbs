@@ -36,40 +36,63 @@
     		</div>
     		<div class="col-md-9 col-sm-8">
                 <div class="row">
-                    <div class="meeting-details">
-                        <div class="meeting-panel1">
-                            <input id="meeting-name" placeholder="Meeting Title">
-                            <div class="meeting-panel2 col-md-6 col-sm-12">
+                    <!-- <div class="m-details">
+                        <div class="m-panel1">
+                            <input id="m-title" placeholder="Meeting Title">
+                            <div class="m-panel2 col-md-6 col-sm-12">
                                 <div class="row">
-                                    <div class="meeting-panel2a">
-                                        <input class="dp" id="meeting-date" placeholder="Date">
-                                        <input id="mstart" placeholder="Start">
-                                        <input id="mend" placeholder="End">    
+                                    <div class="m-panel2a">
+                                        <input class="dp" id="m-date" placeholder="Date">
+                                        <input id="m-start" placeholder="Start">
+                                        <input id="m-end" placeholder="End">    
                                     </div>
-                                    <div class="meeting-panel2b">
-                                        <input id="meeting-location" placeholder="Location">    
+                                    <div class="m-panel2a">
+                                        <input id="m-location" placeholder="Location">    
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="row">
-                                    <div class="meeting-panel3">
-                                        <textarea id="meeting-desc" placeholder="Description"></textarea>
+                                    <div class="m-panel3">
+                                        <textarea id="m-desc" placeholder="Description"></textarea>
                                     </div>
                                 </div>
                             </div>
                                 
                         </div>
-                        <div id="organizer-pic">
+                        <div id="organizer">
                             <img src="/img/default-user-pic.jpg" alt="pic">
                         </div> 
-                    </div>
+                    </div> -->
                 </div>
     		</div>
     	</div>
     	<div class="row row2">
-    		<div class="col-md-3 col-sm-4">
+    		<div class="col-md-4 col-sm-5">
                 <div class="row">
+                    <div class="m-details">
+                        <div id="organizer">
+                            <img src="/img/default-user-pic.jpg" alt="pic">
+                        </div> 
+                        <div class="m-panel1">
+                            <!-- <input id="m-title" placeholder="Meeting Title"> -->
+                            <div id="m-title" class="text-container" contenteditable="true" data-ph="Meeting Title"></div>
+                            <div class="m-panel2">
+                                <input class="dp" id="m-date" placeholder="Date">
+                                <span class="m-panel2a">
+                                    <span>
+                                        <label for="m-start">from</label><input class="tp" id="m-start" placeholder="Start">
+                                    </span>
+                                    <span>
+                                        <label for="m-end">to</label><input class="tp" id="m-end" placeholder="End">
+                                    </span>
+                                </span>
+                            </div>
+                            <!-- <input id="m-location" placeholder="Location"> -->
+                            <div id="m-location" class="text-container" contenteditable="true" data-ph="Location"></div>
+                            <textarea id="m-desc" placeholder="Description"></textarea>
+                        </div>
+                    </div>
                     <div class="guests-panel">
                         <div class="guests-header">
                             <span class="fa fa-user-plus" id="add-people"></span>
@@ -86,7 +109,7 @@
                     </div>
                 </div>
     		</div>
-    		<div class="col-md-9 col-sm-8">
+    		<div class="col-md-8 col-sm-7">
                 <div class="row">
                     <span class="tab-btn one active" href="#tab1">Tab1</span>
                     <span class="tab-btn two" href="#tab2">Tab2</span>

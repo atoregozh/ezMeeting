@@ -449,89 +449,107 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffc578', endColorstr='#fb9d23',GradientType=0 ); /* IE6-9 */
 }
 
-.meeting-details {
+.m-details {
 	width: 100%;
 	position: relative;
 	z-index: 100;
-	display: flex;
+	padding-right: 5px;
+	/*display: flex;*/
 }
 
-.meeting-panel1 {
+.m-panel1 {
 	/*padding-right: 10px;*/
 	width: 100%;
 }
 
-.meeting-details input, .meeting-details textarea {	
+.m-details input, .m-details textarea, .m-details .text-container {	
 	border: 1px solid #aaa;
 	padding: 2px 5px;
     font-size: 14px;
+    min-height: 25px;
+    background-color: white;
+    line-height: 1.2;
 }
 
-#meeting-name {
+#m-title {
 	width: 100%;
 	padding: 2px 5px;
-	font-size: 16px;
+	font-size: 20px;
+	line-height: 25px;
 	font-weight: bold;
+	background-color: #fff;
+	max-height: 78px;
+	overflow: scroll;
 }
 
-#organizer-pic {
-	width: 80px;
-	height: 80px;
-	float: right;
-	margin: 5px 15px 0 15px;
+#m-date {
+	width: 200px;
+	/*margin-right: 5px;*/
+	margin-top: 4px;
 }
 
-#organizer-pic img {
-	width: 75px;
-	height: 75px;
+#organizer {
+	width: 100%;
+	margin-bottom: 5px;
+	padding: 0;
+	font-size: 0;
+}
+
+#organizer img {
+	width: 70px;
+	height: 70px;
+	margin: 0 5px;
 	border-radius: 50%;
 	border: 1px solid #ccc;
 }
 
-.meeting-panel2a {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 2px;
+.m-panel2 {
+	font-size: 0;
 }
 
-.meeting-panel2a input {
-	width: 33%;
-    height: 25px;    
+.m-panel2a {
+	width: 218px;
+	margin: 4px 0 0 0;
+	display: inline-block;
 }
 
-#mend {
-	margin-right: 0;
+.m-panel2 label {
+	margin: 0 5px;
+	font-size: 14px;
 }
 
-.meeting-panel2b {
+.m-panel2 input {
+	width: 70px;
+    font-size: 14px 
+}
+
+#m-location {
 	width: 100%;
-	margin: 2px 0 0 0;
+	margin-top: 4px;
+	max-height: 38px;
+	background-color: white;
+	overflow: scroll;
+	font-size: 14px;
 }
 
-#meeting-location {
+#m-desc {
 	width: 100%;
-}
-
-#meeting-desc {
-	width: 100%;
-	margin-top: 2px;
-	height: 50px;
-}
-
-.meeting-panel3 {
-	padding-left: 2px;
+	margin-top: 4px;
+	height: 100px;
 }
 
 @media (max-width: 1024px) { /* Phones and tablets */
-	.meeting-panel3 {
-		padding-left: 0;
-	}
+	
 }
 
 @media (max-width: 768px) { /* Phones */
 	.container {
 		margin-left: 5px;
 		margin-right: 5px;
+	}
+
+	.m-details {
+		padding-right: 0;
 	}
 }
 
@@ -542,6 +560,34 @@
     height: 27px;
     font-size: 20px;
 }
+
+/* Place holder for all contentEditable */
+[contentEditable=true]:empty:not(:focus):before{
+  content:attr(data-ph);
+  color: #aaa;
+}
+
+/* ~~~~~ Start of set placeholder color ~~~~~ */
+
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: #aaa;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #aaa;
+   opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #aaa;
+   opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    #aaa;
+}
+:placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
+  color:    #aaa;
+}
+
+/* ~~~~~ End of set placeholder color  ~~~~~ */
 
 #test-div {
 	/*display: none*/ /*Todo: delete me*/
