@@ -90,6 +90,10 @@ $(document).ready(function(){
 		showError('Uh oh! New Error :(');
 	});
 
+	$('#b3').click(function() {
+		showWarning('Be careful! This is a warning.');
+	});
+
 
 	addTimesToGrid();
 	scrollCalendarToNineAm();
@@ -111,6 +115,20 @@ function showInfo(mssg) {
 	$('#alert-panel').append(
 		'<div>' +
 			'<div class="alert info" id="' + id + '">' + mssg + '<span class="close">X</span></div>' +
+		'</div>'
+	);
+	setTimeout(function() { 
+		$("#" + id).parent().fadeOut(ALERT_FADEOUT, function(){
+			$("#" + id).parent().remove();
+		});
+	}, ALERT_TIMEOUT);
+}
+
+function showWarning(mssg) {
+	var id = 'warning-' + alertCount++;
+	$('#alert-panel').append(
+		'<div>' +
+			'<div class="alert warning" id="' + id + '">' + mssg + '<span class="close">X</span></div>' +
 		'</div>'
 	);
 	setTimeout(function() { 

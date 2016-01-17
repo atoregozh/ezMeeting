@@ -1,5 +1,5 @@
 .row1 {
-	height: 100px;
+	height: 135px;
 }
 
 .row2 {
@@ -60,17 +60,28 @@
 }
 
 .grid-pics-panel {
-	height: 90px;
+	height: 86px;
 }
 
 .grid-top-left {
-	width: 100px;
-	height: 100px;
+	width: 147px;
+	height: 80px;
 	text-align: center;
 	padding-top: 5px;
 	margin: 0;
 	float: left;
 	position: relative;
+}
+
+.grid-date-panel {
+	width: 80px;
+    height: 80px;
+    float: left;
+    position: relative;
+    text-align: center;
+    margin: 3px;
+    padding: 8px 0 0 0;
+    margin-left: 10px;
 }
 
 .grid-top-left input {
@@ -82,17 +93,20 @@
 
 .grid-top-left .btn {
 	width: 50px;
-    height: 28px;
+    height: 48px;
     border-radius: 7px;
     background-image: none;
     background-color: white;
     border: 1px solid #999;
-    margin: 2px auto;
-    font-size: 16px;
-    border-color: #008cc9;
+    margin: 0 auto;
+    font-size: 20px;
+    border-color: #008CB0;
     color: #008cc9;
-    padding: 3px;
     text-align: center;
+    float: left;
+    top: 13px;
+    position: relative;
+    padding-top: 8px;
 }
 
 
@@ -105,7 +119,7 @@
     position: relative; 
     overflow-x: auto;
     max-width: 100%;
-    height: 90px;
+    height: 80px;
     white-space: nowrap;
     overflow-y: hidden;
     border: 1px solid #ccc;
@@ -126,8 +140,8 @@
 	border-radius: 50px;
 	border: 1px solid #999;
 	position: relative;
-	width: 50px;
-	height: 50px;
+	width: 40px;
+	height: 40px;
 	top: 5px;
 }
 
@@ -145,8 +159,8 @@
 .person-frame {
 	border-radius: 50%;
 	border: 1px solid #999;
-	width: 62px;
-	height: 62px;
+	width: 52px;
+	height: 52px;
 	text-align: center;
 	margin: 0 auto;
 	bottom: 0;
@@ -162,7 +176,7 @@
 }
 
 .dp {
-	width: 80px;
+	width: 100%;
 }
 
 /*.row {
@@ -387,19 +401,19 @@
 	margin: auto;
 	padding: 5px 10px;
 	border: 1px solid #ccc;
-	border-radius: 5px;
+	border-radius: 2px;
 	display: inline-block;
 	font-size: 16px;
 	color: #fff;
-	background-color: 
 }
 
 .alert .close {
-	margin-left: 30px;
+	margin-left: 20px;
 	font-size: 16px;
 }
 
-.alert.info {
+.alert.info, .btn.blue-linear:hover, .btn.blue-linear:focus {
+	border: 1px solid #1565C0;
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#499bea+0,207ce5+100;Blue+3d+%237 */
 	background: rgb(73,155,234); /* Old browsers */
 	background: -moz-linear-gradient(top,  rgba(73,155,234,1) 0%, rgba(32,124,229,1) 100%); /* FF3.6-15 */
@@ -409,13 +423,23 @@
 }
 
 .alert.error {
+	border: 1px solid #C62828;
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff3019+0,cf0404+100;Red+3D */
-background: rgb(255,48,25); /* Old browsers */
-background: -moz-linear-gradient(top,  rgba(255,48,25,1) 0%, rgba(207,4,4,1) 100%); /* FF3.6-15 */
-background: -webkit-linear-gradient(top,  rgba(255,48,25,1) 0%,rgba(207,4,4,1) 100%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to bottom,  rgba(255,48,25,1) 0%,rgba(207,4,4,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#cf0404',GradientType=0 ); /* IE6-9 */
+	background: rgb(255,48,25); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(255,48,25,1) 0%, rgba(207,4,4,1) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  rgba(255,48,25,1) 0%,rgba(207,4,4,1) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  rgba(255,48,25,1) 0%,rgba(207,4,4,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#cf0404',GradientType=0 ); /* IE6-9 */
+}
 
+.alert.warning {
+	border: 1px solid #F57C00;
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffc578+0,fb9d23+100;Orange+3D+%233 */
+	background: rgb(255,197,120); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(255,197,120,1) 0%, rgba(251,157,35,1) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  rgba(255,197,120,1) 0%,rgba(251,157,35,1) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  rgba(255,197,120,1) 0%,rgba(251,157,35,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffc578', endColorstr='#fb9d23',GradientType=0 ); /* IE6-9 */
 }
 
 #test-div {
@@ -426,4 +450,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', end
 	border: 1px solid gray;
 	margin: 20px;
 	padding: 20px;
+	z-index: 1000;
+	background-color: gray;
 }
