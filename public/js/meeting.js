@@ -160,6 +160,15 @@ $(document).ready(function(){
 	// ~~~~~ End initialize .date-input ~~~~~
 });
 
+function addAlertPanelIfMissing() {
+	if(!$('#alert-panel').length) {
+		$('.container').first().prepend('<div id="alert-panel"></div>');
+		console.log("a");
+	} else{
+		console.log("b");
+	}
+}
+
 function addTimesToGrid() {
 	var col = $('.c-col.time');
 	for(var i = 0; i < 24; i++) {
@@ -169,6 +178,7 @@ function addTimesToGrid() {
 }
 
 function showInfo(mssg) {
+	addAlertPanelIfMissing();
 	var id = 'info-' + alertCount++;
 	$('#alert-panel').append(
 		'<div>' +
@@ -183,6 +193,7 @@ function showInfo(mssg) {
 }
 
 function showWarning(mssg) {
+	addAlertPanelIfMissing();
 	var id = 'warning-' + alertCount++;
 	$('#alert-panel').append(
 		'<div>' +
@@ -197,6 +208,7 @@ function showWarning(mssg) {
 }
 
 function showError(mssg) {
+	addAlertPanelIfMissing();
 	var id = 'info-' + alertCount++;
 	$('#alert-panel').append(
 		'<div>' +
