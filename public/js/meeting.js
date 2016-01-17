@@ -14,7 +14,8 @@ $(document).ready(function(){
 		$(tabContentId).addClass('active');
 	});
 
-	// ~~~~~ Start initialize .date-input ~~~~~
+	// ~~~~~ Start initializing datepicker ~~~~~
+	
 	$('.dp').datepicker({
 		format: 'mm/dd/yyyy',
 		startDate: '0d'
@@ -38,6 +39,57 @@ $(document).ready(function(){
 		dp3.hide();
 		console.log('clicked dp3');
 	}).data('datepicker');
+
+	// ~~~~~ Finished initializing datepicker ~~~~~
+
+	// ~~~~~ Start initializing timepicker ~~~~~
+	$('#tp-test').timepicker({
+		minuteStep: 5,
+		template: 'modal',
+		appendWidgetTo: 'body',
+		showSeconds: false,
+		showMeridian: false, // true ==> 12hr mode, false ==> 24hr mode
+		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
+	});
+
+	// $('#tp-test').timepicker('setTime', '7:45 PM'); // Set the time manually
+
+	$('#tp-test').timepicker().on('changeTime.timepicker', function(e) {
+		console.log('The time is ' + e.time.value);
+		console.log('The hour is ' + e.time.hours);
+		console.log('The minute is ' + e.time.minutes);
+		console.log('The meridian is ' + e.time.meridian);
+	});
+
+	$('#mstart').timepicker({
+		minuteStep: 5,
+		template: 'modal',
+		appendWidgetTo: 'body',
+		showSeconds: false,
+		showMeridian: false, // true ==> 12hr mode, false ==> 24hr mode
+		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
+	});
+
+	$('#mstart').timepicker().on('changeTime.timepicker', function(e) {
+		console.log('The start hour is ' + e.time.hours);
+		console.log('The start minute is ' + e.time.minutes);
+	});
+
+	$('#mend').timepicker({
+		minuteStep: 5,
+		template: 'modal',
+		appendWidgetTo: 'body',
+		showSeconds: false,
+		showMeridian: false, // true ==> 12hr mode, false ==> 24hr mode
+		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
+	});
+
+	$('#mend').timepicker().on('changeTime.timepicker', function(e) {
+		console.log('The end hour is ' + e.time.hours);
+		console.log('The end minute is ' + e.time.minutes);
+	});
+
+	// ~~~~~ Finished initializing timepicker ~~~~~
 
 
 	$('#tr').on('scroll', function (e) {

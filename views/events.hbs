@@ -7,6 +7,7 @@
     <link rel='stylesheet' href='/css/style.css' />
     <link rel='stylesheet' href='/css/meeting.css'/>
     <link rel='stylesheet' href='/css/bootstrap-datepicker.standalone.min.css'/>
+    <link rel='stylesheet' href='/css/bootstrap-timepicker.min.css'/>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -14,6 +15,8 @@
     <script type='text/javascript' src='/js/meeting.js'/></script>
     <!-- Datepicker: http://bootstrap-datepicker.readthedocs.org/en/latest/# -->
     <script type='text/javascript' src='/js/bootstrap-datepicker.min.js'/></script>
+    <!-- https://github.com/jdewit/bootstrap-timepicker -->
+    <script type='text/javascript' src='/js/bootstrap-timepicker.min.js'/></script>
   </head>
   <body>
     <div class="container">
@@ -21,6 +24,7 @@
             <button id="b1">Add info</button>
             <button id="b2">Add error</button>
             <button id="b3">Add warning</button>
+            <input id="tp-test" type="text">
         </div>
         <div id="alert-panel">
         </div>
@@ -39,8 +43,8 @@
                                 <div class="row">
                                     <div class="meeting-panel2a">
                                         <input class="dp" id="meeting-date" placeholder="Date">
-                                        <input type="time" id="meeting-start" placeholder="Start">
-                                        <input type="time" id="meeting-end" placeholder="End">    
+                                        <input id="mstart" placeholder="Start">
+                                        <input id="mend" placeholder="End">    
                                     </div>
                                     <div class="meeting-panel2b">
                                         <input id="meeting-location" placeholder="Location">    
