@@ -419,7 +419,7 @@
 	font-size: 16px;
 }
 
-.alert.info, .btn.blue-linear:hover, .btn.blue-linear:focus {
+.alert.info, .blue-linear:hover, .blue-linear:focus {
 	border: 1px solid #1565C0;
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#499bea+0,207ce5+100;Blue+3d+%237 */
 	background: rgb(73,155,234); /* Old browsers */
@@ -535,14 +535,22 @@
 	}
 }
 
+#add-people {
+	padding: 2px 5px;
+    color: white;
+    border: 1px solid;
+    height: 27px;
+    font-size: 20px;
+}
+
 #test-div {
 	/*display: none*/ /*Todo: delete me*/
 	position: absolute;
-	bottom: 50px;
-	left: 50px;
+	bottom: 5px;
+	right: 5px;
 	border: 1px solid gray;
-	margin: 20px;
-	padding: 20px;
+	margin: 5px;
+	padding: 5px;
 	z-index: 1000;
 	background-color: gray;
 }
