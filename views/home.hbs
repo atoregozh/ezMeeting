@@ -67,13 +67,13 @@
     <div class="container">
       <div class="row">
         <div class="col-md-9 col-sm-8">
-          <div class="row">
+          <div class="row" id="my-meetings">
             <div class="row-fluid col-md-12 header-div">
               <h2 class="dashboard-header">My Meetings</h2>
             </div>
               <!-- Meeting 1 -->
               <div class="col-md-4 col-sm-6">
-                <div class="meeting-container">
+                <div class="meeting-card">
                   <button type="button" class="btn btn-default meeting-options">
                     <i class="fa fa-ellipsis-v"></i>
                   </button>
@@ -86,10 +86,15 @@
                       <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
                     </div>
                     <div class="meeting-location-div">
-                      <p class="meeting-location"> <a href="#"> <i class="fa fa-map-marker"></i> </a> 32 Vassar street, Cambridge, MA </p>
+                      <div class="location-icon">
+                        <a href="#"> <i class="fa fa-map-marker"></i> </a>  
+                      </div>
+                      <div class="location-text">
+                        32 Vassar street, Cambridge, MA
+                      </div>
                     </div>
                     <div class="meeting-descrpt-div">
-                      <p class="meeting-descrpt"> Meeting Description </p>
+                      Meeting Description
                     </div>
                     <div class="participants-row">
                       <a href="#" class="participant-link plain">
@@ -125,12 +130,120 @@
                 </div>
               </div>
               <!-- Meeting 2 -->
-              <div class="col-md-4 col-sm-6 meeting-container">
-                Meeting 2
+              <div class="col-md-4 col-sm-6">
+                <div class="meeting-card">
+                  <button type="button" class="btn btn-default meeting-options">
+                    <i class="fa fa-ellipsis-v"></i>
+                  </button>
+                  <div class="meeting">
+                    <div class="meeting-info">
+                      <p class="meeting-name"> Really Long Meeting Name</p>
+                      <p class="meeting-time"> Sat, Jan 8 at 11am </p>
+                    </div>
+                    <div class="meeting-organizer">
+                      <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
+                    </div>
+                    <div class="meeting-location-div">
+                      <div class="location-icon">
+                        <a href="#"> <i class="fa fa-map-marker"></i> </a>  
+                      </div>
+                      <div class="location-text">
+                        32 Vassar street, Cambridge, MA
+                      </div>
+                    </div>
+                    <div class="meeting-descrpt-div">
+                      Meeting Description
+                    </div>
+                    <div class="participants-row">
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                    
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                      
+                      <a href="#" class="participant-link">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                      <a href="#" class="participant-number plain">
+                        +33
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
               <!-- Meeting 3 -->
-              <div class="col-md-4 col-sm-6 meeting-container">
-                Meeting 3
+              <div class="col-md-4 col-sm-6">
+                <div class="meeting-card">
+                  <button type="button" class="btn btn-default meeting-options">
+                    <i class="fa fa-ellipsis-v"></i>
+                  </button>
+                  <div class="meeting">
+                    <div class="meeting-info">
+                      <p class="meeting-name"> Really Long Meeting Name</p>
+                      <p class="meeting-time"> Sat, Jan 8 at 11am </p>
+                    </div>
+                    <div class="meeting-organizer">
+                      <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
+                    </div>
+                    <div class="meeting-location-div">
+                      <div class="location-icon">
+                        <a href="#"> <i class="fa fa-map-marker"></i> </a>  
+                      </div>
+                      <div class="location-text">
+                        32 Vassar street, Cambridge, MA
+                      </div>
+                    </div>
+                    <div class="meeting-descrpt-div">
+                      Meeting Description
+                    </div>
+                    <div class="participants-row">
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                    
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                      
+                      <a href="#" class="participant-link">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                      <a href="#" class="participant-number plain">
+                        +33
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
           </div>    
         </div>
@@ -157,7 +270,6 @@
                 </div>
                 <div class="notification-text">
                   Organizer2 invited you to <a href="#">Meeting2</a>.
-                 
                 </div>
               </div>
               <div class="notification-div">

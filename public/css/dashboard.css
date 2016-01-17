@@ -1,12 +1,12 @@
 /*~~~~~~ Start of debug CSS ~~~~~~*/
 /* Comment out this section after debugging */
-div {
+/*div {
 	border: 1px solid #ccc;
 }
 
 .row {
 	min-height: 50px;
-}
+}*/
 
 /*~~~~~~ End of debug CSS ~~~~~~*/
 
@@ -95,6 +95,11 @@ float: right!important;
   padding: 18px;
 }
 
+#my-meetings {
+  border: 2px solid #BDBDBD;
+  padding-bottom: 10px
+}
+
 .container {
   margin-top: 75px;
 }
@@ -111,13 +116,13 @@ float: right!important;
 }
 
 .participant-img {
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
     position: relative;
     z-index: 20;
     border-radius: 50%;
     border: 1px solid #ccc;
-    margin-right: 2px;
+    margin-right: 1.5px;
 }
 
 .circle {
@@ -145,8 +150,10 @@ a.plain:hover, a.plain:focus {
   right: 5px;
 }
 
-.meeting-container {
+.meeting-card {
   padding: 5px;
+  position: relative;
+  border: 2px solid #BDBDBD;
 }
 
 .meeting {
@@ -167,7 +174,17 @@ a.plain:hover, a.plain:focus {
   -webkit-box-orient: vertical;
   overflow: hidden;
   max-height: 45px;
-  line-height: 23px;
+  line-height: 21px;
+}
+
+.meeting-name {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.meeting-time {
+  font-style: italic;
+  font-size: 14px;
 }
 
 .meeting-organizer {
@@ -189,22 +206,33 @@ a.plain:hover, a.plain:focus {
 
 .meeting-location-div {
   clear: both;
+  position: relative;
 }
 
-.meeting-location, .meeting-descrpt {
+.location-icon {
+  /*border: 1px solid;*/
+  width: 15px;
+  height:15px;
+  position: absolute;
+  top: 40%;
+  transform: translateY(-60%);
+  
+}
+
+.location-text {
+  /*border: 1px solid;*/
   font-size: 14px;
-}
-
-.meeting-descrpt {
-  margin: 5px 0;
+  position: relative;
+  left: 17px;
+  max-width: 202px;
 }
 
 .meeting-descrpt-div {
   height: 60px;
   max-height: 100px;
-  padding: 0px 10px 0px 10px;
-  margin: 10px;
-  border: 2px solid #ccc;
+  padding: 5px 0;
+  font-size: 14px;
+  overflow: auto;
 }
 
 .meeting-options {
@@ -225,15 +253,6 @@ a.plain:hover, a.plain:focus {
     width: 23px;
 }
 
-.meeting-name {
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.meeting-time {
-  font-style: italic;
-  font-size: 14px;
-}
 
 .fa-map-marker {
   font-size: 20px;
@@ -245,13 +264,13 @@ a.plain:hover, a.plain:focus {
     background-color: white;
     color: #999;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
     display: inline-block;
     position: absolute;
     top: 0;
-    font-size: 13px;
-    padding: 8px 0px;
+    font-size: 12px;
+    padding: 6px 0px;
     text-align: center;
 }
 
@@ -261,8 +280,8 @@ a.plain:hover, a.plain:focus {
 }
 
 .notification-card {
-  border: 1px solid #BDBDBD;
-  min-height: 280px;
+  border: 2px solid #BDBDBD;
+  height: 270px;
   overflow: auto;
 }
 
@@ -294,7 +313,7 @@ a.plain:hover, a.plain:focus {
 }
 
 .notification-icon {
-  border: 1px solid;
+  /*border: 1px solid;*/
   width: 15px;
   height:15px;
   position: absolute;
@@ -304,7 +323,7 @@ a.plain:hover, a.plain:focus {
 }
 
 .notification-text {
-  border: 1px solid;
+  /*border: 1px solid;*/
   display: inline-block;
   font-size: 14px;
   position: relative;
