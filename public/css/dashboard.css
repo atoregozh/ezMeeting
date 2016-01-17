@@ -96,8 +96,9 @@ float: right!important;
 }
 
 #my-meetings {
-  border: 2px solid #BDBDBD;
-  padding-bottom: 10px
+  padding-bottom: 10px;
+  background-color: #f8f8f8;
+  box-shadow: 1px 1px 5px #CACACA;
 }
 
 .container {
@@ -119,9 +120,10 @@ float: right!important;
 .meeting-card {
   padding: 5px;
   position: relative;
-  border: 2px solid #BDBDBD;
+  border: 1px solid #D8D8D8;
   margin-top: 10px;
   height: 226px;
+  background-color: #F9F9F9;
 }
 
 .meeting {
@@ -306,9 +308,10 @@ a.plain:hover, a.plain:focus {
 }
 
 .notification-card {
-  border: 2px solid #BDBDBD;
+  box-shadow: 1px 2px 5px #CACACA;
   height: 270px;
   overflow: auto;
+  background-color: #f8f8f8;
 }
 
 .header-div {
