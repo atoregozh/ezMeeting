@@ -33,6 +33,12 @@ $(document).ready(function(){
 		console.log('clicked dp2');
 	}).data('datepicker');
 
+	var dp3 = $('#meeting-date').datepicker({
+	}).on('changeDate', function(ev) {
+		dp3.hide();
+		console.log('clicked dp3');
+	}).data('datepicker');
+
 
 	$('#tr').on('scroll', function (e) {
 		e.stopPropagation();

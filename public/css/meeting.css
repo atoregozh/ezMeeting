@@ -1,5 +1,12 @@
+.container {
+	background-color: rgba(5, 0, 5, 0.2);
+}
+
 .row1 {
-	height: 135px;
+/*	height: 135px;*/
+	margin-top: 50px;
+	border-top: 1px solid red;
+	/*margin-bottom: 5px;*/
 }
 
 .row2 {
@@ -393,7 +400,7 @@
 #alert-panel {
 	position: absolute;
 	text-align: center;
-	z-index: 100;
+	z-index: 1000;
 	width: 100%;
 }
 
@@ -440,6 +447,92 @@
 	background: -webkit-linear-gradient(top,  rgba(255,197,120,1) 0%,rgba(251,157,35,1) 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to bottom,  rgba(255,197,120,1) 0%,rgba(251,157,35,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffc578', endColorstr='#fb9d23',GradientType=0 ); /* IE6-9 */
+}
+
+.meeting-details {
+	width: 100%;
+	position: relative;
+	z-index: 100;
+	display: flex;
+}
+
+.meeting-panel1 {
+	/*padding-right: 10px;*/
+	width: 100%;
+}
+
+.meeting-details input, .meeting-details textarea {	
+	border: 1px solid #aaa;
+	padding: 2px 5px;
+    font-size: 14px;
+}
+
+#meeting-name {
+	width: 100%;
+	padding: 2px 5px;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+#organizer-pic {
+	width: 80px;
+	height: 80px;
+	float: right;
+	margin: 5px 15px 0 15px;
+}
+
+#organizer-pic img {
+	width: 75px;
+	height: 75px;
+	border-radius: 50%;
+	border: 1px solid #ccc;
+}
+
+.meeting-panel2a {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 2px;
+}
+
+.meeting-panel2a input {
+	width: 33%;
+    height: 25px;    
+}
+
+#meeting-end {
+	margin-right: 0;
+}
+
+.meeting-panel2b {
+	width: 100%;
+	margin: 2px 0 0 0;
+}
+
+#meeting-location {
+	width: 100%;
+}
+
+#meeting-desc {
+	width: 100%;
+	margin-top: 2px;
+	height: 50px;
+}
+
+.meeting-panel3 {
+	padding-left: 2px;
+}
+
+@media (max-width: 1024px) { /* Phones and tablets */
+	.meeting-panel3 {
+		padding-left: 0;
+	}
+}
+
+@media (max-width: 768px) { /* Phones */
+	.container {
+		margin-left: 5px;
+		margin-right: 5px;
+	}
 }
 
 #test-div {
