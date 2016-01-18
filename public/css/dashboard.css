@@ -10,84 +10,8 @@
 
 /*~~~~~~ End of debug CSS ~~~~~~*/
 
-/*these 4 magic properties below prevent navbar icons
-from disappearing when resizing*/
-.navbar-collapse.collapse {
-display: block!important;
-}
-
-.navbar-nav>li, .navbar-nav {
-float: left !important;
-}
-
-.navbar-nav.navbar-right:last-child {
-margin-right: -15px !important;
-}
-
-.navbar-right {
-float: right!important;
-}
-/*end of 4 magic properties*/
-
-.navbar {
-  margin: 0;
-  height: 60px;
-}
-
-.nav-link {
-  padding:18px;
-}
-
-.nav-text {
-  /*border: 1px solid;*/
-  display: inline-block;
-  text-align: right;
-  padding: 0;
-  font-size: 14px;
-  margin-right: 5px;
-  line-height: 17px;
-  top: -7px;
-  position: relative;
-  color:#616161;
-}
-
-#fa-list-spec {
-  font-size: 26.5px;
-}
-
-.nav-item {
-  border-left: 1px solid #E0E0E0;
-}
-
-.nav-item:hover {
-  background-color: #f5f5f5;
-}
-
-#nav-profile {
-  margin-right: 20px;
-}
-
-.nav-icons {
-/*  border: 1px solid;*/
-  width: 26px;
-  height:26px;
-  display: inline-block;
-  font-size: 25px;
-  color: #BDBDBD;
-}
-
-.nav-icons span {
-  position: absolute;
-}
-
-#nav-profile-img {
-  width: 27px;
-  height: 27px;
-  z-index: 20;
-  border-radius: 50%;
-  border: 1px solid #ccc;
-  position: relative;
-  top: -1px;
+.container {
+  margin-top: 75px;
 }
 
 #app-logo {
@@ -96,13 +20,9 @@ float: right!important;
 }
 
 #my-meetings {
-  padding-bottom: 10px;
+  padding: 10px 7px;
   background-color: #f8f8f8;
   box-shadow: 1px 1px 5px #CACACA;
-}
-
-.container {
-  margin-top: 75px;
 }
 
 .dashboard-header {
@@ -117,13 +37,31 @@ float: right!important;
   right: 5px;
 }
 
+.meeting-cards-div {
+  display: flex;
+  position: relative;
+  width: 100%;
+  justify-content: space-around;
+  flex-flow: row wrap;
+}
+
 .meeting-card {
   padding: 5px;
   position: relative;
   border: 1px solid #D8D8D8;
-  margin-top: 10px;
-  height: 226px;
+  margin: 10px;
+  height: 240px;
+  width: 265px;
   background-color: #F9F9F9;
+}
+
+.meeting-card-inviz {
+  position: relative;
+  border: 1px solid #fff;
+  margin: 10px;
+  height: 240px;
+  width: 265px;
+  visibility: hidden;
 }
 
 .meeting {
@@ -131,12 +69,12 @@ float: right!important;
   position: relative;
 }
 
-.meeting-info { 
-  height: 70px;
+.meeting-name { 
+  height: 47px;
   margin-right: 45px;
 }
 
-.meeting-info > p {
+.meeting-name > p {
 /*make ellipsis for text*/ 
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -144,29 +82,35 @@ float: right!important;
   -webkit-box-orient: vertical;
   overflow: hidden;
   max-height: 45px;
-  line-height: 21px;
-}
-
-.meeting-info > p.meeting-time {
-/*make ellipsis for text*/ 
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  max-height: 45px;
-  line-height: 21px;
-}
-
-.meeting-name {
+/*end of make ellipsis for text*/ 
   font-weight: bold;
-  font-size: 15px;
+  font-size: 16px;
+  margin-bottom: 4px; 
 }
 
-.meeting-time {
-  font-style: italic;
-  font-size: 14px;
+.meeting-datetime {
+  position: relative;
+  margin-bottom: 10px;
 }
+
+.datetime-icon {
+  /*border: 1px solid black;*/
+  width: 15px;
+  height:15px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  
+}
+
+.datetime-text {
+  /*border: 1px solid black;*/
+  font-size: 14px;
+  position: relative;
+  left: 17px;
+  max-width: 202px;
+}
+
 
 .meeting-organizer {
   position: absolute;
@@ -216,16 +160,25 @@ float: right!important;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  max-height: 28px;
-  line-height: 14px;
+  max-height: 32px;
 }
 
 .meeting-descrpt-div {
-  height: 60px;
+  height: 55px;
   max-height: 100px;
-  padding: 5px 0;
   font-size: 14px;
-  overflow: auto;
+  /*border: 1px solid black;*/
+}
+
+.meeting-descrpt-div > p {
+/*make ellipsis for text*/ 
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 61px; 
+/*end of make ellipsis for text*/ 
 }
 
 .meeting-options {
@@ -255,7 +208,7 @@ float: right!important;
 .participants-row {
   position: relative;
   font-size: 0;
-  margin-top: 7px;
+  margin-top: 4px;
 }
 
 .participant-img {
@@ -312,6 +265,7 @@ a.plain:hover, a.plain:focus {
   height: 270px;
   overflow: auto;
   background-color: #f8f8f8;
+  padding: 10px 0;
 }
 
 .header-div {
@@ -368,6 +322,6 @@ a.plain:hover, a.plain:focus {
 
 @media (min-width: 1024px)  {
   .notification-text {
-    max-width: 223px;
+    max-width: 217px;
   }
 }

@@ -4,8 +4,8 @@
     <title>{{ title }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
     <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/nav.css'/>
     <link rel='stylesheet' href='/css/dashboard.css' />
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -65,22 +65,30 @@
         </ul>
     </nav>
     <div class="container">
-      <div class="row">
+      <div class="row"> {{!-- <div class="row"> --}} 
         <div class="col-md-9 col-sm-8">
           <div class="row" id="my-meetings">
             <div class="row-fluid col-md-12 header-div">
               <h2 class="dashboard-header">My Meetings</h2>
             </div>
-              <!-- Meeting 1 -->
-              <div class="col-md-4 col-sm-6">
+              <div class="meeting-cards-div">
+                <!-- Meeting 1 -->
                 <div class="meeting-card">
                   <button type="button" class="btn btn-default meeting-options">
                     <i class="fa fa-ellipsis-v"></i>
                   </button>
                   <div class="meeting">
-                    <div class="meeting-info">
-                      <p class="meeting-name"> Really Long Meeting Name</p>
-                      <p class="meeting-time"> Sat, Jan 8 at 11am </p>
+                    <div class="meeting-name">
+                      <p>Really Long Meeting Name</p>
+                    </div>
+                    <div class="meeting-datetime">
+                      <div class="datetime-icon">
+                        <i class="fa fa-clock-o"></i>  
+                      </div>
+                      <div class="datetime-text">
+                        <p> Sat, Jan 8, 2016 </p>
+                        <p> 10:35am-3:45pm </p>
+                      </div>
                     </div>
                     <div class="meeting-organizer">
                       <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
@@ -94,7 +102,7 @@
                       </div>
                     </div>
                     <div class="meeting-descrpt-div">
-                      Meeting Description
+                      <p>Meeting Description</p>
                     </div>
                     <div class="participants-row">
                       <a href="#" class="participant-link plain">
@@ -128,17 +136,25 @@
                     </div>
                   </div>
                 </div>
-              </div>
-              <!-- Meeting 2 -->
-              <div class="col-md-4 col-sm-6">
+              
+                <!-- Meeting Card 2 -->
                 <div class="meeting-card">
                   <button type="button" class="btn btn-default meeting-options">
                     <i class="fa fa-ellipsis-v"></i>
                   </button>
                   <div class="meeting">
-                    <div class="meeting-info">
-                      <p class="meeting-name"> Really Long Meeting Name That could possibly happen to see what happens </p>
-                      <p class="meeting-time"> Sun, Jan 17 at 10:30pm </p>
+                    <div class="meeting-name">
+                      <p>Really Long Meeting Name That could possibly happen to see what happens
+                      </p>
+                    </div>
+                    <div class="meeting-datetime">
+                      <div class="datetime-icon">
+                        <i class="fa fa-clock-o"></i>  
+                      </div>
+                      <div class="datetime-text">
+                        <p> Sun, Jan 17, 2016 </p>
+                        <p> 10:30am-11:30am </p>
+                      </div>
                     </div>
                     <div class="meeting-organizer">
                       <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
@@ -152,7 +168,7 @@
                       </div>
                     </div>
                     <div class="meeting-descrpt-div">
-                      Meeting Description
+                      <p>Meeting Description</p>
                     </div>
                     <div class="participants-row">
                       <a href="#" class="participant-link plain">
@@ -177,17 +193,80 @@
                     </div>
                   </div>
                 </div>
-              </div>
-              <!-- Meeting 3 -->
-              <div class="col-md-4 col-sm-6">
+                <!-- Meeting Card 2 -->
                 <div class="meeting-card">
                   <button type="button" class="btn btn-default meeting-options">
                     <i class="fa fa-ellipsis-v"></i>
                   </button>
                   <div class="meeting">
-                    <div class="meeting-info">
-                      <p class="meeting-name"> Short Meeting Name</p>
-                      <p class="meeting-time"> Sat, Jan 8 at 11am let's add some more text and see what happens </p>
+                    <div class="meeting-name">
+                      <p>Really Long Meeting Name That could possibly happen to see what happens
+                      </p>
+                    </div>
+                    <div class="meeting-datetime">
+                      <div class="datetime-icon">
+                        <i class="fa fa-clock-o"></i>  
+                      </div>
+                      <div class="datetime-text">
+                        <p> Sun, Jan 17, 2016 </p>
+                        <p> 10:30am-11:30am </p>
+                      </div>
+                    </div>
+                    <div class="meeting-organizer">
+                      <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
+                    </div>
+                    <div class="meeting-location-div">
+                      <div class="location-icon">
+                        <a href="#"> <i class="fa fa-map-marker"></i> </a>  
+                      </div>
+                      <div class="location-text">
+                        <p>405 East 42nd Street, New York City, NY 10017 we could be adding more text and see what happens</p>
+                      </div>
+                    </div>
+                    <div class="meeting-descrpt-div">
+                      <p>Meeting Description</p>
+                    </div>
+                    <div class="participants-row">
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                    
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+                      <a href="#" class="participant-link plain">
+                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
+                      </a>
+    
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Meeting Card 3 -->
+                <div class="meeting-card">
+                  <button type="button" class="btn btn-default meeting-options">
+                    <i class="fa fa-ellipsis-v"></i>
+                  </button>
+                  <div class="meeting">
+                    <div class="meeting-name">
+                      <p>Short Meeting Name</p>
+                    </div>
+                    <div class="meeting-datetime">
+                      <div class="datetime-icon">
+                        <i class="fa fa-clock-o"></i>  
+                      </div>
+                      <div class="datetime-text">
+                        <p> Sun, Jan 17, 2016 </p>
+                        <p> 10:30am-11:30am </p>
+                      </div>
                     </div>
                     <div class="meeting-organizer">
                       <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
@@ -201,7 +280,7 @@
                       </div>
                     </div>
                     <div class="meeting-descrpt-div">
-                      This is a test Meeting Description that might overflow the content just to see what happens to it. I'm going to add a scroll. Let's see how it goes? Maybe that's enough of text, but I'm not sure so I'll just keep going on and on. Kes, do you think I should add ellipsis and clip the content instead?
+                      <p>This is a test Meeting Description that might overflow the content just to see what happens to it. I'm going to add a scroll. Let's see how it goes? Maybe that's enough of text, but I'm not sure so I'll just keep going on and on. Kes, do you think I should add ellipsis and clip the content instead?</p>
                     </div>
                     <div class="participants-row">
                       <a href="#" class="participant-link plain">
@@ -235,10 +314,14 @@
                     </div>
                   </div>
                 </div>
+                
+                {{!-- <div class="meeting-card-inviz"></div>
+                <div class="meeting-card-inviz"></div> --}}
               </div>
           </div>    
         </div>
         <!-- end Meetings -->
+        
         <!-- Notifications -->
         <div class="col-md-3 col-sm-4">
           <div class="notification-card">
