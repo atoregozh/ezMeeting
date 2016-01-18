@@ -71,9 +71,6 @@
     		<div class="col-md-4 col-sm-5">
                 <div class="row">
                     <div class="m-details">
-                        <div id="organizer">
-                            <img src="/img/default-user-pic.jpg" alt="pic">
-                        </div> 
                         <div class="m-panel1">
                             <!-- <input id="m-title" placeholder="Meeting Title"> -->
                             <div id="m-title" class="text-container" contenteditable="true" data-ph="Meeting Title"></div>
@@ -88,10 +85,12 @@
                                     </span>
                                 </span>
                             </div>
-                            <!-- <input id="m-location" placeholder="Location"> -->
-                            <div id="m-location" class="text-container" contenteditable="true" data-ph="Location"></div>
+                            <input id="m-location" placeholder="Location">
                             <textarea id="m-desc" placeholder="Description"></textarea>
                         </div>
+                    </div>
+                    <div id="organizer">
+                        <img src="/img/default-user-pic.jpg" alt="pic">
                     </div>
                     <div class="guests-panel">
                         <div class="guests-header">
@@ -118,14 +117,15 @@
                         <div id="tab1" class="tab-pane active">
                             <div class="grid-pics-panel">
                                 <div class="grid-top-left">
-                                  <!-- <input type="date" min="2016-01-16"></input> -->
-                                  <div class="grid-date-panel">
-                                    <input class="dp" id="dp1" placeholder="From">
-                                    <input class="dp" id="dp2" placeholder="To">    
-                                  </div>
-                                  <div class="btn blue-linear">
-                                      <i class="fa fa-refresh"></i>
-                                  </div>
+                                    <!-- <input type="date" min="2016-01-16"></input> -->
+                                    <div class="grid-date-panel">
+                                        <input class="dp" id="dp1" placeholder="First date">
+                                        <p>to</p>
+                                        <input class="dp" id="dp2" placeholder="Last date">    
+                                    </div>
+                                    <div class="btn blue-linear">
+                                        <i class="fa fa-refresh"></i>
+                                    </div>
                                 </div>
                                 <div class="grid-top-right">
                                     <div class="grid-person">
