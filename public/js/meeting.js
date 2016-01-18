@@ -31,18 +31,19 @@ $(document).ready(function(){
 	var dp1 = $('#dp1').datepicker({
 		format: 'mm/dd/yyyy',
 		autoclose: true,
-		startDate: '0d'
+		startDate: '0d',
+		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
 		console.log('clicked dp1');
 		console.log($('#dp1').val());
 	}).data('datepicker');
 
-	var dtest = Date();
-	var dtest2 = Date('2015-1-20')
+	
 	var dp2 = $('#dp2').datepicker({
 		format: 'mm/dd/yyyy',
+		autoclose: true,
 		startDate: '0d',
-		autoclose: true
+		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
 		console.log('clicked dp2');
 	}).data('datepicker');
@@ -50,8 +51,9 @@ $(document).ready(function(){
 
 	var dp3 = $('#m-date').datepicker({
 		format: 'D, M d, yyyy',
+		autoclose: true,
 		startDate: '0d',
-		autoclose: true
+		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
 		console.log('clicked dp3');
 	}).data('datepicker');
@@ -81,7 +83,7 @@ $(document).ready(function(){
 		template: 'modal',
 		appendWidgetTo: 'body',
 		showSeconds: false,
-		showMeridian: false, // true ==> 12hr mode, false ==> 24hr mode
+		showMeridian: true, // true ==> 12hr mode, false ==> 24hr mode
 		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
 	});
 
@@ -95,7 +97,7 @@ $(document).ready(function(){
 		template: 'modal',
 		appendWidgetTo: 'body',
 		showSeconds: false,
-		showMeridian: false, // true ==> 12hr mode, false ==> 24hr mode
+		showMeridian: true, // true ==> 12hr mode, false ==> 24hr mode
 		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
 	});
 
