@@ -51,7 +51,10 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
-
+.container {
+  margin-top: 75px;
+  padding: 0;
+}
 
 /*~~~~~~ Start of debug CSS ~~~~~~*/
 /* Comment out this section after debugging */
