@@ -15,31 +15,46 @@ $(document).ready(function(){
 	});
 
 	// ~~~~~ Start initializing datepicker ~~~~~
-	
-	$('.dp').datepicker({
-		format: 'mm/dd/yyyy',
-		startDate: '0d'
-	});
+	/*
+		Do not try to initialize all date picker objects with common code e.g.
+			$('.class-name').datepicker({	autoclose: true });
+		The reason is because you can initialize the objects only once and there are 
+		custom things we need to do (during initialization) that are specific to 
+		individual datepickers below.
+	*/
+
+	/*
+		startDate: '+1d', '+1w', '+1m', '0d', or '-1d'
+			Note that the '+' must be included for +ve days
+	*/
 
 	var dp1 = $('#dp1').datepicker({
+		format: 'mm/dd/yyyy',
+		autoclose: true,
+		startDate: '0d'
 	}).on('changeDate', function(ev) {
-		dp1.hide();
 		console.log('clicked dp1');
 		console.log($('#dp1').val());
 	}).data('datepicker');
 
+	var dtest = Date();
+	var dtest2 = Date('2015-1-20')
 	var dp2 = $('#dp2').datepicker({
+		format: 'mm/dd/yyyy',
+		startDate: '0d',
+		autoclose: true
 	}).on('changeDate', function(ev) {
-		dp2.hide();
 		console.log('clicked dp2');
 	}).data('datepicker');
 
-	var dp3 = $('#meeting-date').datepicker({
+
+	var dp3 = $('#m-date').datepicker({
+		format: 'D, M d, yyyy',
+		startDate: '0d',
+		autoclose: true
 	}).on('changeDate', function(ev) {
-		dp3.hide();
 		console.log('clicked dp3');
 	}).data('datepicker');
-
 	// ~~~~~ Finished initializing datepicker ~~~~~
 
 	// ~~~~~ Start initializing timepicker ~~~~~
@@ -61,7 +76,7 @@ $(document).ready(function(){
 		console.log('The meridian is ' + e.time.meridian);
 	});
 
-	$('#mstart').timepicker({
+	$('#m-start').timepicker({
 		minuteStep: 5,
 		template: 'modal',
 		appendWidgetTo: 'body',
@@ -70,12 +85,12 @@ $(document).ready(function(){
 		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
 	});
 
-	$('#mstart').timepicker().on('changeTime.timepicker', function(e) {
+	$('#m-start').timepicker().on('changeTime.timepicker', function(e) {
 		console.log('The start hour is ' + e.time.hours);
 		console.log('The start minute is ' + e.time.minutes);
 	});
 
-	$('#mend').timepicker({
+	$('#m-end').timepicker({
 		minuteStep: 5,
 		template: 'modal',
 		appendWidgetTo: 'body',
@@ -84,7 +99,7 @@ $(document).ready(function(){
 		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
 	});
 
-	$('#mend').timepicker().on('changeTime.timepicker', function(e) {
+	$('#m-end').timepicker().on('changeTime.timepicker', function(e) {
 		console.log('The end hour is ' + e.time.hours);
 		console.log('The end minute is ' + e.time.minutes);
 	});
@@ -160,6 +175,15 @@ $(document).ready(function(){
 	// ~~~~~ End initialize .date-input ~~~~~
 });
 
+function addAlertPanelIfMissing() {
+	if(!$('#alert-panel').length) {
+		$('.container').first().prepend('<div id="alert-panel"></div>');
+		console.log("a");
+	} else{
+		console.log("b");
+	}
+}
+
 function addTimesToGrid() {
 	var col = $('.c-col.time');
 	for(var i = 0; i < 24; i++) {
@@ -169,6 +193,7 @@ function addTimesToGrid() {
 }
 
 function showInfo(mssg) {
+	addAlertPanelIfMissing();
 	var id = 'info-' + alertCount++;
 	$('#alert-panel').append(
 		'<div>' +
@@ -183,6 +208,7 @@ function showInfo(mssg) {
 }
 
 function showWarning(mssg) {
+	addAlertPanelIfMissing();
 	var id = 'warning-' + alertCount++;
 	$('#alert-panel').append(
 		'<div>' +
@@ -197,6 +223,7 @@ function showWarning(mssg) {
 }
 
 function showError(mssg) {
+	addAlertPanelIfMissing();
 	var id = 'info-' + alertCount++;
 	$('#alert-panel').append(
 		'<div>' +
