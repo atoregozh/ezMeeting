@@ -171,7 +171,17 @@ $(document).ready(function(){
 		showWarning('Be careful! This is a warning.');
 	});
 
+	$("#m-guest-search").focus(function(){
+		$("#m-guest-search-btn").hide();
+	});
 
+	$("#m-guest-search").focusout(function(){
+		if(!$("#m-guest-search").val().trim()){
+			$("#m-guest-search-btn").show();
+		}
+	});
+
+$("#m-guest-search-btn").show();
 	addTimesToGrid();
 	add7DaysToGrid();
 	scrollCalendarToNineAm();
