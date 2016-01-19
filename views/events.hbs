@@ -4,7 +4,8 @@
     <title>{{ title }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/style.css'/>
+    <link rel='stylesheet' href='/css/nav.css'/>
     <link rel='stylesheet' href='/css/meeting.css'/>
     <link rel='stylesheet' href='/css/bootstrap-datepicker.standalone.min.css'/>
     <link rel='stylesheet' href='/css/bootstrap-timepicker.min.css'/>
@@ -19,256 +20,301 @@
     <script type='text/javascript' src='/js/bootstrap-timepicker.min.js'/></script>
   </head>
   <body>
-    <div class="container">
-        <div id="test-div">
-            <button id="b1">Add info</button>
-            <button id="b2">Add error</button>
-            <button id="b3">Add warning</button>
-            <input id="tp-test" type="text">
-        </div>
-        <!-- <div id="alert-panel">
-        </div> -->
-    	<div class="row row1">
-    		<div class="col-md-3 col-sm-4">
-                <div class="row">
-                    Save
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <span id="app-logo">
+          <a href="./">
+                    APP NAME
+          </a>
+        </span>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item" id="nav-new-meeting">
+                <a class="nav-link" href="#">
+                  <div class="nav-text">New Meeting
+                  </div>
+                  <div class="nav-icons">
+                    <span class="fa fa-calendar-plus-o ">
+                    </span>
+                  </div>
+                </a>
+            </li>
+            <li class="nav-item" id="nav-my-meeting">
+                <a class="nav-link" href="#">
+                  <div class="nav-text">My Meetings
+                  </div>
+                  <div class="nav-icons">
+                    <span class="fa fa-list-alt " id="fa-list-spec"></span>
+                  </div>
+                </a>
+            </li>
+            <li class="nav-item" id="nav-notification">
+                <a class="nav-link" href="#">
+                  <div class="nav-text">Notifications
+                  </div>
+                  <div class="nav-icons">
+                    <span class="fa fa-bell"></i>
+                    </span>
+                  </div>
+                </a>
+            </li>
+            <li class="nav-item" id="nav-profile">
+                <a class="nav-link" href="#">
+                <div class="nav-text">Aizhan
                 </div>
-    		</div>
-    		<div class="col-md-9 col-sm-8">
-                <div class="row">
-                    <!-- <div class="m-details">
-                        <div class="m-panel1">
-                            <input id="m-title" placeholder="Meeting Title">
-                            <div class="m-panel2 col-md-6 col-sm-12">
-                                <div class="row">
-                                    <div class="m-panel2a">
-                                        <input class="dp" id="m-date" placeholder="Date">
-                                        <input id="m-start" placeholder="Start">
-                                        <input id="m-end" placeholder="End">    
-                                    </div>
-                                    <div class="m-panel2a">
-                                        <input id="m-location" placeholder="Location">    
-                                    </div>
+                <div class="nav-icons">
+                  <span ><img id="nav-profile-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
+                  </span>
+                </div>
+
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="container">
+        <!-- <div> -->
+            <div class="row">
+                <div id="test-div">
+                    <button id="b1">Add info</button>
+                    <button id="b2">Add error</button>
+                    <button id="b3">Add warning</button>
+                    <input id="tp-test" type="text">
+                </div>
+                <!-- <div id="alert-panel">
+                </div> -->
+                <div class="col-xs-12">
+                	<div class="row row2">
+                		<div class="col-md-4 col-sm-5">
+                            <div class="row">
+                                <div class="m-top">
+                                    
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="row">
-                                    <div class="m-panel3">
+                                <div class="m-details">
+                                    <div class="m-panel1">
+                                        <!-- <input id="m-title" placeholder="Meeting Title"> -->
+                                        <div id="m-title" class="text-container" contenteditable="true" data-ph="Meeting Title"></div>
+                                        <div class="m-panel2">
+                                            <input class="dp" id="m-date" placeholder="Date">
+                                            <span class="m-panel2a">
+                                                <span>
+                                                    <label for="m-start">from</label><input class="tp" id="m-start" placeholder="Start">
+                                                </span>
+                                                <span>
+                                                    <label for="m-end">to</label><input class="tp" id="m-end" placeholder="End">
+                                                </span>
+                                            </span>
+                                        </div>
+                                        <input id="m-location" placeholder="Location">
                                         <textarea id="m-desc" placeholder="Description"></textarea>
                                     </div>
                                 </div>
-                            </div>
-                                
-                        </div>
-                        <div id="organizer">
-                            <img src="/img/default-user-pic.jpg" alt="pic">
-                        </div> 
-                    </div> -->
-                </div>
-    		</div>
-    	</div>
-    	<div class="row row2">
-    		<div class="col-md-4 col-sm-5">
-                <div class="row">
-                    <div class="m-details">
-                        <div class="m-panel1">
-                            <!-- <input id="m-title" placeholder="Meeting Title"> -->
-                            <div id="m-title" class="text-container" contenteditable="true" data-ph="Meeting Title"></div>
-                            <div class="m-panel2">
-                                <input class="dp" id="m-date" placeholder="Date">
-                                <span class="m-panel2a">
-                                    <span>
-                                        <label for="m-start">from</label><input class="tp" id="m-start" placeholder="Start">
+                                <div id="organizer2" class="visible-xs">
+                                    <span id="org-span3">
+                                        <img src="/img/default-user-pic.jpg" alt="pic">    
                                     </span>
-                                    <span>
-                                        <label for="m-end">to</label><input class="tp" id="m-end" placeholder="End">
+                                    <span id="org-span4">
+                                        <div>
+                                            <p id="org-p1">Homer Simpson</p>
+                                            <p id="org-p2">(Organizer)</p>
+                                        </div>
                                     </span>
-                                </span>
+                                </div>
+                                <div class="guests-panel">
+                                    <div class="guests-header">
+                                        <span class="fa fa-user-plus" id="add-people"></span>
+                                        <input placeholder="Add People">
+                                        <span class="btn fa fa-search"></span>
+                                    </div>
+                                    <div class="guests-content">
+                                        <div class="guests-row">
+                                            <span class="blue-linear fa fa-refresh">Ref</span>
+                                            <span class="btn close">X</span>
+                                            <span>Homer Simpson</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <input id="m-location" placeholder="Location">
-                            <textarea id="m-desc" placeholder="Description"></textarea>
-                        </div>
-                    </div>
-                    <div id="organizer">
-                        <img src="/img/default-user-pic.jpg" alt="pic">
-                    </div>
-                    <div class="guests-panel">
-                        <div class="guests-header">
-                            <span class="fa fa-user-plus" id="add-people"></span>
-                            <input placeholder="Add People">
-                            <span class="btn fa fa-search"></span>
-                        </div>
-                        <div class="guests-content">
-                            <div class="guests-row">
-                                <span class="blue-linear fa fa-refresh">Ref</span>
-                                <span class="btn close">X</span>
-                                <span>Homer Simpson</span>
+                		</div>
+                		<div class="col-md-8 col-sm-7">
+                            <div class="row">
+                                <div class = "m-top hidden-xs">
+                                    <div id="organizer">
+                                        <span id="org-span1">
+                                            <img src="/img/default-user-pic.jpg" alt="pic">    
+                                        </span>
+                                        <span id="org-span2">
+                                            <div>
+                                                <p id="org-p1">Homer Simpson</p>
+                                                <p id="org-p2">(Organizer)</p>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                                <div class="tab-container">
+                                    <span class="tab-btn one active" href="#tab1">Tab1</span>
+                                    <span class="tab-btn two" href="#tab2">Tab2</span>
+                                    <span class="tab-btn three" href="#tab3">Tab3</span>
+                                    <div class="tab-content">
+                                        <div id="tab1" class="tab-pane active">
+                                            <div class="grid-pics-panel">
+                                                <div class="grid-top-left">
+                                                    <!-- <input type="date" min="2016-01-16"></input> -->
+                                                    <div class="grid-date-panel">
+                                                        <input class="dp" id="dp1" placeholder="First date">
+                                                        <p>to</p>
+                                                        <input class="dp" id="dp2" placeholder="Last date">    
+                                                    </div>
+                                                    <div class="btn blue-linear">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="grid-top-right">
+                                                    <div class="grid-person">
+                                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                                        <div class="person-frame">
+                                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                                        </div>
+                                                    </div>
+                                                    <div class="grid-person">
+                                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                                        <div class="person-frame">
+                                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                                        </div>
+                                                    </div>
+                                                    <div class="grid-person">
+                                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                                        <div class="person-frame">
+                                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                                        </div>
+                                                    </div>
+                                                    <div class="grid-person">
+                                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                                        <div class="person-frame">
+                                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                                        </div>
+                                                    </div>
+                                                    <div class="grid-person">
+                                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                                        <div class="person-frame">
+                                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                                        </div>
+                                                    </div>
+                                                    <div class="grid-person">
+                                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                                        <div class="person-frame">
+                                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                                        </div>
+                                                    </div>
+                                                    <div class="grid-person">
+                                                        <p class="grid-name">Homer Simpson badfadfads </p>
+                                                        <div class="person-frame">
+                                                            <img src="/img/default-user-pic.jpg" alt="pic">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                            <div class="grid-panel">
+                                                <div class="grid-panel2">
+                                                	<div class="grid-side-btn left btn active">
+                                                        <i class="fa fa-caret-left"></i>
+                                                    </div>
+                                                    <div class="grid-side-btn right btn">
+                                                        <i class="fa fa-caret-right"></i>
+                                                    </div>
+                                                    <div class="calendar-panel">
+                                                        <div class="calendar-header">
+                                                            <div id="tl">
+                                                                <div class="h-col time"><span>&nbsp;</span></div>
+                                                            </div>
+                                                            <div id="tr">
+                                                                <div class="h-col">Mon 11/1</div>
+                                                                <div class="h-col">Tue 12/1</div>
+                                                                <div class="h-col">Wed 13/1</div>
+                                                                <div class="h-col">Thu 14/1</div>
+                                                                <div class="h-col">Fri 15/1</div>
+                                                                <div class="h-col">Sat 16/1</div>
+                                                                <div class="h-col">Sun 17/1</div>
+                                                                <div class="h-col">Mon 18/1</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="calendar-content">
+                                                            <div id="bl">
+                                                                <div class="c-col time">
+                                                                    <!-- <div class="c-row">00:00</div>
+                                                                    <div class="c-row thirty"></div>
+                                                                    -->
+                                                                </div>
+                                                            </div>
+                                                            <div id="br">
+                                                                <div class="c-col">
+                                                                    <div class="c-row">12</div>
+                                                                    <div class="c-row">34</div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                </div>
+                                                                <div class="c-col">
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                </div>
+                                                                <div class="c-col">
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                </div>
+                                                                <div class="c-col">
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                </div>
+                                                                <div class="c-col">
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                </div>
+                                                                <div class="c-col">
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                </div>
+                                                                <div class="c-col">
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                </div>
+                                                                <div class="c-col">
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                    <div class="c-row"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="tab2" class="tab-pane">
+                                            Tab2
+                                        </div>
+                                        <div id="tab3" class="tab-pane">
+                                            Tab3
+                                        </div>                        
+                                    </div> <!-- End of .tab-content -->
+                                </div> <!-- End of .tab-container -->
                             </div>
-                        </div>
-                    </div>
+                		</div>
+                	</div> <!-- End .row2 -->
                 </div>
-    		</div>
-    		<div class="col-md-8 col-sm-7">
-                <div class="row">
-                    <span class="tab-btn one active" href="#tab1">Tab1</span>
-                    <span class="tab-btn two" href="#tab2">Tab2</span>
-                    <span class="tab-btn three" href="#tab3">Tab3</span>
-                    <div class="tab-content">
-                        <div id="tab1" class="tab-pane active">
-                            <div class="grid-pics-panel">
-                                <div class="grid-top-left">
-                                    <!-- <input type="date" min="2016-01-16"></input> -->
-                                    <div class="grid-date-panel">
-                                        <input class="dp" id="dp1" placeholder="First date">
-                                        <p>to</p>
-                                        <input class="dp" id="dp2" placeholder="Last date">    
-                                    </div>
-                                    <div class="btn blue-linear">
-                                        <i class="fa fa-refresh"></i>
-                                    </div>
-                                </div>
-                                <div class="grid-top-right">
-                                    <div class="grid-person">
-                                        <p class="grid-name">Homer Simpson badfadfads </p>
-                                        <div class="person-frame">
-                                            <img src="/img/default-user-pic.jpg" alt="pic">
-                                        </div>
-                                    </div>
-                                    <div class="grid-person">
-                                        <p class="grid-name">Homer Simpson badfadfads </p>
-                                        <div class="person-frame">
-                                            <img src="/img/default-user-pic.jpg" alt="pic">
-                                        </div>
-                                    </div>
-                                    <div class="grid-person">
-                                        <p class="grid-name">Homer Simpson badfadfads </p>
-                                        <div class="person-frame">
-                                            <img src="/img/default-user-pic.jpg" alt="pic">
-                                        </div>
-                                    </div>
-                                    <div class="grid-person">
-                                        <p class="grid-name">Homer Simpson badfadfads </p>
-                                        <div class="person-frame">
-                                            <img src="/img/default-user-pic.jpg" alt="pic">
-                                        </div>
-                                    </div>
-                                    <div class="grid-person">
-                                        <p class="grid-name">Homer Simpson badfadfads </p>
-                                        <div class="person-frame">
-                                            <img src="/img/default-user-pic.jpg" alt="pic">
-                                        </div>
-                                    </div>
-                                    <div class="grid-person">
-                                        <p class="grid-name">Homer Simpson badfadfads </p>
-                                        <div class="person-frame">
-                                            <img src="/img/default-user-pic.jpg" alt="pic">
-                                        </div>
-                                    </div>
-                                    <div class="grid-person">
-                                        <p class="grid-name">Homer Simpson badfadfads </p>
-                                        <div class="person-frame">
-                                            <img src="/img/default-user-pic.jpg" alt="pic">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> 
-                            <div class="grid-panel">
-                                <div class="grid-panel2">
-                                	<div class="grid-side-btn left btn active">
-                                        <i class="fa fa-caret-left"></i>
-                                    </div>
-                                    <div class="grid-side-btn right btn">
-                                        <i class="fa fa-caret-right"></i>
-                                    </div>
-                                    <div class="calendar-panel">
-                                        <div class="calendar-header">
-                                            <div id="tl">
-                                                <div class="h-col time"><span>&nbsp;</span></div>
-                                            </div>
-                                            <div id="tr">
-                                                <div class="h-col">Mon 11/1</div>
-                                                <div class="h-col">Tue 12/1</div>
-                                                <div class="h-col">Wed 13/1</div>
-                                                <div class="h-col">Thu 14/1</div>
-                                                <div class="h-col">Fri 15/1</div>
-                                                <div class="h-col">Sat 16/1</div>
-                                                <div class="h-col">Sun 17/1</div>
-                                                <div class="h-col">Mon 18/1</div>
-                                            </div>
-                                        </div>
-                                        <div class="calendar-content">
-                                            <div id="bl">
-                                                <div class="c-col time">
-                                                    <!-- <div class="c-row">00:00</div>
-                                                    <div class="c-row thirty"></div>
-                                                    -->
-                                                </div>
-                                            </div>
-                                            <div id="br">
-                                                <div class="c-col">
-                                                    <div class="c-row">12</div>
-                                                    <div class="c-row">34</div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                </div>
-                                                <div class="c-col">
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                </div>
-                                                <div class="c-col">
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                </div>
-                                                <div class="c-col">
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                </div>
-                                                <div class="c-col">
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                </div>
-                                                <div class="c-col">
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                </div>
-                                                <div class="c-col">
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                </div>
-                                                <div class="c-col">
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                    <div class="c-row"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="tab2" class="tab-pane">
-                            Tab2
-                        </div>
-                        <div id="tab3" class="tab-pane">
-                            Tab3
-                        </div>                        
-                    </div>
-                </div>
-    		</div>
-    	</div>
+            </div>
+        <!-- </div> -->
     </div>
   </body>
 </html>
