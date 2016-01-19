@@ -295,6 +295,7 @@ a.plain:hover, a.plain:focus {
   padding-top: 10px;
   border-bottom: 1px solid #E0E0E0;
   position: relative;
+/*  border: 1px solid red;*/
 }
 
 .notification-icon {
@@ -316,8 +317,17 @@ a.plain:hover, a.plain:focus {
   top: -3px;
 }
 
+.notification-timestamp {
+  font-size: 12px;
+  color: #616161;
+  position: absolute;
+  top: 0;
+  right: 0;
+
+}
+
 @media (min-width: 1024px)  {
   .notification-text {
-    max-width: 217px;
+    max-width: 190px;
   }
 }
