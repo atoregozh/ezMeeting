@@ -316,12 +316,6 @@ a.plain:hover, a.plain:focus {
   top: -3px;
 }
 
-@media (max-width: 1024px) { /* Phones and tablets */
-  .nav-item .nav-text {
-    display: none;
-  }
-}
-
 @media (min-width: 1024px)  {
   .notification-text {
     max-width: 217px;

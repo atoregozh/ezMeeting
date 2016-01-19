@@ -17,6 +17,10 @@ float: right!important;
 }
 /*end of 4 magic properties*/
 
+.navbar-nav {
+  margin: 0; /* Prevents nav icon borders from flowing into the top of a mobile screen. */
+}
+
 .navbar {
   margin: 0;
   height: 60px;
@@ -91,4 +95,10 @@ float: right!important;
 
 .container {
   margin-top: 60px;
+}
+
+@media (max-width: 1024px) { /* Phones and tablets */
+  .nav-item .nav-text {
+    display: none;
+  }
 }
