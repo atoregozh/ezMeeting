@@ -339,12 +339,16 @@
 }
 
 .c-row.thirty {
-	border-top: none;
+	border-top: 1px dotted #eee;
 }
 
 .time .c-row {
     text-align: right;
     padding: 3px;
+}
+
+.time .c-row.thirty {
+	border-top: none;
 }
 
 #tl {

@@ -2,6 +2,8 @@ var ALERT_TIMEOUT = 5000;
 var ALERT_FADEOUT = 2000;
 // Incremented when each new alert is displayed. Used to ensure unique ID for all alerts.
 var alertCount = 0;
+var gridStartDate; // A moment js day beginning obtained using .startOf('day')
+var gridEndDate; // A moment js day beginning obtained using .startOf('day')
 
 $(document).ready(function(){
 
@@ -171,11 +173,62 @@ $(document).ready(function(){
 
 
 	addTimesToGrid();
+	add7DaysToGrid();
 	scrollCalendarToNineAm();
 	
 
 	// ~~~~~ End initialize .date-input ~~~~~
 });
+
+function add7DaysToGrid() {
+	var today = moment();
+	for(var i = 0; i < 7; i++) {
+		var day = moment(today).add(i, 'days');
+		console.log(day.format());
+		addDayToGrid(day);
+		console.log('------');
+
+	}
+}
+
+// Expects a moment day object.
+function addDayToGrid(day) {
+	var dayKey = day.format('YYYY-MM-DD');
+	var tableHeading = day.format ('ddd M/D');
+	console.log(dayKey);
+	console.log(tableHeading);
+	dayStart = day.startOf('day');
+	if(!gridStartDate || (dayStart < gridStartDate)) {
+		gridStartDate = dayStart;
+		if(!gridEndDate) {
+			gridEndDate = dayStart;
+		}
+		$('#tr').prepend(
+			'<div class="h-col">' + tableHeading + '</div>'
+		);
+		$('#br').prepend(
+			'<div class="c-col ' + dayKey + '">'
+		);
+		addRowsToDayCol($('.' + dayKey).first());
+	}
+	else if(!gridEndDate || (dayStart > gridEndDate)) {
+		gridEndDate = dayStart;
+		$('#tr').append(
+			'<div class="h-col">' + tableHeading + '</div>'
+		);
+		$('#br').append(
+			'<div class="c-col ' + dayKey + '">'
+		);
+		addRowsToDayCol($('.' + dayKey).first());
+	}
+}
+
+function addRowsToDayCol(dayCol){
+	for(var hr = 0; hr < 24; hr++) {
+		dayCol.append('<div class="c-row"></div>');
+		dayCol.append('<div class="c-row thirty"></div>');
+	}
+}
 
 function addAlertPanelIfMissing() {
 	if(!$('#alert-panel').length) {
@@ -188,10 +241,48 @@ function addAlertPanelIfMissing() {
 
 function addTimesToGrid() {
 	var col = $('.c-col.time');
-	for(var i = 0; i < 24; i++) {
-		col.append('<div class="c-row">' + addLeadingZero(i) + ':00</div>');
+	for(var hr = 0; hr < 24; hr++) {
+		col.append('<div class="c-row">' + getHourWithMeridian(hr) + '</div>');
 		col.append('<div class="c-row thirty"></div>');
 	}
+}
+
+/*
+ Takes in a value between 0-24 and returns a value like 12am, 2am,..., 23pm
+*/
+function getHourWithMeridian(hr) {
+	if(hr === 0 || hr === 24){
+		return '12am';
+	}
+	var suffix = 'am';
+	if( hr > 11 && hr < 24){
+		suffix = 'pm';
+	}
+	if(hr <= 12){
+		return hr + suffix;
+	}
+	else {
+		return (hr - 12) + suffix;
+	}
+}
+
+/*
+	Takes in hr values between 0-24 and min values. Returns strings like 12:01am, 09:24am, 11:59pm, etc.
+*/
+function get12HourString(hr, min) {
+	var suffix = 'am';
+	var hr2 = addLeadingZero(hr);
+	if(hr === 24 || hr === 0) {
+		hr2 = '12';
+	}
+	else if (hr > 12){
+		hr2 = addLeadingZero(hr - 12);
+		suffix = 'pm';
+	}
+	else if(hr === 12){
+		suffix = 'pm';
+	}
+	return hr2 + ':' + addLeadingZero(min) + suffix;
 }
 
 function showInfo(mssg) {
