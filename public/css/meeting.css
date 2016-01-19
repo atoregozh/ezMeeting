@@ -339,7 +339,7 @@
     padding-bottom: 0;
 }
 
-.c-row:hover, .c-row:focus {
+#br .c-row:hover, #br .c-row:focus {
 	background-color: #B3E5FC;
 	opacity: 0.5;
 }

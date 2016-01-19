@@ -4,6 +4,7 @@ var ALERT_FADEOUT = 2000;
 var alertCount = 0;
 var gridStartDate; // A moment js day beginning obtained using .startOf('day')
 var gridEndDate; // A moment js day beginning obtained using .startOf('day')
+var currentCellKey; // Stores the key of the current cell that is being hovered over.
 
 $(document).ready(function(){
 
@@ -181,32 +182,36 @@ $(document).ready(function(){
 		}
 	});
 
-$("#m-guest-search-btn").show();
+	$('#br').on('mousemove', ' .c-row', function(){
+		hoverOverCell($(this).attr('key'));
+	});
+
 	addTimesToGrid();
 	add7DaysToGrid();
 	scrollCalendarToNineAm();
 	
+}); // End of $(document).ready()
 
-	// ~~~~~ End initialize .date-input ~~~~~
-});
+function hoverOverCell(key) {
+	// Todo: Implement hoverOverCell()
+	if(key !== currentCellKey) {
+		currentCellKey = key;
+		console.log("Cell: " + key);		
+	}
+}
 
 function add7DaysToGrid() {
 	var today = moment();
 	for(var i = 0; i < 7; i++) {
-		var day = moment(today).add(i, 'days');
-		console.log(day.format());
+		var day = moment(today).add(i, 'day');
 		addDayToGrid(day);
-		console.log('------');
-
 	}
 }
 
 // Expects a moment day object.
 function addDayToGrid(day) {
-	var dayKey = day.format('YYYY-MM-DD');
+	var dayKey = day.format('_YYYY-MM-DD');
 	var tableHeading = day.format ('ddd M/D');
-	console.log(dayKey);
-	console.log(tableHeading);
 	dayStart = day.startOf('day');
 	if(!gridStartDate || (dayStart < gridStartDate)) {
 		gridStartDate = dayStart;
@@ -219,7 +224,7 @@ function addDayToGrid(day) {
 		$('#br').prepend(
 			'<div class="c-col ' + dayKey + '">'
 		);
-		addRowsToDayCol($('.' + dayKey).first());
+		addRowsToDayCol($('.' + dayKey).first(), dayKey);
 	}
 	else if(!gridEndDate || (dayStart > gridEndDate)) {
 		gridEndDate = dayStart;
@@ -229,14 +234,16 @@ function addDayToGrid(day) {
 		$('#br').append(
 			'<div class="c-col ' + dayKey + '">'
 		);
-		addRowsToDayCol($('.' + dayKey).first());
+		addRowsToDayCol($('.' + dayKey).first(), dayKey);
 	}
 }
 
-function addRowsToDayCol(dayCol){
+function addRowsToDayCol(dayCol, dayKey){
 	for(var hr = 0; hr < 24; hr++) {
-		dayCol.append('<div class="c-row"></div>');
-		dayCol.append('<div class="c-row thirty"></div>');
+		var cellKey = dayKey + '_' + addLeadingZero(hr) + '-00';
+		dayCol.append('<div class="c-row " key="' + cellKey + '"></div>');
+		cellKey = dayKey + '_' + addLeadingZero(hr) + '-30';
+		dayCol.append('<div class="c-row thirty" key="' + cellKey + '"></div>');
 	}
 }
 
