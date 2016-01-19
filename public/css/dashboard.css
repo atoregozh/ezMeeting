@@ -62,6 +62,8 @@
   height: 240px;
   width: 265px;
   visibility: hidden;
+  justify-content: space-around;
+  flex-flow: row wrap;
 }
 
 .meeting {
@@ -273,19 +275,19 @@ a.plain:hover, a.plain:focus {
 }
 
 .calendar-cancel {
-  color: #F44336;
+  color: #E64A19;
 }
 
 .calendar-invite {
-  color: #1E88E5;
+  color: #43A047;
 }
 
 .calendar-reschedule {
-  color: #FF9800;
+  color: #43A047;
 }
 
 .calendar-schedule {
-  color: #4CAF50;
+  color: #757575;
 }
 
 .notification-div {
