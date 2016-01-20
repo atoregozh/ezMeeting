@@ -2,14 +2,19 @@ var TAB1_ID = '#tab1';
 var TAB2_ID = '#tab2';
 var TAB3_ID = '#tab3';
 
-var DEFAULT_PERSON_BLUE = '#42A5F5';
 var ALERT_TIMEOUT = 5000;
 var ALERT_FADEOUT = 2000;
 var SELECTED_CLASS = 'selected'; // CSS class add edto a selected grid while dragging.
 // CSS attribute added to each selected grid. The value would be = the key of the cell 
 // that contains the close button for this cell.
 var CLOSE_BTN_ATTR_KEY = 'close-btn';
-var CLOSE_BTN_CSS_CLASS = 'close-btn'
+var CLOSE_BTN_CSS_CLASS = 'close-btn';
+var CURRENT_COLOR_ATTR_KEY = 'current-color';
+var USER_COLOR_ATTR_KEY = 'color';
+var DEFAULT_PERSON_BLUE = '#42A5F5';
+
+var ANIMATION_BORDER_COLOR = 'rgba(255, 255, 255, 0)';
+var ANIMATION_CLASS_NAME = 'animate';
 // Incremented when each new alert is displayed. Used to ensure unique ID for all alerts.
 var alertCount = 0;
 var gridStartDate; // A moment js day beginning obtained using .startOf('day')
@@ -18,7 +23,7 @@ var hoveredCellKey; // Stores the key of the current cell that is being hovered 
 var firstSelectedDay; // String of format 'yyyy-mm-dd'
 var isdragging = false;
 
-var currentTab = TAB1_ID;
+var currentTab; // Stores the ID of the current tab to one of TAB1_ID, TAB2_ID or TAB3_ID
 var user_count = 0;
 var colorPalette = ['#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#81D4FA', '#FDD835', '#6A1B9A', '#00E676'];
 
@@ -240,6 +245,7 @@ $(document).ready(function(){
 		}
 	});
 
+	switchToTab1();
 	addTimesToGrid();
 	add7DaysToGrid();
 	scrollCalendarToNineAm();
@@ -441,16 +447,33 @@ function addTimesToGrid() {
 function addUserToPicsPanel(userId, name, picUrl) {
 	var id = 'user-pic-' + userId;
 	var color = colorPalette[ userId % colorPalette.length];
+	var currentColor = color;
+	if(currentTab != TAB1_ID) {
+		currentColor = DEFAULT_PERSON_BLUE;
+	}
 	$('#pics-panel').prepend(
-		'<div class="grid-person" id="' + id + '" color="' + color + '">' +
+		// color is the border color on tab1 while current-color would be either the tab1, tab2, or tab3
+		// color depending on the current tab.
+		'<div class="grid-person" id="' + id + '" ' + USER_COLOR_ATTR_KEY + '="' + color + '" ' + CURRENT_COLOR_ATTR_KEY + '="' + currentColor + '">' +
             '<p class="grid-name">' + name + '</p>' +
-            '<div class="person-frame">' +
-                '<img src="' + picUrl + '" alt="' + name + '">' +
-            '</div>' +
+            '<div class="person-frame"></div>' +
+            '<img src="' + picUrl + '" alt="' + name + '">' +
         '</div>'
 	);
-	$('#' + id + ' .person-frame').first().css({'border-color':color});
-	$('#' + id + ' img').first().css({'border-color':color});
+	$('#' + id + ' img').first().css({'border-color': currentColor});
+	animateUserPic(id);
+}
+
+function animateUserPic(gridPersonId) {
+	// The id should be the ID of the parent object with class grid-person
+	var frame = $('#' + gridPersonId + ' .person-frame').first();
+	frame.css({'border-color': ANIMATION_BORDER_COLOR});
+	frame.css({'border-top-color': frame.parent().attr(CURRENT_COLOR_ATTR_KEY)});
+	frame.addClass(ANIMATION_CLASS_NAME);
+	setTimeout(function() { 
+		frame.removeClass(ANIMATION_CLASS_NAME);
+		frame.css({'border-color': frame.parent().attr(CURRENT_COLOR_ATTR_KEY)});
+	}, 5000);
 }
 
 function addUserToNameList(userId, name) {
@@ -471,11 +494,21 @@ function switchToTab1() {
 		return;
 	}
 	$('.grid-person').each(function(){
-		var color = $(this).attr('color');
-		$(this).children('.person-frame').css({'border-color':color});
-		$(this).find('img').css({'border-color':color});
+		switchUserBorderColor($(this), $(this).attr(USER_COLOR_ATTR_KEY));
 	});
 	currentTab = TAB1_ID;
+}
+
+// Expects a jquery object that contains class name grid-person.
+function switchUserBorderColor(user, newColor) {
+	user.attr(CURRENT_COLOR_ATTR_KEY, newColor);
+	user.find('img').first().css({'border-color': newColor});
+	frameObject = user.find('.person-frame').first();
+	if(frameObject.hasClass(ANIMATION_CLASS_NAME)){
+		frameObject.css({'border-top-color': newColor});
+	} else {
+		frameObject.css({'border-color': newColor});
+	}
 }
 
 function switchToTab2() {
@@ -484,8 +517,7 @@ function switchToTab2() {
 	}
 	if(currentTab == TAB1_ID){
 		// Only set colors for tab1 because the colors should remain the same between tab2 and tab3
-		$('.person-frame').css({'border-color':DEFAULT_PERSON_BLUE});
-		$('.person-frame img').css({'border-color':DEFAULT_PERSON_BLUE});	
+		switchAllUsersBorderColor(DEFAULT_PERSON_BLUE);
 	}
 	currentTab = TAB2_ID;
 }
@@ -496,10 +528,15 @@ function switchToTab3() {
 	}
 	if(currentTab == TAB1_ID){
 		// Only set colors for tab1 because the colors should remain the same between tab2 and tab3
-		$('.person-frame').css({'border-color':DEFAULT_PERSON_BLUE});
-		$('.person-frame img').css({'border-color':DEFAULT_PERSON_BLUE});	
+		switchAllUsersBorderColor(DEFAULT_PERSON_BLUE);
 	}
 	currentTab = TAB3_ID;
+}
+
+function switchAllUsersBorderColor(newColor) {
+	$('.grid-person').each(function(){
+		switchUserBorderColor($(this), newColor);
+	});
 }
 
 /*

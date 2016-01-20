@@ -178,15 +178,17 @@
 	text-align: center;
 	margin: 0 5px;
 	display: inline-block;
+	position: relative;
 }
 
 .grid-person img {
 	border-radius: 50px;
-	border: 2px solid #999;
-	position: relative;
+	border: 2px solid #999;	
 	width: 40px;
 	height: 40px;
-	top: 4px;
+	position: absolute;
+	top: 27px;
+	left: 24px;
 }
 
 .grid-name {
@@ -206,9 +208,21 @@
 	height: 52px;
 	text-align: center;
 	margin: 0 auto;
-	position: relative;
-	top: -4px;
+	position: absolute;
+	top: 21px;
+	left: 18px;
 }
+
+.person-frame.animate {
+	border-width: 6px;
+	animation: spin 0.8s infinite linear;
+}
+
+@keyframes spin { 
+  100% { 
+    transform: rotate(360deg); 
+  } 
+} 
 
 .dp {
 	width: 100%;
