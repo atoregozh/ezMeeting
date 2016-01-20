@@ -44,8 +44,8 @@ $(document).ready(function(){
 		startDate: '0d',
 		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
-		console.log('clicked dp1');
-		console.log($('#dp1').val());
+		// console.log('clicked dp1');
+		// console.log($('#dp1').val());
 	}).data('datepicker');
 
 	
@@ -55,7 +55,7 @@ $(document).ready(function(){
 		startDate: '0d',
 		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
-		console.log('clicked dp2');
+
 	}).data('datepicker');
 
 
@@ -65,28 +65,11 @@ $(document).ready(function(){
 		startDate: '0d',
 		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
-		console.log('clicked dp3');
+
 	}).data('datepicker');
 	// ~~~~~ Finished initializing datepicker ~~~~~
 
 	// ~~~~~ Start initializing timepicker ~~~~~
-	$('#tp-test').timepicker({
-		minuteStep: 5,
-		template: 'modal',
-		appendWidgetTo: 'body',
-		showSeconds: false,
-		showMeridian: false, // true ==> 12hr mode, false ==> 24hr mode
-		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
-	});
-
-	// $('#tp-test').timepicker('setTime', '7:45 PM'); // Set the time manually
-
-	$('#tp-test').timepicker().on('changeTime.timepicker', function(e) {
-		console.log('The time is ' + e.time.value);
-		console.log('The hour is ' + e.time.hours);
-		console.log('The minute is ' + e.time.minutes);
-		console.log('The meridian is ' + e.time.meridian);
-	});
 
 	$('#m-start').timepicker({
 		minuteStep: 5,
@@ -98,8 +81,8 @@ $(document).ready(function(){
 	});
 
 	$('#m-start').timepicker().on('changeTime.timepicker', function(e) {
-		console.log('The start hour is ' + e.time.hours);
-		console.log('The start minute is ' + e.time.minutes);
+		// console.log('The start hour is ' + e.time.hours);
+		// console.log('The start minute is ' + e.time.minutes);
 	});
 
 	$('#m-end').timepicker({
@@ -112,8 +95,6 @@ $(document).ready(function(){
 	});
 
 	$('#m-end').timepicker().on('changeTime.timepicker', function(e) {
-		console.log('The end hour is ' + e.time.hours);
-		console.log('The end minute is ' + e.time.minutes);
 	});
 
 	// ~~~~~ Finished initializing timepicker ~~~~~
@@ -249,9 +230,12 @@ function clearAllSelectedCells() {
 
 // Expects a jQuery object
 function clearThisSelectedCell(cell) {
+	var cellKey = cell.attr('key');
 	cell.removeClass(SELECTED_CLASS);
 	cell.removeAttr(CLOSE_BTN_ATTR_KEY);
 	cell.find('.' + CLOSE_BTN_CSS_CLASS).remove();
+	// The next line ensures that the time input fields get set to the right values.
+	setDeleteButtonsForDay(getDayStringFromKey(cellKey));
 }
 
 function mouseDownOnCell(key) {
@@ -263,7 +247,6 @@ function mouseDownOnCell(key) {
 	isdragging = true;
 	firstSelectedDay = getDayStringFromKey(key);
 	hoverOverCell(key);
-	console.log("mousedown on " + key);
 }
 
 function mouseUpAfterMouseDown() {
@@ -273,6 +256,9 @@ function mouseUpAfterMouseDown() {
 
 // dayString should be a string of format 'yyyy_mm_dd'
 function setDeleteButtonsForDay(dayString) {
+	$('#m-start').timepicker('setTime', "00:00");
+	$('#m-end').timepicker('setTime', "00:00");
+
 	$('.c-col._' + dayString + ' .' + CLOSE_BTN_CSS_CLASS).remove(); // Remove all previous delete buttons for that day's row.
 	var dayTimes = getDayTimes();
 	var isEarlierCellSelected = false;
@@ -295,9 +281,6 @@ function setDeleteButtonsForDay(dayString) {
 			cell.attr(CLOSE_BTN_ATTR_KEY, keyOfSelectedCell);
 			// Set end time in input field
 			var endTime = keyToDateObject(cellKey).add(30, 'minutes');
-			console.log('xxxxx');
-			console.log(keyToDateObject(cellKey).format());
-			console.log(keyToDateObject(cellKey).add(30, 'minutes').format());
 			$('#m-end').timepicker('setTime', endTime.format('HH:mmA'));
 		} else {
 			isEarlierCellSelected = false;
@@ -316,15 +299,10 @@ function getDayStringFromKey(key){
 	return key.split('_')[1];
 }
 
+// Expects key in the form "HH-mm" and returns string in the form: 12:30am , 11:30pm, etc
 function getTimeStringFromKey(key){
-	// Returns string in the form: 12:30am , 11:30pm, etc
-	var tokens = key.split('_')[2].split(':') // Time in the form 11:00, 23:30, etc.
+	var tokens = key.split('_')[2].split('-') // Time in the form 11:00, 23:30, etc.
 	return get12HourString(tokens[0], tokens[1]);
-}
-
-function getTimeStringFromKey(key){
-	// returns time in the form 11:00, 23:30, etc.
-	return key.split('_')[2];
 }
 
 function keyToDateObject(key){
@@ -402,9 +380,6 @@ function getDayTimes() {
 function addAlertPanelIfMissing() {
 	if(!$('#alert-panel').length) {
 		$('.container').first().prepend('<div id="alert-panel"></div>');
-		console.log("a");
-	} else{
-		console.log("b");
 	}
 }
 
@@ -420,7 +395,7 @@ function addTimesToGrid() {
  Takes in a value between 0-24 and returns a value like 12am, 2am,..., 23pm
 */
 function getHourWithMeridian(hr) {
-	if(hr === 0 || hr === 24){
+	if(hr == 0 || hr == 24){
 		return '12am';
 	}
 	var suffix = 'am';
@@ -441,14 +416,14 @@ function getHourWithMeridian(hr) {
 function get12HourString(hr, min) {
 	var suffix = 'am';
 	var hr2 = addLeadingZero(hr);
-	if(hr === 24 || hr === 0) {
+	if(hr == 24 || hr == 0) {
 		hr2 = '12';
 	}
 	else if (hr > 12){
 		hr2 = addLeadingZero(hr - 12);
 		suffix = 'pm';
 	}
-	else if(hr === 12){
+	else if(hr == 12){
 		suffix = 'pm';
 	}
 	return hr2 + ':' + addLeadingZero(min) + suffix;
