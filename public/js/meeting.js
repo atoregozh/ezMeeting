@@ -1,10 +1,17 @@
 var ALERT_TIMEOUT = 5000;
 var ALERT_FADEOUT = 2000;
+var SELECTED_CLASS = 'selected'; // CSS class add edto a selected grid while dragging.
+// CSS attribute added to each selected grid. The value would be = the key of the cell 
+// that contains the close button for this cell.
+var CLOSE_BTN_ATTR_KEY = 'close-btn';
+var CLOSE_BTN_CSS_CLASS = 'close-btn'
 // Incremented when each new alert is displayed. Used to ensure unique ID for all alerts.
 var alertCount = 0;
 var gridStartDate; // A moment js day beginning obtained using .startOf('day')
 var gridEndDate; // A moment js day beginning obtained using .startOf('day')
-var currentCellKey; // Stores the key of the current cell that is being hovered over.
+var hoveredCellKey; // Stores the key of the current cell that is being hovered over.
+var firstSelectedDay; // String of format 'yyyy-mm-dd'
+var isdragging = false;
 
 $(document).ready(function(){
 
@@ -186,6 +193,35 @@ $(document).ready(function(){
 		hoverOverCell($(this).attr('key'));
 	});
 
+	$('#br').on('mousedown', ' .c-row', function(){
+		mouseDownOnCell($(this).attr('key'));
+	});
+
+	$('#br').on('mousedown', ' .c-row', function(){
+		mouseDownOnCell($(this).attr('key'));
+	});
+
+	// Not sure why click is not working here, hence we're using mousedown and touchstart (for mobile devices)
+	$('#br').on({
+		'mousedown': function(e){
+			e.stopPropagation(); // Ensures that the div containing the button also gets deleted.
+			var key = $(this).parent().attr('key');
+			clearSelectedDivsWithCloseBtn(key);
+		},
+		'touchstart': function(e){
+			e.stopPropagation(); // Ensures that the div containing the button also gets deleted.
+			var key = $(this).parent().attr('key');
+			clearSelectedDivsWithCloseBtn(key);
+		}
+	}, ' .c-row .' + CLOSE_BTN_CSS_CLASS);	
+
+
+	$(window).on('mouseup', function(){
+		if(isdragging){
+			mouseUpAfterMouseDown();
+		}
+	});
+
 	addTimesToGrid();
 	add7DaysToGrid();
 	scrollCalendarToNineAm();
@@ -194,10 +230,88 @@ $(document).ready(function(){
 
 function hoverOverCell(key) {
 	// Todo: Implement hoverOverCell()
-	if(key !== currentCellKey) {
-		currentCellKey = key;
-		console.log("Cell: " + key);		
+	if(isdragging && (getDayStringFromKey(key) === firstSelectedDay)) {
+		getCellWithKey(key).addClass(SELECTED_CLASS);
 	}
+}
+
+function clearSelectedDivsWithCloseBtn(key) {
+	$( 'div[' + CLOSE_BTN_ATTR_KEY + '="' + key + '"]').each(function(){
+		clearThisSelectedCell($(this));
+	});
+}
+
+function clearAllSelectedCells() {
+	 $('.c-row.' + SELECTED_CLASS).each(function(){
+	 	clearThisSelectedCell($(this));
+	 });
+}
+
+// Expects a jQuery object
+function clearThisSelectedCell(cell) {
+	cell.removeClass(SELECTED_CLASS);
+	cell.removeAttr(CLOSE_BTN_ATTR_KEY);
+	cell.find('.' + CLOSE_BTN_CSS_CLASS).remove();
+}
+
+function mouseDownOnCell(key) {
+	if(firstSelectedDay && (firstSelectedDay != getDayStringFromKey(key))) {
+		// Clear the grid if slots from a different day were already highlighted.
+		clearAllSelectedCells();
+
+	}
+	isdragging = true;
+	firstSelectedDay = getDayStringFromKey(key);
+	hoverOverCell(key);
+	console.log("mousedown on " + key);
+}
+
+function mouseUpAfterMouseDown() {
+	isdragging = false;
+	setDeleteButtonsForDay(firstSelectedDay);
+}
+
+// dayString should be a string of format 'yyyy_mm_dd'
+function setDeleteButtonsForDay(dayString) {
+	$('.c-col._' + dayString + ' .' + CLOSE_BTN_CSS_CLASS).remove(); // Remove all previous delete buttons for that day's row.
+	var dayTimes = getDayTimes();
+	var isEarlierCellSelected = false;
+	var keyOfSelectedCell;
+	for(var i = 0; i < dayTimes.length; i++) {
+		var cellKey = '_' + dayString + '_' + dayTimes[i];
+		var cell = getCellWithKey(cellKey);
+		if(cell.hasClass(SELECTED_CLASS)){
+			if(!isEarlierCellSelected){
+				isEarlierCellSelected = true;
+				keyOfSelectedCell = cellKey;
+				addDeleteButton(cell);
+			}
+			cell.attr(CLOSE_BTN_ATTR_KEY, keyOfSelectedCell);
+		} else {
+			isEarlierCellSelected = false;
+		}
+	}
+}
+
+function addDeleteButton(cell) {
+	// Cell should be a jquery object.
+	cell.append(
+		'<div class="fa fa-close ' + CLOSE_BTN_CSS_CLASS + '"></div>'
+	);
+}
+
+function getDayStringFromKey(key){
+	return key.split('_')[1];
+}
+
+// function keyToDateObject(key){
+// 	var tokens = key.split('_');
+// 	return moment(tokens[1] + " " + tokens[2].replace("-", ":"));
+// }
+
+// Returns jQuery object
+function getCellWithKey(key) {
+	return $( 'div[key="' + key + '"]').first();
 }
 
 function add7DaysToGrid() {
@@ -239,12 +353,27 @@ function addDayToGrid(day) {
 }
 
 function addRowsToDayCol(dayCol, dayKey){
-	for(var hr = 0; hr < 24; hr++) {
-		var cellKey = dayKey + '_' + addLeadingZero(hr) + '-00';
-		dayCol.append('<div class="c-row " key="' + cellKey + '"></div>');
-		cellKey = dayKey + '_' + addLeadingZero(hr) + '-30';
-		dayCol.append('<div class="c-row thirty" key="' + cellKey + '"></div>');
+	var listOfTimeStrings = getDayTimes();
+	for(var i = 0; i < listOfTimeStrings.length; i++) {
+		var classNames = 'c-row';
+		var timeString = listOfTimeStrings[i];
+		if(timeString.indexOf('30') > -1) {
+			classNames += ' thirty';
+		}
+		var cellKey = dayKey + '_' + timeString;
+		dayCol.append('<div class="' + classNames + '" key="' + cellKey + '"></div>');
+		
 	}
+}
+
+// Returns list of 00-00 to 23-30
+function getDayTimes() {
+	var result = [];
+	for(var hr = 0; hr < 24; hr++) {
+		result.push(addLeadingZero(hr) + '-00');
+		result.push(addLeadingZero(hr) + '-30');
+	}
+	return result;
 }
 
 function addAlertPanelIfMissing() {

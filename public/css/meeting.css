@@ -396,6 +396,12 @@
 	opacity: 0.5;
 }
 
+#br .c-row.selected {
+	background-color: #43A047;
+	border-top: 1px solid #43A047;
+	opacity: 0.5;
+}
+
 .c-row.thirty {
 	border-top: 1px dotted #eee;
 }
@@ -407,6 +413,20 @@
 
 .time .c-row.thirty {
 	border-top: none;
+}
+
+.c-row .close-btn {
+	font-size:14px;
+	position:absolute;
+	top:2px;
+	right:3px;
+	z-index:60;
+	cursor: pointer;
+	color: #1B5E20;
+}
+
+.c-row .close-btn:hover, .c-row .close-btn:focus {
+	color: white;
 }
 
 #tl {
