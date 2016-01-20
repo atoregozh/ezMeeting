@@ -11,7 +11,7 @@ var CLOSE_BTN_ATTR_KEY = 'close-btn';
 var CLOSE_BTN_CSS_CLASS = 'close-btn';
 var CURRENT_COLOR_ATTR_KEY = 'current-color';
 var USER_COLOR_ATTR_KEY = 'color';
-var DEFAULT_PERSON_BLUE = '#42A5F5';
+var DEFAULT_PERSON_BLUE = '#81D4FA';
 
 var ANIMATION_BORDER_COLOR = 'rgba(255, 255, 255, 0)';
 var ANIMATION_CLASS_NAME = 'animate';
@@ -25,18 +25,18 @@ var isdragging = false;
 
 var currentTab; // Stores the ID of the current tab to one of TAB1_ID, TAB2_ID or TAB3_ID
 var user_count = 0;
-var colorPalette = ['#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#81D4FA', '#FDD835', '#6A1B9A', '#00E676'];
-
 /*
+Color source: https://www.google.com/design/spec/style/color.html#color-color-palette
 #FF8F00: Amber 800
 #EA80FC: Purple A100
 #2E7D32: Green 800
 #C2185B: Pink 700
-#81D4FA: Light blue 200
 #FDD835: Yellow 600
 #6A1B9A: Purple 800
 #00E676: Green A400
+#A1887F: Brown 300
 */
+var colorPalette = ['#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#FDD835', '#6A1B9A', '#00E676', '#A1887F'];
 
 $(document).ready(function(){
 
