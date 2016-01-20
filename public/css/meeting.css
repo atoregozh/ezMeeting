@@ -388,9 +388,9 @@
 }
 
 #br .c-row.selected {
-	background-color: #43A047;
-	border-top: 1px solid #43A047;
-	opacity: 0.5;
+	background-color: #1976D2;
+	border-top: 1px solid #1976D2;
+	opacity: 0.8;
 }
 
 .c-row.thirty {
@@ -413,7 +413,7 @@
 	right:3px;
 	z-index:60;
 	cursor: pointer;
-	color: #1B5E20;
+	color: #64B5F6;
 }
 
 .c-row .close-btn:hover, .c-row .close-btn:focus {
