@@ -14,7 +14,19 @@ var firstSelectedDay; // String of format 'yyyy-mm-dd'
 var isdragging = false;
 
 
-var user_count = 1;
+var user_count = 0;
+var colorPalette = ['#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#81D4FA', '#FDD835', '#6A1B9A', '#00E676'];
+
+/*
+#FF8F00: Amber 800
+#EA80FC: Purple A100
+#2E7D32: Green 800
+#C2185B: Pink 700
+#81D4FA: Light blue 200
+#FDD835: Yellow 600
+#6A1B9A: Purple 800
+#00E676: Green A400
+*/
 
 $(document).ready(function(){
 
@@ -416,14 +428,17 @@ function addTimesToGrid() {
 
 function addUserToPicsPanel(userId, name, picUrl) {
 	var id = 'user-pic-' + userId;
+	var color = colorPalette[ userId % colorPalette.length];
 	$('#pics-panel').prepend(
-		'<div class="grid-person" id="' + id + '">' +
+		'<div class="grid-person" id="' + id + '" color="' + color + '">' +
             '<p class="grid-name">' + name + '</p>' +
             '<div class="person-frame">' +
                 '<img src="' + picUrl + '" alt="' + name + '">' +
             '</div>' +
         '</div>'
 	);
+	$('#' + id + ' .person-frame').first().css({'border-color':color});
+	$('#' + id + ' img').first().css({'border-color':color});
 }
 
 function addUserToNameList(userId, name) {

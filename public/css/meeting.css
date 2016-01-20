@@ -141,13 +141,10 @@
 	width: 50px;
     height: 67px;
     border-radius: 7px;
-    background-image: none;
     background-color: white;
-    border: 1px solid #999;
-    margin: 0 auto;
+    border: 2px solid #999;
     font-size: 20px;
-    border-color: #008CB0;
-    color: #008cc9;
+    color: #777;
     text-align: center;
     float: left;
     top: 4px;
@@ -184,11 +181,11 @@
 
 .grid-person img {
 	border-radius: 50px;
-	border: 1px solid #999;
+	border: 2px solid #999;
 	position: relative;
 	width: 40px;
 	height: 40px;
-	top: 5px;
+	top: 4px;
 }
 
 .grid-name {
@@ -203,7 +200,7 @@
 
 .person-frame {
 	border-radius: 50%;
-	border: 1px solid #999;
+	border: 2px solid #999;
 	width: 52px;
 	height: 52px;
 	text-align: center;
