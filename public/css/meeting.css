@@ -11,14 +11,7 @@
 	padding: 2px;
     width: 75px;
     font-size: 14px;
-    text-align: left;
-}
-
-.m-top i {
-	float: left;
-    position: relative;
-    padding: 3px;
-    padding-right: 5px;
+    text-align: center;
 }
 
 #save-btn {
@@ -40,10 +33,6 @@
 	background: -webkit-linear-gradient(top,  rgba(73,155,234,1) 0%,rgba(13,71,161,1) 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to bottom,  rgba(73,155,234,1) 0%,rgba(13,71,161,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#499bea', endColorstr='#0d47a1',GradientType=0 ); /* IE6-9 */
-}
-
-#save-btn i {
-	color: white;
 }
 
 #cancel-btn {
@@ -741,7 +730,7 @@ textarea {
 	padding: 5px;
 	z-index: 1000;
 	background-color: gray;
-	display: none;
+	/*display: none;*/
 }
 
 #add-people {
@@ -761,7 +750,9 @@ textarea {
 }
 
 #guests-content {
-	padding: 0 10px;
+	padding: 2px 10px 0 10px;
+    max-height: 242px;
+    overflow-y: scroll;
 }
 
 .guests-header input {
@@ -776,7 +767,7 @@ textarea {
 
 .guests-header {
 	width: 100%;
-    border: 1px solid #ccc;
+    border: 1px solid #aaa;
     height: 30px;
     font-size: 0;
     display: flex;
@@ -787,11 +778,16 @@ textarea {
 
 .guests-panel {
 	margin-bottom: 20px;
+	border: 1px solid #ccc;
+    padding: 10px;
+    background-color: white;
+    margin-top: 20px;
+    border-radius: 10px;
 }
 
 .guests-panel .title {
 	font-weight: bold;
-    margin: 20px 0 2px 0;
+    margin: 0px 0 5px 0;
     padding-left: 10px;
 }
 
@@ -802,6 +798,10 @@ textarea {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.guests-row.inviz {
+	display: none;
 }
 
 .guests-header .fa-search {

@@ -13,6 +13,9 @@ var hoveredCellKey; // Stores the key of the current cell that is being hovered 
 var firstSelectedDay; // String of format 'yyyy-mm-dd'
 var isdragging = false;
 
+
+var user_count = 1;
+
 $(document).ready(function(){
 
 	$('.tab-btn').click(function(e){
@@ -148,6 +151,9 @@ $(document).ready(function(){
 		$(this).parent().parent().remove();
 	});
 
+
+	// ~~~~~ Start of test div ~~~~~
+
 	$('#b1').click(function() {
 		showInfo('Yay! New info :)');
 	});
@@ -159,6 +165,16 @@ $(document).ready(function(){
 	$('#b3').click(function() {
 		showWarning('Be careful! This is a warning.');
 	});
+
+	$('#b4').click(function() {
+		counter = user_count++; 
+		userId = counter;
+		name = 'Will Smith ' + counter;
+		addUserToPicsPanel(userId, name, '/img/default-user-pic.jpg');
+		addUserToNameList(userId, name);
+	});
+
+	// ~~~~~ End of test div ~~~~~
 
 	$("#m-guest-search").focus(function(){
 		$("#m-guest-search-btn").hide();
@@ -395,6 +411,32 @@ function addTimesToGrid() {
 		col.append('<div class="c-row">' + getHourWithMeridian(hr) + '</div>');
 		col.append('<div class="c-row thirty"></div>');
 	}
+}
+
+
+function addUserToPicsPanel(userId, name, picUrl) {
+	var id = 'user-pic-' + userId;
+	$('#pics-panel').prepend(
+		'<div class="grid-person" id="' + id + '">' +
+            '<p class="grid-name">' + name + '</p>' +
+            '<div class="person-frame">' +
+                '<img src="' + picUrl + '" alt="' + name + '">' +
+            '</div>' +
+        '</div>'
+	);
+}
+
+function addUserToNameList(userId, name) {
+	var id = 'user-list-' + userId;
+	$('#guests-content').prepend(
+		'<div class="guests-row inviz" id="' + id + '">' +
+            '<i class="fa fa-close"></i>' +
+            '<p class="name">' + name + '</p>' +
+        '</div>'
+	);
+	$('#'+id).slideDown(function(){
+		$(this).removeClass('inviz');
+	});
 }
 
 /*
