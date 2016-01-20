@@ -373,8 +373,10 @@ function addDayToGrid(day) {
 	dayStart = day.startOf('day');
 	if(!gridStartDate || (dayStart < gridStartDate)) {
 		gridStartDate = dayStart;
+		$("#dp1").datepicker("update", gridStartDate.toDate());
 		if(!gridEndDate) {
 			gridEndDate = dayStart;
+			$("#dp2").datepicker("update", gridEndDate.toDate());
 		}
 		$('#tr').prepend(
 			'<div class="h-col">' + tableHeading + '</div>'
@@ -386,6 +388,7 @@ function addDayToGrid(day) {
 	}
 	else if(!gridEndDate || (dayStart > gridEndDate)) {
 		gridEndDate = dayStart;
+		$("#dp2").datepicker("update", gridEndDate.toDate());
 		$('#tr').append(
 			'<div class="h-col">' + tableHeading + '</div>'
 		);
