@@ -209,15 +209,6 @@
 	top: -4px;
 }
 
-.tab-pane {
-	min-height: 550px; /* Todo: delete */
-	display: none;
-}
-
-.tab-pane.active {
-	display: block;
-}
-
 .dp {
 	width: 100%;
 }

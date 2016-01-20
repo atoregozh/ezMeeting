@@ -1,3 +1,8 @@
+var TAB1_ID = '#tab1';
+var TAB2_ID = '#tab2';
+var TAB3_ID = '#tab3';
+
+var DEFAULT_PERSON_BLUE = '#42A5F5';
 var ALERT_TIMEOUT = 5000;
 var ALERT_FADEOUT = 2000;
 var SELECTED_CLASS = 'selected'; // CSS class add edto a selected grid while dragging.
@@ -13,7 +18,7 @@ var hoveredCellKey; // Stores the key of the current cell that is being hovered 
 var firstSelectedDay; // String of format 'yyyy-mm-dd'
 var isdragging = false;
 
-
+var currentTab = TAB1_ID;
 var user_count = 0;
 var colorPalette = ['#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#81D4FA', '#FDD835', '#6A1B9A', '#00E676'];
 
@@ -33,10 +38,14 @@ $(document).ready(function(){
 	$('.tab-btn').click(function(e){
 		$('.tab-btn').removeClass('active');
 		$(this).addClass('active');
-		console.log($(this).html());
-		var tabContentId = $(this).attr('href');
-		$('.tab-pane').removeClass('active');
-		$(tabContentId).addClass('active');
+		var tabId = $(this).attr('href');
+		if(tabId == TAB1_ID){
+			switchToTab1();
+		}else if(tabId == TAB2_ID){
+			switchToTab2();
+		}else{
+			switchToTab3();
+		}
 	});
 
 	// ~~~~~ Start initializing datepicker ~~~~~
@@ -452,6 +461,42 @@ function addUserToNameList(userId, name) {
 	$('#'+id).slideDown(function(){
 		$(this).removeClass('inviz');
 	});
+}
+
+function switchToTab1() {
+	if(currentTab == TAB1_ID){
+		return;
+	}
+	$('.grid-person').each(function(){
+		var color = $(this).attr('color');
+		$(this).children('.person-frame').css({'border-color':color});
+		$(this).find('img').css({'border-color':color});
+	});
+	currentTab = TAB1_ID;
+}
+
+function switchToTab2() {
+	if(currentTab == TAB2_ID){
+		return;
+	}
+	if(currentTab == TAB1_ID){
+		// Only set colors for tab1 because the colors should remain the same between tab2 and tab3
+		$('.person-frame').css({'border-color':DEFAULT_PERSON_BLUE});
+		$('.person-frame img').css({'border-color':DEFAULT_PERSON_BLUE});	
+	}
+	currentTab = TAB2_ID;
+}
+
+function switchToTab3() {
+	if(currentTab == TAB3_ID){
+		return;
+	}
+	if(currentTab == TAB1_ID){
+		// Only set colors for tab1 because the colors should remain the same between tab2 and tab3
+		$('.person-frame').css({'border-color':DEFAULT_PERSON_BLUE});
+		$('.person-frame img').css({'border-color':DEFAULT_PERSON_BLUE});	
+	}
+	currentTab = TAB3_ID;
 }
 
 /*
