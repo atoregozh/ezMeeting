@@ -285,8 +285,20 @@ function setDeleteButtonsForDay(dayString) {
 				isEarlierCellSelected = true;
 				keyOfSelectedCell = cellKey;
 				addDeleteButton(cell);
+				// Set start time in input field
+				$('#m-start').timepicker('setTime', getTimeStringFromKey(cellKey));
+
+				// Set end time in input field
+				var endTime = keyToDateObject(cellKey).add(30, 'minutes');
+				$('#m-end').timepicker('setTime', endTime.format('HH:mmA'));
 			}
 			cell.attr(CLOSE_BTN_ATTR_KEY, keyOfSelectedCell);
+			// Set end time in input field
+			var endTime = keyToDateObject(cellKey).add(30, 'minutes');
+			console.log('xxxxx');
+			console.log(keyToDateObject(cellKey).format());
+			console.log(keyToDateObject(cellKey).add(30, 'minutes').format());
+			$('#m-end').timepicker('setTime', endTime.format('HH:mmA'));
 		} else {
 			isEarlierCellSelected = false;
 		}
@@ -304,10 +316,21 @@ function getDayStringFromKey(key){
 	return key.split('_')[1];
 }
 
-// function keyToDateObject(key){
-// 	var tokens = key.split('_');
-// 	return moment(tokens[1] + " " + tokens[2].replace("-", ":"));
-// }
+function getTimeStringFromKey(key){
+	// Returns string in the form: 12:30am , 11:30pm, etc
+	var tokens = key.split('_')[2].split(':') // Time in the form 11:00, 23:30, etc.
+	return get12HourString(tokens[0], tokens[1]);
+}
+
+function getTimeStringFromKey(key){
+	// returns time in the form 11:00, 23:30, etc.
+	return key.split('_')[2];
+}
+
+function keyToDateObject(key){
+	var tokens = key.split('_');
+	return moment(tokens[1] + " " + tokens[2].replace("-", ":"));
+}
 
 // Returns jQuery object
 function getCellWithKey(key) {
