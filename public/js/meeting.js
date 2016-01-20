@@ -205,7 +205,7 @@ $(document).ready(function(){
 
 	addTimesToGrid();
 	add7DaysToGrid();
-	scrollCalendarToNineAm
+	scrollCalendarToNineAm();
 
 	$('#m-start').timepicker('setTime', "00:00");
 	$('#m-end').timepicker('setTime', "00:00");
