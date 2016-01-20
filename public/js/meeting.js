@@ -205,7 +205,13 @@ $(document).ready(function(){
 
 	addTimesToGrid();
 	add7DaysToGrid();
-	scrollCalendarToNineAm();
+	scrollCalendarToNineAm
+
+	$('#m-start').timepicker('setTime', "00:00");
+	$('#m-end').timepicker('setTime', "00:00");
+
+	$("#m-start").prop('disabled', true);
+	$("#m-end").prop('disabled', true);
 	
 }); // End of $(document).ready()
 
@@ -414,6 +420,8 @@ function getHourWithMeridian(hr) {
 	Takes in hr values between 0-24 and min values. Returns strings like 12:01am, 09:24am, 11:59pm, etc.
 */
 function get12HourString(hr, min) {
+	hr = Number(hr);
+	min = Number(min);
 	var suffix = 'am';
 	var hr2 = addLeadingZero(hr);
 	if(hr == 24 || hr == 0) {

@@ -845,3 +845,8 @@ textarea {
 .guests-row .fa-close:hover, .guests-row .fa-close:focus {
 	color: #C62828;
 }
+
+html input[disabled] {
+    cursor: not-allowed;
+    background-color: #ccc;
+}
