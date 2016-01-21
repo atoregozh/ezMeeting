@@ -9,14 +9,14 @@ module.exports = function(passport) {
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
         console.log("Starting serialization of user");
-        console.log(user);
-        done(null, user.id);
+        // console.log(user);
+        done(null, user.id); //id here is mongo/mongoose _id
     });
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
-        console.log("Derialization of user");
-        console.log("printing id " + id);
+        console.log("Starting deserialization of user");
+        // console.log("printing id " + id); //id here is mongo/mongoose _id
         User.findById(id, function(err, user) {
             done(err, user);
         });
@@ -63,7 +63,7 @@ module.exports = function(passport) {
                     newUser.email = profile.emails[0].value; // pull the first email
                     newUser.pic = profile.photos[0].value;
                     console.log(newUser);
-                    console.log("hello");
+                    console.log("Printed New User");
                     
                     // save the user to database
                     // save is mongoose command

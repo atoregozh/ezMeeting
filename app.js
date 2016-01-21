@@ -15,15 +15,15 @@ var session  = require('express-session');
 
 var configDB = require('./config/database.js');
 
-// // templating engine setup ======================================================================
+// templating engine setup ======================================================================
 app.set('views', path.join(__dirname, 'views'));
 var exphbs = require('express-handlebars');
 app.engine('.hbs', exphbs({extname:'.hbs'}))
 app.set('view engine', '.hbs'); // set up handlbars for templating
 
-// // set up our express application
-// // uncomment after placing your favicon in /public
-// //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// set up our express application
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev')); // log every request to the console
 app.use(bodyParser.json()); // get information from html forms
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -52,18 +52,20 @@ app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
 
-// // routes ======================================================================
-var routes = require('./routes/index')(app,passport); // load our index.js and pass in our app and fully configured passport
+// routes ======================================================================
+var routes = require('./routes/index')(passport); // load our index.js and pass in our app and fully configured passport
 var events = require('./routes/events');
 var home = require('./routes/home');
 var test = require('./routes/test');
 
 app.use('/', routes);
 app.use('/events', events);
-// app.use('/home', home);
+app.use('/home', home);
 app.use('/test', test);
 
+
 // error handlers ================================================
+// !!!!!!!  HAVE TO BE LAST ONES DEFINED IN app.js     !!!!!!!
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

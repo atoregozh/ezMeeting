@@ -7,7 +7,7 @@ var User = require('../models/user.js');
 // =====================================
 // ROOT PAGE (with google login) ========
 // =====================================
-var index = function(app, passport) {
+var authenticatePassport = function(passport) {
   router.get('/', function(req, res) {
       // Rendering the index view with the title 'Welcome'
       res.render('index', { title: 'Welcome'});
@@ -20,12 +20,17 @@ var index = function(app, passport) {
   // we will want this protected so you have to be logged in to visit
   // we will use route middleware to verify this (the ensureAuthenticated function)
   router.get('/home', ensureAuthenticated, function(req, res) {
-    User.findById(req.session.passport.user, function(err, user) {
-      if(err) {
-        console.log(err);  // handle errors
-      } else {
-        res.render('home', { user: user});
-      }
+    // User.findById(req.session.passport.user, function(err, user) {
+      console.log('Authenticated the user! Here are the details of user:');
+      console.log(req.user);
+      res.render('home', {
+            user : req.user // get the user out of session and pass to template
+
+      // if(err) {
+      //   console.log(err);  // handle errors
+      // } else {
+      //   res.render('home', { user: user});
+      // }
     });
   });
 
@@ -44,20 +49,10 @@ var index = function(app, passport) {
   // send to google to do the authentication
   // profile gets us their basic information including their name
   // email gets their emails
-  //router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
-  app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
-  
+  router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+
   // the callback after google has authenticated the user
-  /**
   router.get('/auth/google/callback',
-          passport.authenticate('google', {
-                  successRedirect : '/events',
-                  failureRedirect : '/test',
-                  failureFlash:true
-                })
-          );
-  **/
-  app.get('/auth/google/callback',
           passport.authenticate('google', {
                   successRedirect : '/home',
                   failureRedirect : '/'
@@ -78,4 +73,4 @@ function ensureAuthenticated(req, res, next) {
 }
 
 
-module.exports = index;
+module.exports = authenticatePassport;
