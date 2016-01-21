@@ -19,20 +19,20 @@ var authenticatePassport = function(passport) {
   // =====================================
   // we will want this protected so you have to be logged in to visit
   // we will use route middleware to verify this (the ensureAuthenticated function)
-  router.get('/home', ensureAuthenticated, function(req, res) {
-    // User.findById(req.session.passport.user, function(err, user) {
-      console.log('Authenticated the user! Here are the details of user:');
-      console.log(req.user);
-      res.render('home', {
-            user : req.user // get the user out of session and pass to template
+  // router.get('/home', ensureAuthenticated, function(req, res) {
+  //   // User.findById(req.session.passport.user, function(err, user) {
+  //     console.log('Authenticated the user! Here are the details of user:');
+  //     console.log(req.user);
+  //     res.render('home', {
+  //           user : req.user // get the user out of session and pass to template
 
-      // if(err) {
-      //   console.log(err);  // handle errors
-      // } else {
-      //   res.render('home', { user: user});
-      // }
-    });
-  });
+  //     // if(err) {
+  //     //   console.log(err);  // handle errors
+  //     // } else {
+  //     //   res.render('home', { user: user});
+  //     // }
+  //   });
+  // });
 
   // =====================================
   // LOGOUT ==============================
