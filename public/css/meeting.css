@@ -259,12 +259,14 @@
 	height: 450px;
 	text-align: center;
 	margin: 3px;
+	display: flex;
+	justify-content: center;
 }
 
 .grid-panel2 {
 	height: 100%;
 	position: relative;
-	display: inline-block; /*Ensures minimum width*/
+	display: flex;
 	overflow: hidden;
 	max-width: 100%;
 }
@@ -314,8 +316,6 @@
 
 .calendar-panel {
 	height: 100%;
-	margin-left: 50px;
-	margin-right: 50px;
 	overflow: hidden;
 	border: 1px solid #ccc;
 	font-size: 0;
@@ -324,7 +324,7 @@
 .calendar-header {
 	height: 20px;
 	white-space: nowrap;
-	display: inline-block; /*Ensures minimum width*/
+	display: block;
 	border-bottom: 1px solid #ccc;
 	font-size: 0;
 	position: relative;
@@ -334,7 +334,7 @@
 .calendar-content {
 	height: 430px;
 	white-space: nowrap;
-	display: inline-block; /*Ensures minimum width*/
+	display: block;
 	border-bottom: 1px solid #ccc;
 	font-size: 0;
 	position: relative;
