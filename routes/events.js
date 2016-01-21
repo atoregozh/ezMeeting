@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var gcal = require('google-calendar');
+var needle = require('needle');
 
 // Handler for POST requests to /events
 router.post('/', function(req, res, next) {
 	res.send('Received POST request for /events');
+  // save the card to db req.data get data from ajax
 });
 
 router.get('/', function(req, res, next) {
@@ -12,23 +13,14 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/all', function(req, res) {
-  if(!req.session.access_token) {
-    return res.redirect('/auth/google'); //should do back to index.js and authenticate
-  } 
-  var accessToken = req.session.access_token;
-  //instantiate google calendar instance
-  var google_calendar = new gcal.GoogleCalendar(accessToken);
-  
-  google_calendar.events.list(req.user.email, {'timeMin': new Date().toISOString()}, 
-    function(err, eventList){
-      if(err){
-        res.status(500).send(err);
-      }
-      else{
-        res.writeHead(200, {"Content-Type": "application/json"});
-        res.send(eventList);
-      }
-    });
+  console.log('')
+  console.log(req.session.access_token)
+  needle.get('https://www.googleapis.com/calendar/v3/calendars/toregozh%40gmail.com/events', 
+    {headers: {Authorization: 'Bearer '+ req.session.access_token}},  function(error, response) {
+    if (!error && response.statusCode == 200)
+      console.log(response.body);
+    res.send(response.body);
+  });
 
 });
 
