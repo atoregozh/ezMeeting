@@ -49,15 +49,18 @@ var authenticatePassport = function(passport) {
   // send to google to do the authentication
   // profile gets us their basic information including their name
   // email gets their emails
-  router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+  router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email', 'https://www.googleapis.com/auth/calendar'] }));
 
   // the callback after google has authenticated the user
   router.get('/auth/google/callback',
-          passport.authenticate('google', {
-                  successRedirect : '/home',
-                  failureRedirect : '/'
-                })
-          );
+          passport.authenticate('google', { failureRedirect : '/' }),
+          function(req, res) {
+            // Successful authentication, redirect home.
+            req.session.access_token = req.user.token;
+            // console.log("PRINTING SESSION ACCESS TOKEN");
+            // console.log(req.session.access_token);
+            res.redirect('/home');                
+          });
 
   return router;
 };
