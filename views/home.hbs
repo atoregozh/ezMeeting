@@ -21,6 +21,9 @@
                     APP NAME
           </a>
         </span>
+{{!--         {{#each meetings }}
+
+        {{/each}} --}}
 
         <ul class="nav navbar-nav navbar-right">
             <li class="nav-item" id="nav-new-meeting">
@@ -43,7 +46,7 @@
                 </a>
             </li>
             <li class="nav-item" id="nav-notification">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/events/all">
                   <div class="nav-text">Notifications
                   </div>
                   <div class="nav-icons">
@@ -54,10 +57,10 @@
             </li>
             <li class="nav-item" id="nav-profile">
                 <a class="nav-link" href="#">
-                <div class="nav-text">Aizhan
+                <div class="nav-text">{{user.name.firstname}}
                 </div>
                 <div class="nav-icons">
-                  <span ><img id="nav-profile-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
+                  <span ><img id="nav-profile-img" src="{{user.pic}}" alt="User Profile Picture">
                   </span>
                 </div>
 
@@ -73,6 +76,7 @@
               <h2 class="dashboard-header">My Meetings</h2>
             </div>
               <div class="meeting-cards-div">
+                {{#each meetings }}
                 <!-- Meeting 1 -->
                 <div class="meeting-card">
                   <button type="button" class="btn btn-default meeting-options">
@@ -80,15 +84,17 @@
                   </button>
                   <div class="meeting">
                     <div class="meeting-name">
-                      <p>Really Long Meeting Name</p>
+                      <p>{{name}}</p>
                     </div>
                     <div class="meeting-datetime">
                       <div class="datetime-icon">
                         <i class="fa fa-clock-o"></i>  
                       </div>
                       <div class="datetime-text">
-                        <p> Sat, Jan 8, 2016 </p>
-                        <p> 10:35am-3:45pm </p>
+                        <p> {{date}} </p>
+                        <p> {{startTime}}am-{{endTime}}pm </p>
+
+                  {{!--       <p> {{getTime startTime endTime }} HANDLEBARS func--}} 
                       </div>
                     </div>
                     <div class="meeting-organizer">
@@ -137,8 +143,8 @@
                     </div>
                   </div>
                 </div>
-              
-                <!-- Meeting Card 2 -->
+              {{/each }}
+               {{!--  <!-- Meeting Card 2 -->
                 <div class="meeting-card">
                   <button type="button" class="btn btn-default meeting-options">
                     <i class="fa fa-ellipsis-v"></i>
@@ -314,7 +320,7 @@
                       </a>
                     </div>
                   </div>
-                </div>
+                </div> --}}
 
                 {{!-- <div class="meeting-card-inviz"></div>
                 <div class="meeting-card-inviz"></div> --}}
