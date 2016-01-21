@@ -32,7 +32,7 @@ var userSchema = mongoose.Schema({
   pic: {
    type: String
   }, //link to user's profile picture
-  token: { 
+  token: { // google accessToken
     type: String, 
     required: true
   },
