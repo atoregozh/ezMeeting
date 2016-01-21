@@ -644,22 +644,28 @@ textarea {
 
 .m-panel2 {
 	font-size: 0;
+	display: none;
+	padding-left: 5px;
 }
 
 .m-panel2a {
 	width: 218px;
 	margin: 4px 0 0 0;
 	display: inline-block;
-}
-
-.m-panel2 label {
-	margin: 0 5px;
 	font-size: 14px;
 }
 
 .m-panel2 input {
-	width: 74px;
-    font-size: 14px 
+	width: 62px;
+    font-size: 14px;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+}
+
+.m-panel2 input[disabled] {
+	background-color: transparent;
+	cursor: text;
 }
 
 #m-location {
@@ -846,9 +852,4 @@ textarea {
 
 .guests-row .fa-close:hover, .guests-row .fa-close:focus {
 	color: #C62828;
-}
-
-html input[disabled] {
-    cursor: not-allowed;
-    background-color: #ccc;
 }

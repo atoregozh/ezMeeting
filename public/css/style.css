@@ -29,25 +29,35 @@ time, mark, audio, video {
   font-family: sans-serif, Helvetica, Arial;
   line-height: 1.2;
 }
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
   display: block;
 }
+
 ol, ul {
   list-style: none;
 }
+
 blockquote, q {
   quotes: none;
 }
+
 blockquote:before, blockquote:after,
 q:before, q:after {
   content: '';
   content: none;
 }
+
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+html input[disabled] {
+    cursor: not-allowed;
+    background-color: #ccc;
 }
 
 /*~~~~~~ Start of debug CSS ~~~~~~*/

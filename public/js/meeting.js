@@ -5,6 +5,7 @@ var TAB3_ID = '#tab3';
 var ALERT_TIMEOUT = 5000;
 var ALERT_FADEOUT = 2000;
 var SELECTED_CLASS = 'selected'; // CSS class add edto a selected grid while dragging.
+var DEFAULT_TIME = "00:00";
 // CSS attribute added to each selected grid. The value would be = the key of the cell 
 // that contains the close button for this cell.
 var CLOSE_BTN_ATTR_KEY = 'close-btn';
@@ -98,35 +99,35 @@ $(document).ready(function(){
 	}).data('datepicker');
 	// ~~~~~ Finished initializing datepicker ~~~~~
 
-	// ~~~~~ Start initializing timepicker ~~~~~
+	// // ~~~~~ Start initializing timepicker ~~~~~
 
-	$('#m-start').timepicker({
-		minuteStep: 5,
-		template: 'modal',
-		appendWidgetTo: 'body',
-		showSeconds: false,
-		showMeridian: true, // true ==> 12hr mode, false ==> 24hr mode
-		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
-	});
+	// $('#m-start').timepicker({
+	// 	minuteStep: 5,
+	// 	template: 'modal',
+	// 	appendWidgetTo: 'body',
+	// 	showSeconds: false,
+	// 	showMeridian: true, // true ==> 12hr mode, false ==> 24hr mode
+	// 	defaultTime: '09:00', // could be 'current', 'false' or a value like '11:45AM'
+	// });
 
-	$('#m-start').timepicker().on('changeTime.timepicker', function(e) {
-		// console.log('The start hour is ' + e.time.hours);
-		// console.log('The start minute is ' + e.time.minutes);
-	});
+	// $('#m-start').timepicker().on('changeTime.timepicker', function(e) {
+	// 	// console.log('The start hour is ' + e.time.hours);
+	// 	// console.log('The start minute is ' + e.time.minutes);
+	// });
 
-	$('#m-end').timepicker({
-		minuteStep: 5,
-		template: 'modal',
-		appendWidgetTo: 'body',
-		showSeconds: false,
-		showMeridian: true, // true ==> 12hr mode, false ==> 24hr mode
-		defaultTime: 'current', // could be 'current', 'false' or a value like '11:45AM'
-	});
+	// $('#m-end').timepicker({
+	// 	minuteStep: 5,
+	// 	template: 'modal',
+	// 	appendWidgetTo: 'body',
+	// 	showSeconds: false,
+	// 	showMeridian: true, // true ==> 12hr mode, false ==> 24hr mode
+	// 	defaultTime: '09:00', // could be 'current', 'false' or a value like '11:45AM'
+	// });
 
-	$('#m-end').timepicker().on('changeTime.timepicker', function(e) {
-	});
+	// $('#m-end').timepicker().on('changeTime.timepicker', function(e) {
+	// });
 
-	// ~~~~~ Finished initializing timepicker ~~~~~
+	// // ~~~~~ Finished initializing timepicker ~~~~~
 
 
 	$('#tr').on('scroll', function (e) {
@@ -250,11 +251,12 @@ $(document).ready(function(){
 	add7DaysToGrid();
 	scrollCalendarToNineAm();
 
-	$('#m-start').timepicker('setTime', "00:00");
-	$('#m-end').timepicker('setTime', "00:00");
+	// $('#m-start').timepicker('setTime', DEFAULT_TIME);
+	// $('#m-end').timepicker('setTime', DEFAULT_TIME);
 
-	$("#m-start").prop('disabled', true);
-	$("#m-end").prop('disabled', true);
+	$("#m-date").prop('disabled', true);
+	// $("#m-start").prop('disabled', true);
+	// $("#m-end").prop('disabled', true);
 	
 }); // End of $(document).ready()
 
@@ -271,30 +273,31 @@ function clearSelectedDivsWithCloseBtn(key) {
 	});
 }
 
-function clearAllSelectedCells() {
+function clearAllSelectedCells(doNotUpdateUI) {
 	 $('.c-row.' + SELECTED_CLASS).each(function(){
-	 	clearThisSelectedCell($(this));
+	 	clearThisSelectedCell($(this), doNotUpdateUI);
 	 });
 }
 
 // Expects a jQuery object
-function clearThisSelectedCell(cell) {
+function clearThisSelectedCell(cell, doNotUpdateUI) {
 	var cellKey = cell.attr('key');
 	cell.removeClass(SELECTED_CLASS);
 	cell.removeAttr(CLOSE_BTN_ATTR_KEY);
 	cell.find('.' + CLOSE_BTN_CSS_CLASS).remove();
 	// The next line ensures that the time input fields get set to the right values.
-	setDeleteButtonsForDay(getDayStringFromKey(cellKey));
+	setDeleteButtonsForDay(getDayStringFromKey(cellKey), doNotUpdateUI);
 }
 
 function mouseDownOnCell(key) {
 	if(firstSelectedDay && (firstSelectedDay != getDayStringFromKey(key))) {
 		// Clear the grid if slots from a different day were already highlighted.
-		clearAllSelectedCells();
+		clearAllSelectedCells(true);
 
 	}
 	isdragging = true;
 	firstSelectedDay = getDayStringFromKey(key);
+	$("#m-date").datepicker("update", moment(firstSelectedDay).toDate());
 	hoverOverCell(key);
 }
 
@@ -304,9 +307,11 @@ function mouseUpAfterMouseDown() {
 }
 
 // dayString should be a string of format 'yyyy_mm_dd'
-function setDeleteButtonsForDay(dayString) {
-	$('#m-start').timepicker('setTime', "00:00");
-	$('#m-end').timepicker('setTime', "00:00");
+// doNotUpdateUI is a boolean value whose aim is to make it possible to prevent the meeting time from temporarily 
+// flashing 00:00 in the UI when this is not desired e.g. when making another selection in a different date.
+function setDeleteButtonsForDay(dayString, doNotUpdateUI) {
+	var startTime = DEFAULT_TIME;
+	var endTime = DEFAULT_TIME;
 
 	$('.c-col._' + dayString + ' .' + CLOSE_BTN_CSS_CLASS).remove(); // Remove all previous delete buttons for that day's row.
 	var dayTimes = getDayTimes();
@@ -320,19 +325,25 @@ function setDeleteButtonsForDay(dayString) {
 				isEarlierCellSelected = true;
 				keyOfSelectedCell = cellKey;
 				addDeleteButton(cell);
-				// Set start time in input field
-				$('#m-start').timepicker('setTime', getTimeStringFromKey(cellKey));
-
-				// Set end time in input field
-				var endTime = keyToDateObject(cellKey).add(30, 'minutes');
-				$('#m-end').timepicker('setTime', endTime.format('HH:mmA'));
+				startTime = keyToDateObject(cellKey).format('h:mmA');
+				endTime = keyToDateObject(cellKey).add(30, 'minutes').format('h:mmA');
 			}
 			cell.attr(CLOSE_BTN_ATTR_KEY, keyOfSelectedCell);
-			// Set end time in input field
-			var endTime = keyToDateObject(cellKey).add(30, 'minutes');
-			$('#m-end').timepicker('setTime', endTime.format('HH:mmA'));
+			endTime = keyToDateObject(cellKey).add(30, 'minutes').format('h:mmA');
 		} else {
 			isEarlierCellSelected = false;
+		}
+	}
+	if(doNotUpdateUI) {
+		return;
+	} else {
+		$('#m-start').html(startTime);
+		$('#m-end').html(endTime);
+		if(startTime === DEFAULT_TIME && endTime === DEFAULT_TIME) {
+			$("#m-date").val('');
+			$('.m-panel2').slideUp(); // Todo: Check that this does not cause a jump in the mobile UI. If it causes screen jump, simply delete it.
+		} else {
+			$('.m-panel2').slideDown(); // Reveal the date and time.
 		}
 	}
 }
