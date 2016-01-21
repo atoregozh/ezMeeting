@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 
 // define the schema for our user model
 var userSchema = mongoose.Schema({
-  id: { 
+  googleID: { 
     type: String, 
     required: true, 
     unique: true
@@ -22,12 +22,12 @@ var userSchema = mongoose.Schema({
         type: String, 
         required: true, 
         trim: true
-    },
+      },
       lastname: {
         type: String, 
         required: true, 
         trim: true
-    },
+      },
   },
   pic: {
    type: String

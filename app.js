@@ -44,7 +44,7 @@ mongoose.connect(configDB.url, function (err, res) { // connect to our database
 // required for passport
 app.use(session({ 
   secret: 'ilovescotchscotchyscotchscotch', // session secret
-  resave: false,
+  resave: true,
   saveUninitialized: false 
 })); 
 app.use(passport.initialize());
@@ -53,7 +53,7 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 
 // // routes ======================================================================
-var routes = require('./routes/index'); // load our index.js and pass in our app and fully configured passport
+var routes = require('./routes/index')(app,passport); // load our index.js and pass in our app and fully configured passport
 var events = require('./routes/events');
 var home = require('./routes/home');
 var test = require('./routes/test');

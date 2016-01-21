@@ -8,11 +8,15 @@ module.exports = function(passport) {
 
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
+        console.log("Starting serialization of user");
+        console.log(user);
         done(null, user.id);
     });
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
+        console.log("Derialization of user");
+        console.log("printing id " + id);
         User.findById(id, function(err, user) {
             done(err, user);
         });
@@ -35,12 +39,14 @@ module.exports = function(passport) {
         process.nextTick(function() {
 
             // try to find the user based on their google id
-            User.findOne({ 'id' : profile.id }, function(err, user) {
-                if (err)
+            User.findOne({ 'googleID' : profile.id }, function(err, user) {
+                if (err) {
                     console.log(err);  // handle errors!
                     return done(err);
-
+                }
+                   
                 if (!err && user !== null) {
+                    console.log("user already in db");
 
                     // if a user is found, log them in
                     return done(null, user);
@@ -49,13 +55,15 @@ module.exports = function(passport) {
                     var newUser = new User();
 
                     // set all of the relevant information
-                    newUser.id    = profile.id;
+                    newUser.googleID    = profile.id;
                     newUser.token = token;
                     newUser.displayName = profile.displayName;
                     newUser.name.firstname  = profile.name.givenName;
                     newUser.name.lastname = profile.name.familyName;
                     newUser.email = profile.emails[0].value; // pull the first email
                     newUser.pic = profile.photos[0].value;
+                    console.log(newUser);
+                    console.log("hello");
                     
                     // save the user to database
                     // save is mongoose command
