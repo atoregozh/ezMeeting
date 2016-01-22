@@ -12,7 +12,8 @@ var CLOSE_BTN_ATTR_KEY = 'close-btn';
 var CLOSE_BTN_CSS_CLASS = 'close-btn';
 var CURRENT_COLOR_ATTR_KEY = 'current-color';
 var USER_COLOR_ATTR_KEY = 'color';
-var DEFAULT_PERSON_BLUE = '#81D4FA';
+// var DEFAULT_PERSON_BLUE = '#81D4FA';
+var DEFAULT_PERSON_BLUE = '#BBC7DA';
 
 var WHITE_COLOR = 'rgba(255, 255, 255, 0)';
 var ANIMATION_CLASS_NAME = 'animate';
