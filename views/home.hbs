@@ -12,6 +12,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/home.js"></script>
+    <script type="text/javascript" src="/js/nav.js"></script>
   </head>
   <body>
     <!-- Navigation -->
@@ -55,7 +56,15 @@
                   </div>
                 </a>
             </li>
-            <li class="nav-item" id="nav-profile">
+            <li class="nav-item" id="nav-profile" data-toggle="popover" data-content="
+                      <a href='#'>
+                        Profile
+                      </a>
+                      <a href='/logout'>
+                        Logout
+                      </a>
+                    " 
+                    title="">
                 <a class="nav-link" href="#">
                 <div class="nav-text">{{user.name.firstname}}
                 </div>
@@ -63,7 +72,6 @@
                   <span ><img id="nav-profile-img" src="{{user.pic}}" alt="User Profile Picture">
                   </span>
                 </div>
-
                 </a>
             </li>
         </ul>

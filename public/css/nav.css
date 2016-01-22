@@ -102,3 +102,32 @@ float: right!important;
     display: none;
   }
 }
+
+.popover {
+  padding: 0;
+  margin-top: 0;
+  border-radius: 0;
+  width: 150px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+}
+
+.popover a {
+  display: block;
+  text-decoration: none;
+  border-bottom: 1px solid #ccc;
+  padding: 20px;
+  padding-left: 5px;
+  text-align: left;
+  color: #616161;
+  background-color: #f8f8f8;
+}
+
+.popover a:hover, .popover a:focus {
+  color: #616161;
+}
+
+.popover-content {
+  margin: 0;
+  padding: 0;
+}
