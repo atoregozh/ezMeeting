@@ -56,12 +56,14 @@ var home = require('./routes/home');
 var meetings = require('./routes/meetings');
 var profile = require('./routes/profile');
 var test = require('./routes/test');
+var calendars = require('./routes/calendars');
 
 app.use('/', routes);
 app.use('/meetings', meetings);
 app.use('/home', home);
 app.use('/profile', profile);
 app.use('/test', test);
+app.use('/calendars', calendars);
 
 
 // error handlers ================================================
