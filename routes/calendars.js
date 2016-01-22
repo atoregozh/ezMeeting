@@ -7,68 +7,51 @@ router.get('/', function(req, res, next) {
 	var to = new Date(req.query.to);
 	var users = req.query.users;
 	var usersList = users.split(',');
-	console.log('moment =' + moment().format());
+	// console.log('req.query.from = ' + req.query.from);
+	// console.log('req.query.to = ' + req.query.to);
+	console.log('users = ' + users);
+	console.log('from = ' + from);
+	console.log('to = ' + to);
 
 	var data = [];
 
-	var count = 0;
+	var hourShift;
+	var minutesBeforeNextMeeting;
+	var meetingDuration;
 	for(var i = 0; i < usersList.length; i++) {
 		var userId = usersList[i];
 		var userEvents = [];
 		// Get user events within the time range:
-		var start = moment(from).add(count++, 'h');
+		hourShift = hourShift = Math.floor((Math.random() * 48) + 1); // Random number between 1 and 48
 
-		var currentStart = start;
-		for(var b = 0; b < 1; b++) {
+		var currentStart = moment(from).add(hourShift, 'h');
+		minutesBeforeNextMeeting = Math.floor((Math.random() * 300) + 1); // Random number between 1 and 300
+		meetingDuration = Math.floor((Math.random() * 90) + 1); // Random number between 1 and 90
+		for(var b = 0; b < 10; b++) {
+			var startTime = currentStart;
+			var endTime = currentStart.add(meetingDuration, 'minutes').format();
+
+			// Error check in case I mistakenly configure crap in the randomization logic.
+			if (startTime < from || endTime > to){
+				continue;
+			}
 			userEvents.push({
 				id: userId + '-' + b,
 				ownerId: userId,
 				name: 'Test event',
 				startTime: currentStart.format(),
-				endTime: currentStart.add(30, 'minutes'),
+				endTime: currentStart.add(meetingDuration, 'minutes').format(),
 				isInternal: true
 				});
-			currentStart.add(30, 'minutes');
+			currentStart.add(minutesBeforeNextMeeting, 'minutes');
 		}
 		data.push({
 			userId: userId,
 			events: userEvents
-		})
+		});
 	}
-	var result = {data: data};
-	res.send(result);
-	
-// {
-// 3 data: { 4[ 5{
-// 6         userId: 1, // The user whose calendar this event is on
-// 7         events: [ // For recurring events, there'll be one item per occurrence.
-// 8{ 9
-// ￼￼￼￼￼id: 'string',
-// ownerId: 1 // Same as userId if this event was created by this user.
-// name: 'string',
-// startTime: 'string', // UTC DateTime
-// endTime: 'string', // UTC DateTime
-// isInternal: false, // False means it came from Google calendar or another exter
-// ￼￼￼￼￼￼￼￼￼￼￼￼nal source
-//           }, //...
-// 15
-// 16
-// 17         ]
-// 18       }, //...
-// 19     ]
-// 20   }
-// 21 }
-
-
-
-
-	
-	// var result = {
-	// 	from : from.toISOString(),
-	// 	to: to.toISOString(),
-	// 	users: users
-	// }
-	// res.send(JSON.stringify(result));
+	console.log(JSON.stringify(data, null, 4));
+	res.send(data);
 });
 
 module.exports = router;
