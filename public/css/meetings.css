@@ -183,7 +183,7 @@
 
 .grid-person img {
 	border-radius: 50px;
-	border: 2px solid #999;	
+	border: 1px solid #999;	
 	width: 40px;
 	height: 40px;
 	position: absolute;
@@ -219,7 +219,7 @@
 
 .person-frame {
 	border-radius: 50%;
-	border: 2px solid #999;
+	border: 1px solid #999;
 	width: 52px;
 	height: 52px;
 	text-align: center;
@@ -432,7 +432,7 @@
 	right:3px;
 	z-index:60;
 	cursor: pointer;
-	color: #64B5F6;
+	color: #E3F2FD;
 }
 
 .c-row .close-btn:hover, .c-row .close-btn:focus {
@@ -452,9 +452,23 @@
     display: none;
 }
 
+.busy-count {
+	color: #2962FF;
+    text-align: center;
+    font-size: 14px;
+    position: absolute;
+    width: 100%;
+    padding-right: 10px;
+    display: none;
+}
+
+.selected .busy-count {
+	color: #E3F2FD;
+}
+
 .tab1 .grid-cell-circle {
 	display: inline-block;
-	border: 1px solid #ccc;
+	border: 1px solid #fff;
 }
 
 .tab2 .grid-cell-circle, .tab3 .grid-cell-circle {
@@ -466,6 +480,14 @@
 }
 
 .tab2 .busy-row.active, .tab3 .busy-row.active {
+	display: block;
+}
+
+.tab1 .busy-count.active, .tab2 .busy-count.active {
+	display: none;
+}
+
+.tab3 .busy-count.active {
 	display: block;
 }
 
@@ -894,7 +916,7 @@ textarea {
 	padding-top: 1px;
 	border-radius: 50%;
 	color: #aaa;
-	margin-right: 2px;
+	margin-right: 7px;
 }
 
 .guests-row .fa-close:hover, .guests-row .fa-close:focus {

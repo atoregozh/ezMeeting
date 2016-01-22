@@ -322,6 +322,7 @@ function getUserCalendar(userIdList) {
 					var e = eventList[a];
 					addUserEventToGrid(userId, moment(e.startTime), moment(e.endTime));
 				}
+				stopUserPicAnimation(userId);
 			}
 		  console.log(data);
 		},
@@ -341,28 +342,43 @@ function addUserEventToGrid(userId, startTime, endTime) {
 		cell.prepend('<span class="grid-cell-circle" data-user-id="' + userId + '"></span>');
 		// Color the added circle appropriately
 		cell.children('span[data-user-id="' + userId + '"]').first().css({'background-color': getUserColor(userId)});
-		cellKeyToUserSet[cellKey][userId] = true;
 
-		// Mark that row as busy in tabs 2 and 3.
-		cell.children('.busy-row').addClass('active');
+		// Check if the user had a previous appointment at this time slot.
+		if(!cellKeyToUserSet[cellKey][uId]) {
+			// Add this to the field that keeps track of the mappings.
+			cellKeyToUserSet[cellKey][userId] = true;
+			var numOfMeetings = 0;
+			for(var uId in cellKeyToUserSet[cellKey]) {
+				if(cellKeyToUserSet[cellKey][uId]){
+					numOfMeetings++;
+				}
+			}
+			cell.children('.busy-count').first().html(numOfMeetings);
+			// Mark that row as busy in tabs 2 and 3.
+			cell.children('.busy-row').addClass('active');
+			cell.children('.busy-count').addClass('active');
+		}
 	}
 }
 
-// Removes all the user's bubbles from tab 1 and disables the gray colors in the users' previous meetings in tab 2 if no 
-// other user has a meeting in that time slot.
+// Removes all the user's bubbles from tab 1. In tab 2 and tab 3, it also disables the gray colors and updates the cell 
+// counts appropriately. Note that cellKeyToUserSet ( a field) should be updated before calling this function.
 function removeUserEventsFromGrid(userId, cellKeyList) {
 	$('span.grid-cell-circle[data-user-id="' + userId + '"]').remove();
 	for(var i = 0; i < cellKeyList.length; i++){
 		var cellKey = cellKeyList[i];
-		var foundAMeeting = false;
+		var numOfMeetings = 0;
 		for(var uId in cellKeyToUserSet[cellKey]) {
 			if(cellKeyToUserSet[cellKey][uId]){
-				foundAMeeting = true;
-				break;
+				numOfMeetings++;
 			}
 		}
-		if(!foundAMeeting){
-			var cell = getCellWithKey(cellKey).children('.busy-row').removeClass('active');
+		var cell = getCellWithKey(cellKey);
+		if(numOfMeetings){
+			cell.children('.busy-count').first().html(numOfMeetings);
+		} else {
+			cell.children('.busy-row').removeClass('active');
+			cell.children('.busy-count').removeClass('active');
 		}
 	}
 }
@@ -587,9 +603,11 @@ function addRowsToDayCol(dayCol, dayKey){
 			classNames += ' thirty';
 		}
 		var cellKey = dayKey + '_' + timeString;
+		// .busy-row refers to the shaded rows in tabs 2 and 3, while .busy-count refers to the cell counts in tab 3.
 		dayCol.append(
 			'<div class="' + classNames + '" key="' + cellKey + '">' +
 				'<div class="busy-row"></div>' +
+				'<p class="busy-count"></p>' + 
 			'</div>'
 		);
 		dayCol.append();
