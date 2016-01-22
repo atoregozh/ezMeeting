@@ -8,7 +8,7 @@ router.post('/', function(req, res, next) {
   // save the card to db req.data get data from ajax
 });
 
-router.get('/', function(req, res, next) {
+router.get('/', ensureAuthenticated, function(req, res, next) {
   res.render('meetings', {'title':'Create new meeting'})
 });
 
@@ -24,6 +24,16 @@ router.get('/all', function(req, res) {
 
 });
 
+
+// route middleware to make sure a user is logged in
+function ensureAuthenticated(req, res, next) {
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.redirect('/');
+}
 
 
 // // GET events listing

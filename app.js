@@ -52,13 +52,15 @@ app.use(passport.session()); // persistent login sessions
 
 // routes ======================================================================
 var routes = require('./routes/index')(passport); // load our index.js and pass in our app and fully configured passport
-var meetings = require('./routes/meetings');
 var home = require('./routes/home');
+var meetings = require('./routes/meetings');
+var profile = require('./routes/profile');
 var test = require('./routes/test');
 
 app.use('/', routes);
 app.use('/meetings', meetings);
 app.use('/home', home);
+app.use('/profile', profile);
 app.use('/test', test);
 
 
