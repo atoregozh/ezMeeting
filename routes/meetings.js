@@ -9,7 +9,7 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
-  res.render('events', {'title':'My event title'})
+  res.render('meetings', {'title':'Create new meeting'})
 });
 
 router.get('/all', function(req, res) {
