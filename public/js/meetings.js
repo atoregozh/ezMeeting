@@ -1,6 +1,6 @@
-var TAB1_ID = '#tab1';
-var TAB2_ID = '#tab2';
-var TAB3_ID = '#tab3';
+var TAB1_ID = 'tab1';
+var TAB2_ID = 'tab2';
+var TAB3_ID = 'tab3';
 
 var ALERT_TIMEOUT = 5000;
 var ALERT_FADEOUT = 2000;
@@ -14,18 +14,35 @@ var CURRENT_COLOR_ATTR_KEY = 'current-color';
 var USER_COLOR_ATTR_KEY = 'color';
 var DEFAULT_PERSON_BLUE = '#81D4FA';
 
-var ANIMATION_BORDER_COLOR = 'rgba(255, 255, 255, 0)';
+var WHITE_COLOR = 'rgba(255, 255, 255, 0)';
 var ANIMATION_CLASS_NAME = 'animate';
 // Incremented when each new alert is displayed. Used to ensure unique ID for all alerts.
 var alertCount = 0;
 var gridStartDate; // A moment js day beginning obtained using .startOf('day')
 var gridEndDate; // A moment js day beginning obtained using .startOf('day')
-var hoveredCellKey; // Stores the key of the current cell that is being hovered over.
 var firstSelectedDay; // String of format 'yyyy-mm-dd'
 var isdragging = false;
 
 var currentTab; // Stores the ID of the current tab to one of TAB1_ID, TAB2_ID or TAB3_ID
 var user_count = 0;
+
+/* 
+cellKeyToUserSet simulates a list of HashSets. Each field corresponds to a given cell (i.e. 30min slot) while 
+the value is an object with fields names that are the ID of each user that is busy in that time slot.
+
+	{
+		cellKey1 : {
+			userId1: true,
+			userId2: true
+		},
+		cellKey2: {
+			userId1: true,
+			userId4: true
+		}, ...
+	}
+For further details, see: http://stackoverflow.com/questions/3042886/set-data-structure-of-java-in-javascript-jquery
+*/ 
+var cellKeyToUserSet = {}; // maps each cell Key to a set of user IDs for users that have a meeting in that timeslot.
 /*
 Color source: https://www.google.com/design/spec/style/color.html#color-color-palette
 #FF8F00: Amber 800
@@ -44,7 +61,7 @@ $(document).ready(function(){
 	$('.tab-btn').click(function(e){
 		$('.tab-btn').removeClass('active');
 		$(this).addClass('active');
-		var tabId = $(this).attr('href');
+		var tabId = $(this).attr('tab-id');
 		if(tabId == TAB1_ID){
 			switchToTab1();
 		}else if(tabId == TAB2_ID){
@@ -213,17 +230,41 @@ $(document).ready(function(){
 		}
 	});
 
-	$('#br').on('mousemove', ' .c-row', function(){
-		hoverOverCell($(this).attr('key'));
+	$("#m-guest-search").keyup(function(e) {
+	    if (e.keyCode == 13) { // Enter key
+	        var input = $("#m-guest-search").val().trim();
+	        $("#m-guest-search").val("");
+	        if(!input) {
+	        	return;
+	        }
+
+	        // Todo: delete this test code that creates a fake
+	        // ~~~~~~~~~~~~~~~~~~~~~
+	        if(typeof testUserId === 'undefined') {
+	        	testUserId = 0;
+	        }
+	        user = {
+	        	id: testUserId++,
+	        	name: input,
+	        	pic: '/img/default-user-pic.jpg',
+	        };
+	        // ~~~~~~~~~~~~~~~~~~~~~
+
+	        addUserToNameList(user.id, user.name);
+	        addUserToPicsPanel(user.id, user.name, user.pic);
+	        getUserCalendar([user.id]);
+
+	    }
 	});
 
-	$('#br').on('mousedown', ' .c-row', function(){
-		mouseDownOnCell($(this).attr('key'));
+	$('#guests-content').on('click', ' .name-list-close', function(){
+		var userId = $(this).attr('data-user-id');
+		removeUserFromPicsPanel(userId);
+		removeUserFromNameList(userId);
+		var cellKeyList = removeUserFromCellKeyToUserSetMapping(userId);
+		removeUserEventsFromGrid(userId, cellKeyList);
 	});
 
-	$('#br').on('mousedown', ' .c-row', function(){
-		mouseDownOnCell($(this).attr('key'));
-	});
 
 	// Not sure why click is not working here, hence we're using mousedown and touchstart (for mobile devices)
 	$('#br').on({
@@ -237,7 +278,7 @@ $(document).ready(function(){
 			var key = $(this).parent().attr('key');
 			clearSelectedDivsWithCloseBtn(key);
 		}
-	}, ' .c-row .' + CLOSE_BTN_CSS_CLASS);	
+	}, ' .c-row .' + CLOSE_BTN_CSS_CLASS);
 
 
 	$(window).on('mouseup', function(){
@@ -260,11 +301,131 @@ $(document).ready(function(){
 	
 }); // End of $(document).ready()
 
-function hoverOverCell(key) {
-	// Todo: Implement hoverOverCell()
+function getUserCalendar(userIdList) {
+	// Retrieves the calendars from the server.
+	// Todo: start here with ajax request.
+	userIds = userIdList.join(',');
+	for(var i = 0; i < userIdList.length; i++){
+		animateUserPic(userIdList[i]);
+	}
+	$.ajax({
+		url: "/calendars?users=" +  userIds + "&from=" + gridStartDate.format() + "&to=" + gridEndDate.format(),
+		type: "GET",
+		data: {},
+		success: function(data) {
+			for(var i = 0; i < data.length; i++){
+				var record = data[i];
+				var userId = record.userId;
+				var eventList = record.events;
+				for(var a = 0; a < eventList.length; a++){
+					var e = eventList[a];
+					addUserEventToGrid(userId, moment(e.startTime), moment(e.endTime));
+				}
+			}
+		  console.log(data);
+		},
+		error: function(xhr, status, error) {
+		  console.log("Error: " + error);
+		}
+	});
+}
+
+function addUserEventToGrid(userId, startTime, endTime) {
+	var st = roundDownTimeTo30Minutes(startTime);
+	var et = roundUpTimeTo30Minutes(endTime);
+	for(var cellTime = moment(st); cellTime < et; cellTime = cellTime.add(30, 'minutes')) {
+		var cellKey = getCellKey(cellTime);
+		var cell = getCellWithKey(cellKey);
+		// Add user circle to the relevant grid cells for tab 1.
+		cell.prepend('<span class="grid-cell-circle" data-user-id="' + userId + '"></span>');
+		// Color the added circle appropriately
+		cell.children('span[data-user-id="' + userId + '"]').first().css({'background-color': getUserColor(userId)});
+		cellKeyToUserSet[cellKey][userId] = true;
+
+		// Mark that row as busy in tabs 2 and 3.
+		cell.children('.busy-row').addClass('active');
+	}
+}
+
+// Removes all the user's bubbles from tab 1 and disables the gray colors in the users' previous meetings in tab 2 if no 
+// other user has a meeting in that time slot.
+function removeUserEventsFromGrid(userId, cellKeyList) {
+	$('span.grid-cell-circle[data-user-id="' + userId + '"]').remove();
+	for(var i = 0; i < cellKeyList.length; i++){
+		var cellKey = cellKeyList[i];
+		var foundAMeeting = false;
+		for(var uId in cellKeyToUserSet[cellKey]) {
+			if(cellKeyToUserSet[cellKey][uId]){
+				foundAMeeting = true;
+				break;
+			}
+		}
+		if(!foundAMeeting){
+			var cell = getCellWithKey(cellKey).children('.busy-row').removeClass('active');
+		}
+	}
+}
+
+// Removes all the user's entries from the map and returns the keys of all the cells in which the user had an event.
+function removeUserFromCellKeyToUserSetMapping(userId) {
+	var cellKeysOfUserEvents = [];
+	for(var cellKey in cellKeyToUserSet) {
+		if(cellKeyToUserSet[cellKey][userId]){
+			cellKeysOfUserEvents.push(cellKey);
+			cellKeyToUserSet[cellKey][userId] = false;
+		}
+	}
+	return cellKeysOfUserEvents;
+}
+
+function getUserColor(userId) {
+	// Returns the color from the user's .grid-person attribute
+	return getGridPersonFromGridPanel(userId).attr('color');
+}
+
+function getCellKey(cellTime) {
+	// Expects a moment time object
+	return cellTime.format('_YYYY-MM-DD_HH-mm');
+}
+
+
+function roundDownTimeTo30Minutes(time) {
+	// Truncates the time to the most recent 30 minute in the past
+	var duration = 30 * 60 * 1000;
+	return moment(Math.floor((+time) / duration) * duration);
+}
+
+function roundUpTimeTo30Minutes(time) {
+	// Rounds up the time to the most recent 30 minute in the future
+	var duration = 30 * 60 * 1000;
+	return moment(Math.ceil((+time) / duration) * duration);
+}
+
+function mouseEnterCell(key) {
 	if(isdragging && (getDayStringFromKey(key) === firstSelectedDay)) {
 		getCellWithKey(key).addClass(SELECTED_CLASS);
 	}
+	var objectOfUserIDs = cellKeyToUserSet[key];
+	$('.person-img-overlay').removeClass('inviz');
+	for (var userId in objectOfUserIDs) {
+		if(objectOfUserIDs[userId]){
+			var frame = getUserFrameFromGridPanel(userId);
+			frame.css({'background-color': frame.parent().attr(CURRENT_COLOR_ATTR_KEY)});
+			var gridPerson = getGridPersonFromGridPanel(userId);
+			gridPerson.children('.person-img-overlay').addClass('inviz');
+		}
+	}
+}
+
+function mouseLeaveCell(key) {
+	var objectOfUserIDs = cellKeyToUserSet[key];
+	for (var userId in objectOfUserIDs) {
+		if(objectOfUserIDs.hasOwnProperty(userId)){
+			var frame = getUserFrameFromGridPanel(userId);
+			frame.css({'background-color': WHITE_COLOR});
+		}
+	}
+	$('.person-img-overlay').addClass('inviz');
 }
 
 function clearSelectedDivsWithCloseBtn(key) {
@@ -298,7 +459,7 @@ function mouseDownOnCell(key) {
 	isdragging = true;
 	firstSelectedDay = getDayStringFromKey(key);
 	$("#m-date").datepicker("update", moment(firstSelectedDay).toDate());
-	hoverOverCell(key);
+	mouseEnterCell(key);
 }
 
 function mouseUpAfterMouseDown() {
@@ -361,8 +522,8 @@ function getDayStringFromKey(key){
 
 // Expects key in the form "HH-mm" and returns string in the form: 12:30am , 11:30pm, etc
 function getTimeStringFromKey(key){
-	var tokens = key.split('_')[2].split('-') // Time in the form 11:00, 23:30, etc.
-	return get12HourString(tokens[0], tokens[1]);
+	var tokens = key.split('_')[2].split('-'); // Time in the form 11:00, 23:30, etc.
+	return get12HourString(Number(tokens[0]), Number(tokens[1]));
 }
 
 function keyToDateObject(key){
@@ -425,8 +586,16 @@ function addRowsToDayCol(dayCol, dayKey){
 			classNames += ' thirty';
 		}
 		var cellKey = dayKey + '_' + timeString;
-		dayCol.append('<div class="' + classNames + '" key="' + cellKey + '"></div>');
-		
+		dayCol.append(
+			'<div class="' + classNames + '" key="' + cellKey + '">' +
+				'<div class="busy-row"></div>' +
+			'</div>'
+		);
+		dayCol.append();
+
+		// Create an object to keep track of all the IDs of users that are busy in this time slot.
+		// See cellKeyToUserSet declaration for details.
+		cellKeyToUserSet[cellKey] = {};
 	}
 }
 
@@ -452,11 +621,31 @@ function addTimesToGrid() {
 		col.append('<div class="c-row">' + getHourWithMeridian(hr) + '</div>');
 		col.append('<div class="c-row thirty"></div>');
 	}
+
+	// Remove all previous .c-row event listeners and re-attach new ones to ensure that
+	// the recently-added .c-row also have the event listeners.
+	$("#br").off('mouseenter', ' .c-row');
+	$("#br").on('mouseenter', ' .c-row', function(){
+		mouseEnterCell($(this).attr('key'));	
+	});
+
+	$("#br").off('mouseleave', ' .c-row');
+	$("#br").on('mouseleave', ' .c-row', function(){
+		mouseLeaveCell($(this).attr('key'));	
+	});
+
+	$("#br").off('mousedown', ' .c-row');
+	$("#br").on('mousedown', ' .c-row', function(){
+		mouseDownOnCell($(this).attr('key'));
+	});	
 }
 
+function userIdToGridPicId(userId) {
+	return 'grid-pic-' + userId;
+}
 
 function addUserToPicsPanel(userId, name, picUrl) {
-	var id = 'user-pic-' + userId;
+	var id = userIdToGridPicId(userId);
 	var color = colorPalette[ userId % colorPalette.length];
 	var currentColor = color;
 	if(currentTab != TAB1_ID) {
@@ -469,35 +658,68 @@ function addUserToPicsPanel(userId, name, picUrl) {
             '<p class="grid-name">' + name + '</p>' +
             '<div class="person-frame"></div>' +
             '<img src="' + picUrl + '" alt="' + name + '">' +
+            '<div class="person-img-overlay inviz"></div>' +
         '</div>'
 	);
 	$('#' + id + ' img').first().css({'border-color': currentColor});
-	animateUserPic(id);
+
+	var frame = getUserFrameFromGridPanel(userId);
+	frame.css({'border-color': currentColor});
+
+	// animateUserPic(userId);
 }
 
-function animateUserPic(gridPersonId) {
-	// The id should be the ID of the parent object with class grid-person
-	var frame = $('#' + gridPersonId + ' .person-frame').first();
-	frame.css({'border-color': ANIMATION_BORDER_COLOR});
-	frame.css({'border-top-color': frame.parent().attr(CURRENT_COLOR_ATTR_KEY)});
-	frame.addClass(ANIMATION_CLASS_NAME);
-	setTimeout(function() { 
-		frame.removeClass(ANIMATION_CLASS_NAME);
-		frame.css({'border-color': frame.parent().attr(CURRENT_COLOR_ATTR_KEY)});
-	}, 5000);
+function removeUserFromPicsPanel(userId) {
+	var id = userIdToGridPicId(userId);
+	$("#" + id).remove();
+}
+
+function userIdToListId(userId) {
+	return 'user-list-' + userId;
 }
 
 function addUserToNameList(userId, name) {
-	var id = 'user-list-' + userId;
+	var id = userIdToListId(userId);
 	$('#guests-content').prepend(
 		'<div class="guests-row inviz" id="' + id + '">' +
-            '<i class="fa fa-close"></i>' +
+            '<i class="fa fa-close name-list-close" data-user-id="' + userId + '"></i>' +
             '<p class="name">' + name + '</p>' +
         '</div>'
 	);
 	$('#'+id).slideDown(function(){
 		$(this).removeClass('inviz');
 	});
+}
+
+function removeUserFromNameList(userId) {
+	var id = userIdToListId(userId);
+	$('#'+id).slideUp(function(){
+		$(this).remove();
+	});
+}
+
+function animateUserPic(userId) {
+	var frame = getUserFrameFromGridPanel(userId);
+	frame.css({'border-color': WHITE_COLOR});
+	frame.css({'border-top-color': frame.parent().attr(CURRENT_COLOR_ATTR_KEY)});
+	frame.addClass(ANIMATION_CLASS_NAME);
+}
+
+
+function getUserFrameFromGridPanel(userId){
+	// Returns the .person-frame jQuery object of the user with the specified ID
+	return $('#' + userIdToGridPicId(userId) + ' .person-frame').first();
+}
+
+function getGridPersonFromGridPanel(userId){
+	// Returns the .grid-person jQuery object of the user with the specified ID
+	return $('#' + userIdToGridPicId(userId));
+}
+
+function stopUserPicAnimation(userId) {
+	var frame = getUserFrameFromGridPanel(userId);
+	frame.removeClass(ANIMATION_CLASS_NAME);
+	frame.css({'border-color': frame.parent().attr(CURRENT_COLOR_ATTR_KEY)});
 }
 
 function switchToTab1() {
@@ -508,6 +730,9 @@ function switchToTab1() {
 		switchUserBorderColor($(this), $(this).attr(USER_COLOR_ATTR_KEY));
 	});
 	currentTab = TAB1_ID;
+	$('.tab-content').first().removeClass(TAB2_ID);
+	$('.tab-content').first().removeClass(TAB3_ID);
+	$('.tab-content').first().addClass(TAB1_ID);
 }
 
 // Expects a jquery object that contains class name grid-person.
@@ -531,6 +756,9 @@ function switchToTab2() {
 		switchAllUsersBorderColor(DEFAULT_PERSON_BLUE);
 	}
 	currentTab = TAB2_ID;
+	$('.tab-content').first().removeClass(TAB1_ID);
+	$('.tab-content').first().removeClass(TAB3_ID);
+	$('.tab-content').first().addClass(TAB2_ID);
 }
 
 function switchToTab3() {
@@ -542,6 +770,9 @@ function switchToTab3() {
 		switchAllUsersBorderColor(DEFAULT_PERSON_BLUE);
 	}
 	currentTab = TAB3_ID;
+	$('.tab-content').first().removeClass(TAB1_ID);
+	$('.tab-content').first().removeClass(TAB2_ID);
+	$('.tab-content').first().addClass(TAB3_ID);
 }
 
 function switchAllUsersBorderColor(newColor) {
@@ -554,7 +785,7 @@ function switchAllUsersBorderColor(newColor) {
  Takes in a value between 0-24 and returns a value like 12am, 2am,..., 23pm
 */
 function getHourWithMeridian(hr) {
-	if(hr == 0 || hr == 24){
+	if(hr === 0 || hr === 24){
 		return '12am';
 	}
 	var suffix = 'am';
@@ -577,14 +808,14 @@ function get12HourString(hr, min) {
 	min = Number(min);
 	var suffix = 'am';
 	var hr2 = addLeadingZero(hr);
-	if(hr == 24 || hr == 0) {
+	if(hr === 24 || hr === 0) {
 		hr2 = '12';
 	}
 	else if (hr > 12){
 		hr2 = addLeadingZero(hr - 12);
 		suffix = 'pm';
 	}
-	else if(hr == 12){
+	else if(hr === 12){
 		suffix = 'pm';
 	}
 	return hr2 + ':' + addLeadingZero(min) + suffix;
@@ -636,7 +867,7 @@ function showError(mssg) {
 }
 
 function scrollCalendarToNineAm() {
-	var gridRowHeight = $($('.c-row')[0]).outerHeight()
+	var gridRowHeight = $($('.c-row')[0]).outerHeight();
 	$('#bl').scrollTop(gridRowHeight * 18); // Scroll to 9am
 }
 
