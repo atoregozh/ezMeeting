@@ -3,10 +3,25 @@ var mongoose = require('mongoose');
 
 // define the schema for our user model
 var userSchema = mongoose.Schema({
-  googleID: { 
-    type: String, 
-    required: true, 
-    unique: true
+  
+  google: {
+    accessToken: {
+      type: String, 
+      required: true, 
+      unique: true, 
+      trim: true
+    },
+    refreshToken: {
+      type: String, 
+      required: true, 
+      unique: true, 
+      trim: true
+    },
+    id: {
+      type: String, 
+      required: true, 
+      unique: true
+    }
   },
   email: { 
     type: String, 
@@ -29,13 +44,9 @@ var userSchema = mongoose.Schema({
         trim: true
       },
   },
-  pic: {
+  pic: { //link to user's profile picture
    type: String
-  }, //link to user's profile picture
-  token: { // google accessToken
-    type: String, 
-    required: true
-  },
+  } 
   //meetings: [meetingId, meetingId, ...] INCOMPLETE!
   //meetings: [Schema.Types.ObjectId]
   });

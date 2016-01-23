@@ -20,7 +20,7 @@ function alignMeetingCards() {
   var numCards = $('.meeting-card').length;
   var remainder = numCards % numCols;
   var numAdditionalCards = 0;
-  if(remainder != 0) {
+  if(remainder !== 0) {
     numAdditionalCards = numCols - remainder;
   }
   for(var i = 0; i < numAdditionalCards; i++) {

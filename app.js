@@ -17,7 +17,7 @@ var configDB = require('./config/database.js');
 // templating engine setup ======================================================================
 app.set('views', path.join(__dirname, 'views'));
 var exphbs = require('express-handlebars');
-app.engine('.hbs', exphbs({extname:'.hbs'}))
+app.engine('.hbs', exphbs({extname:'.hbs'}));
 app.set('view engine', '.hbs'); // set up handlbars for templating
 
 // set up our express application

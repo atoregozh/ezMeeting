@@ -10,9 +10,11 @@
     "express-handlebars": "^2.0.1",
     "passport" : "~0.3.2",
     "passport-google-oauth" : "~0.2.0",
+    "passport-oauth2-refresh": "1.0.0",
     "mongoose" : "~4.3.6",
-    "needle":"*",
+    "needle":"0.11.0",
     "moment": "^2.11.1",
+    "googleapis":"2.1.7",
 
     "morgan": "~1.6.1",
     "body-parser": "~1.13.2",
