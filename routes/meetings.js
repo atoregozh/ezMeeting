@@ -54,11 +54,18 @@ function getGCalendarEventsPerUser(req, res) {
               { headers: { Authorization: 'Bearer '+ user.google.accessToken } },  
       function(error, response) {
         if (!error && response.statusCode == 200) {
-          console.log('calling filterCalData');
-          console.log(response.body);
-          console.log(typeof response.body);
-          console.log('....-_-.......');
-          jsonUserMap = filterCalData(user,response.body);
+          var body = '';
+
+          response.on('data', function(chunk) {
+            body += chunk;
+          });
+
+          res.on('end',function(){
+            console.log('calling filterCalData');
+            var data = JSON.parse(body);
+            var jsonUserMap = filterCalData(user,data);
+            console.log(jsonUserMap);
+          });
           res.send(jsonUserMap);
         } else if (response.statusCode === 401) {
         // Access token expired.
@@ -96,10 +103,10 @@ function getGCalendarEventsPerUser(req, res) {
 
 function filterCalData(user,data) {
   console.log('Heres the json data');
+  console.log(data);
   console.log('....<3.......');
-  var json = JSON.parse(data);
   var filteredJsonArr = [];
-  for( var item in json.items) {
+  for( var item in data.items) {
     console.log(item.id);
     console.log(item.summary);
     console.log(item.start);
