@@ -183,12 +183,28 @@
 
 .grid-person img {
 	border-radius: 50px;
-	border: 2px solid #999;	
+	border: 1px solid #999;	
 	width: 40px;
 	height: 40px;
 	position: absolute;
 	top: 27px;
 	left: 24px;
+}
+
+.person-img-overlay {
+	border-radius: 50px;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 27px;
+    left: 24px;
+    background-color: #fff;
+    opacity: 0.7;
+    display: block;
+}
+
+.person-img-overlay.inviz {
+	display: none;
 }
 
 .grid-name {
@@ -203,7 +219,7 @@
 
 .person-frame {
 	border-radius: 50%;
-	border: 2px solid #999;
+	border: 1px solid #999;
 	width: 52px;
 	height: 52px;
 	text-align: center;
@@ -368,6 +384,7 @@
 	width: 101px;
 	position: relative;
 	display: inline-block;
+	z-index: 1;
 }
 
 .c-row {
@@ -375,7 +392,7 @@
     border-top: 1px solid #eee;
     width: 100%;
     position: relative;
-    overflow: hidden;
+    overflow: auto;
     font-size: 14px;
     text-align: left;
     padding: 2px;
@@ -383,14 +400,16 @@
 }
 
 #br .c-row:hover, #br .c-row:focus {
-	background-color: #B3E5FC;
-	opacity: 0.5;
+	background-color: #E3F2FD;
 }
 
 #br .c-row.selected {
 	background-color: #1976D2;
 	border-top: 1px solid #1976D2;
-	opacity: 0.8;
+}
+
+#br .c-row.selected:hover, #br .c-row.selected:focus {
+	background-color: #1565C0;
 }
 
 .c-row.thirty {
@@ -413,12 +432,65 @@
 	right:3px;
 	z-index:60;
 	cursor: pointer;
-	color: #64B5F6;
+	color: #E3F2FD;
 }
 
 .c-row .close-btn:hover, .c-row .close-btn:focus {
 	color: white;
 }
+
+.busy-row{
+	/*background-color: #DBE7FA; */
+	background-color: #BBC7DA;
+    width: 90%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.7;
+    /*z-index: -1;*/
+    display: none;
+}
+
+.busy-count {
+	color: #2962FF;
+    text-align: center;
+    font-size: 14px;
+    position: absolute;
+    width: 100%;
+    padding-right: 10px;
+    display: none;
+}
+
+.selected .busy-count {
+	color: #E3F2FD;
+}
+
+.tab1 .grid-cell-circle {
+	display: inline-block;
+	border: 1px solid #fff;
+}
+
+.tab2 .grid-cell-circle, .tab3 .grid-cell-circle {
+	display: none;
+}
+
+.tab1 .busy-row.active {
+	display: none;
+}
+
+.tab2 .busy-row.active, .tab3 .busy-row.active {
+	display: block;
+}
+
+.tab1 .busy-count.active, .tab2 .busy-count.active {
+	display: none;
+}
+
+.tab3 .busy-count.active {
+	display: block;
+}
+
 
 #tl {
 	width: 60px;
@@ -610,6 +682,8 @@ textarea {
     text-align: right;
     font-size: 14px;
     display: block;
+    padding-right: 65px;
+    padding-left: 5px;
 }
 
 #org-span4 {
@@ -636,6 +710,12 @@ textarea {
     text-overflow: ellipsis;	
 }
 
+#org-p1 {
+	overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 #org-p2 {
 	font-style: italic;
 	font-size: 12px;
@@ -650,6 +730,23 @@ textarea {
 .m-panel2a {
 	width: 218px;
 	font-size: 14px;
+}
+
+.m-panel2b {
+	width: 100%;
+	padding: 0 5px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	position: relative;
+	height: 41px;
+	background-color: transparent;
+}
+
+.m-panel2c {
+	width: 100%;
+	font-size: 14px;
+	text-align: left;
 }
 
 .m-panel2 input {
@@ -727,7 +824,8 @@ textarea {
 /* ~~~~~ End of set placeholder color  ~~~~~ */
 
 #test-div {
-	/*display: none*/ /*Todo: delete me*/
+	/*Todo: delete me*/
+	display: none;
 	position: absolute;
 	bottom: 5px;
 	right: 5px;
@@ -736,7 +834,6 @@ textarea {
 	padding: 5px;
 	z-index: 1000;
 	background-color: gray;
-	/*display: none;*/
 }
 
 #add-people {
@@ -829,7 +926,7 @@ textarea {
 }
 
 .guests-row:hover, .guests-row:focus {
-	background-color: #ddd
+	background-color: #eee
 }
 
 .guests-row i {
@@ -844,9 +941,18 @@ textarea {
 	padding-top: 1px;
 	border-radius: 50%;
 	color: #aaa;
-	margin-right: 2px;
+	margin-right: 7px;
 }
 
 .guests-row .fa-close:hover, .guests-row .fa-close:focus {
 	color: #C62828;
+}
+
+.grid-cell-circle {
+	width: 12px;
+    height: 12px;
+    position: relative;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 5px 1px 2px 0;
 }

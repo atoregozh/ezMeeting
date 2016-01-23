@@ -98,12 +98,18 @@
                                     <div class="m-panel1">
                                         <!-- <input id="m-title" placeholder="Meeting Title"> -->
                                         <div id="m-title" class="text-container" contenteditable="true" data-ph="Meeting Title"></div>
-                                        <div class="m-panel2">
-                                            <input class="dp" id="m-date" placeholder="Date">
-                                            <div class="m-panel2a">
-                                                <span id="m-start">00:00</span>
-                                                <span>&ndash;</span>
-                                                <span id="m-end">00:00</span>
+                                        <div class="m-panel2b">
+                                            <div class="m-panel2">
+                                                <input class="dp" id="m-date" placeholder="Date">
+                                                <div class="m-panel2a">
+                                                    <span id="m-start">00:00</span>
+                                                    <span>&ndash;</span>
+                                                    <span id="m-end">00:00</span>
+                                                </div>
+                                            </div>
+                                            <div class="m-panel2c">
+                                                <!-- This instructions help fill up the space (meant for the meeting time )in an aesthetically pleasing way. This space fill up ensures that the grid does keep sliding down and up when the user selects a timeslot or cancels their selection while working on an xs screen size (e.g. mobile phone).  -->
+                                                <p>Select meeting time by clicking or dragging over the grid</p>
                                             </div>
                                         </div>
                                         <input id="m-location" placeholder="Location">
@@ -114,7 +120,7 @@
                                         <p class="title">Participants</p>
                                         <div class="guests-header">
                                             <input id="m-guest-search" placeholder="Search by name or email">
-                                            <!-- Todo-->
+                                            <!-- Todo: Implement auto complete -->
                                             <span id="m-guest-search-btn" class="fa fa-search"></span>
                                         </div>
                                         <div id="guests-content">
@@ -155,9 +161,9 @@
                                     
                                 </div>
                                 <div class="tab-container">
-                                    <span class="tab-btn one active" href="#tab1">Tab1</span>
-                                    <span class="tab-btn two" href="#tab2">Tab2</span>
-                                    <span class="tab-btn three" href="#tab3">Tab3</span>
+                                    <span class="tab-btn one active" tab-id="tab1">Tab1</span>
+                                    <span class="tab-btn two" tab-id="tab2">Tab2</span>
+                                    <span class="tab-btn three" tab-id="tab3">Tab3</span>
                                     <div class="tab-content">
                                         <div>
                                             <div class="grid-pics-panel">
