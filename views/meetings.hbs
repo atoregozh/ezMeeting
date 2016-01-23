@@ -98,12 +98,18 @@
                                     <div class="m-panel1">
                                         <!-- <input id="m-title" placeholder="Meeting Title"> -->
                                         <div id="m-title" class="text-container" contenteditable="true" data-ph="Meeting Title"></div>
-                                        <div class="m-panel2">
-                                            <input class="dp" id="m-date" placeholder="Date">
-                                            <div class="m-panel2a">
-                                                <span id="m-start">00:00</span>
-                                                <span>&ndash;</span>
-                                                <span id="m-end">00:00</span>
+                                        <div class="m-panel2b">
+                                            <div class="m-panel2">
+                                                <input class="dp" id="m-date" placeholder="Date">
+                                                <div class="m-panel2a">
+                                                    <span id="m-start">00:00</span>
+                                                    <span>&ndash;</span>
+                                                    <span id="m-end">00:00</span>
+                                                </div>
+                                            </div>
+                                            <div class="m-panel2c">
+                                                <!-- This instructions help fill up the space (meant for the meeting time )in an aesthetically pleasing way. This space fill up ensures that the grid does keep sliding down and up when the user selects a timeslot or cancels their selection while working on an xs screen size (e.g. mobile phone).  -->
+                                                <p>Select meeting time by clicking or dragging over the grid</p>
                                             </div>
                                         </div>
                                         <input id="m-location" placeholder="Location">

@@ -519,8 +519,10 @@ function setDeleteButtonsForDay(dayString, doNotUpdateUI) {
 		$('#m-end').html(endTime);
 		if(startTime === DEFAULT_TIME && endTime === DEFAULT_TIME) {
 			$("#m-date").val('');
-			$('.m-panel2').slideUp(); // Todo: Check that this does not cause a jump in the mobile UI. If it causes screen jump, simply delete it.
+			$('.m-panel2').hide(); // Hide date & time
+			$('.m-panel2c').slideDown(); // Show the instructions
 		} else {
+			$('.m-panel2c').hide(); // Hide the instructions
 			$('.m-panel2').slideDown(); // Reveal the date and time.
 		}
 	}
