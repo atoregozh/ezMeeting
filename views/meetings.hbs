@@ -12,7 +12,7 @@
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type='text/javascript' src='/js/meetings.js'/></script>
     <script type="text/javascript" src="/js/nav.js"></script>
     <!-- Datepicker: http://bootstrap-datepicker.readthedocs.org/en/latest/ -->
@@ -86,11 +86,11 @@
                                 </div>
                                 <div id="organizer2" class="visible-xs">
                                     <span id="org-span3">
-                                        <img src="/img/default-user-pic.jpg" alt="pic">    
+                                        <img src="{{user.pic}}" alt="{{user.displayName}}">
                                     </span>
                                     <span id="org-span4">
                                         <div>
-                                            <p id="org-p1">Homer Simpson</p>
+                                            <p id="org-p1">{{user.displayName}}</p>
                                             <p id="org-p2">(Organizer)</p>
                                         </div>
                                     </span>
@@ -102,11 +102,11 @@
                                 <div class = "m-top hidden-xs">
                                     <div id="organizer">
                                         <span id="org-span1">
-                                            <img src="/img/default-user-pic.jpg" alt="pic">    
+                                            <img src="{{user.pic}}" alt="{{user.displayName}}">
                                         </span>
                                         <span id="org-span2">
                                             <div>
-                                                <p id="org-p1">Homer Simpson</p>
+                                                <p id="org-p1">{{user.displayName}}</p>
                                                 <p id="org-p2">(Organizer)</p>
                                             </div>
                                         </span>
@@ -127,7 +127,7 @@
                                                         <p>to</p>
                                                         <input class="dp" id="dp2" placeholder="Last date">    
                                                     </div>
-                                                    <div class="btn blue-linear">
+                                                    <div class="btn blue-linear" id="grid-refresh">
                                                         <i class="fa fa-refresh"></i>
                                                     </div>
                                                 </div>

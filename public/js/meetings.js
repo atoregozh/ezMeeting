@@ -20,12 +20,16 @@ var ANIMATION_CLASS_NAME = 'animate';
 // Incremented when each new alert is displayed. Used to ensure unique ID for all alerts.
 var alertCount = 0;
 var gridStartDate; // A moment js day beginning obtained using .startOf('day')
-var gridEndDate; // A moment js day beginning obtained using .startOf('day')
+var gridEndDate; // A moment js day beginning obtained using .endOf('day')
 var firstSelectedDay; // String of format 'yyyy-mm-dd'
 var isdragging = false;
 
 var currentTab; // Stores the ID of the current tab to one of TAB1_ID, TAB2_ID or TAB3_ID
 var user_count = 0;
+
+// Contains the list of IDs of all the users currently displayed on the screen. This array may be 
+// empty but it should never be null or undefined.
+var userIdList = []; 
 
 /* 
 cellKeyToUserSet simulates a list of HashSets. Each field corresponds to a given cell (i.e. 30min slot) while 
@@ -192,7 +196,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$('#alert-panel').on('click', '.close', function() {
+	$('.container').on('click', '#alert-panel .close', function() {
 		$(this).parent().parent().remove();
 	});
 
@@ -250,7 +254,7 @@ $(document).ready(function(){
 	        	pic: '/img/default-user-pic.jpg',
 	        };
 	        // ~~~~~~~~~~~~~~~~~~~~~
-
+	        userIdList.push(user.id);
 	        addUserToNameList(user.id, user.name);
 	        addUserToPicsPanel(user.id, user.name, user.pic);
 	        getUserCalendar([user.id]);
@@ -288,6 +292,39 @@ $(document).ready(function(){
 		}
 	});
 
+	$('#grid-refresh').click(function(){
+		if(!isGridDateRangeValid()) {
+			return;
+		}
+		if(userIdList.length < 1){
+			showWarning("Add participants to the meeting");
+			return;
+		}
+		$.ajax({
+			url: "/calendars?users=" +  userIdList.join(',') + "&from=" + gridStartDate.format() + "&to=" + gridEndDate.format(),
+			type: "GET",
+			data: {},
+			success: function(data) {
+				// Todo: start here
+				// for(var i = 0; i < data.length; i++){
+				// 	var record = data[i];
+				// 	var userId = record.userId;
+				// 	var eventList = record.events;
+				// 	for(var a = 0; a < eventList.length; a++){
+				// 		var e = eventList[a];
+				// 		addUserEventToGrid(userId, moment(e.startTime), moment(e.endTime));
+				// 	}
+				// 	stopUserPicAnimation(userId);
+				// }
+			 //  console.log(data);
+			},
+			error: function(xhr, status, error) {
+			  // console.log("Error: " + error);
+			}
+		});
+
+	});
+
 	switchToTab1();
 	addTimesToGrid();
 	add7DaysToGrid();
@@ -301,6 +338,22 @@ $(document).ready(function(){
 	// $("#m-end").prop('disabled', true);
 	
 }); // End of $(document).ready()
+
+function isGridDateRangeValid() {
+	// Check the start and end date input fields. If they are invalid, this method displays an error message to 
+	// the user and returns false. Otherwise, it sets the gridStartDate and gridEndDate to values from the input 
+	// fields and returns true.
+	var startDate = moment($('#dp1').data('datepicker').getDate()).startOf('day');
+	var endDate = moment($('#dp2').data('datepicker').getDate()).endOf('day');
+	if(endDate < startDate){
+		showError("The start date should be earlier than the end date");
+		return false;
+	}else {
+		gridStartDate = startDate;
+		gridEndDate = endDate;
+		return true;
+	}
+}
 
 function getUserCalendar(userIdList) {
 	// Retrieves the calendars from the server.
@@ -566,12 +619,12 @@ function add7DaysToGrid() {
 function addDayToGrid(day) {
 	var dayKey = day.format('_YYYY-MM-DD');
 	var tableHeading = day.format ('ddd M/D');
-	dayStart = day.startOf('day');
+	dayStart = moment(day).startOf('day');
 	if(!gridStartDate || (dayStart < gridStartDate)) {
 		gridStartDate = dayStart;
 		$("#dp1").datepicker("update", gridStartDate.toDate());
 		if(!gridEndDate) {
-			gridEndDate = dayStart;
+			gridEndDate = moment(dayStart).endOf('day');
 			$("#dp2").datepicker("update", gridEndDate.toDate());
 		}
 		$('#tr').prepend(
@@ -583,7 +636,7 @@ function addDayToGrid(day) {
 		addRowsToDayCol($('.' + dayKey).first(), dayKey);
 	}
 	else if(!gridEndDate || (dayStart > gridEndDate)) {
-		gridEndDate = dayStart;
+		gridEndDate = moment(dayStart).endOf('day');
 		$("#dp2").datepicker("update", gridEndDate.toDate());
 		$('#tr').append(
 			'<div class="h-col">' + tableHeading + '</div>'

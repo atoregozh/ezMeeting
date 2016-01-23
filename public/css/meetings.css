@@ -456,7 +456,7 @@
 	color: #2962FF;
     text-align: center;
     font-size: 14px;
-    position: absolute;
+    position: relative;
     width: 100%;
     padding-right: 10px;
     display: none;
@@ -540,7 +540,7 @@
 */
 
 #alert-panel {
-	position: absolute;
+	position: fixed;
 	text-align: center;
 	z-index: 1000;
 	width: 100%;
@@ -585,6 +585,7 @@
 
 .alert.warning {
 	border: 1px solid #F57C00;
+	color: black;
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffc578+0,fb9d23+100;Orange+3D+%233 */
 	background: rgb(255,197,120); /* Old browsers */
 	background: -moz-linear-gradient(top,  rgba(255,197,120,1) 0%, rgba(251,157,35,1) 100%); /* FF3.6-15 */
@@ -642,7 +643,7 @@ textarea {
 	width: 60px;
 	height: 60px;
 	border-radius: 50%;
-	border: 1px solid #ccc;
+	border: 1px solid #fff;
 }
 
 #organizer2 {
@@ -659,7 +660,7 @@ textarea {
 	height: 40px;
 	margin: 0 5px;
 	border-radius: 50%;
-	border: 1px solid #ccc;
+	border: 1px solid #fff;
 }
 
 #org-span1 {
