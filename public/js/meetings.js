@@ -304,7 +304,6 @@ $(document).ready(function(){
 
 function getUserCalendar(userIdList) {
 	// Retrieves the calendars from the server.
-	// Todo: start here with ajax request.
 	userIds = userIdList.join(',');
 	for(var i = 0; i < userIdList.length; i++){
 		animateUserPic(userIdList[i]);
