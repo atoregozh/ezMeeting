@@ -33,11 +33,12 @@ var authenticatePassport = function(passport) {
   // the callback after google has authenticated the user
   router.get('/auth/google/callback',
           passport.authenticate('google', { failureRedirect : '/test' }),
-          function(req, res) {
+          function (req, res) {
             // Successful authentication, redirect home.
-            req.session.access_token = req.user.google.accessToken;
-            console.log("PRINTING SESSION ACCESS TOKEN");
-            console.log(req.session.access_token);
+            req.session.logged_user_email = req.user.email;
+            console.log("PRINTING LOGGED USER EMAIL AND SAVING TO SESSION");
+            console.log(req.session.logged_user_email);
+            console.log(req.connection.remoteAddress);
             res.redirect('/home');                
           });
 

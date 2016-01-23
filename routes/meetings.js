@@ -10,6 +10,7 @@ router.post('/', function(req, res, next) {
   // 1. receive data from ajax req.data
   // 2. reformat the json to fit google's api
   // 3. send post request to google calendar
+            console.log('ip2>>>>', req.connection.remoteAddress);
   inviteToMeeting(req, res);
   // 4. save meeting to db
 	//res.send('Received POST request for /events');
@@ -31,10 +32,19 @@ function inviteToMeeting(req, res) {
   };
 
   // Get the user's credentials.
-  console.log('finding users credentials');
-  User.findById(req.user, function(err, user) {
+  console.log('here is req.session');
+  console.log(req.session);
+  console.log('here are user credentials from req.session');
+  console.log(req.session.logged_user_email); 
+  console.log('*****************');
+  console.log('body: ', req.body)
+  User.findOne({'email': req.session.logged_user_email}, function(err, user) {
     if(err || !user) { 
-      console.log('problems with finding user in db; errors!');
+      console.log('heres the user');
+      console.log(user);
+      console.log('*****************');
+      console.log('problems with finding user in db; errors! Heres the error:');
+      console.log(err);
       return send401Response();   // problems with finding user in db; errors!
     }
 
@@ -46,30 +56,32 @@ function inviteToMeeting(req, res) {
       }
     
     //find emails from database
-    
+    var email1 = "toregozh@gmail.com";
+    var email2 = "kesiena115@gmail.com";
+
     var event = {
-    'summary': req.body.name,
-    'location': req.body.location,
-    'description': req.body.description,
-    'start': {
-      'dateTime': req.body.startTime
+    "summary": req.body.name,
+    "location": req.body.location,
+    "description": req.body.description,
+    "start": {
+      "dateTime": req.body.startTime
     },
-    'end': {
-      'dateTime': req.body.endTime
+    "end": {
+      "dateTime": req.body.endTime
     },
-    'attendees': [
-      {'email': 'kesiena115@gmail.com'},
-      {'email': 'toregozh@gmail.com>'},
+    "attendees": [
+      {"email": email1},
+      {"email": email2},
     ],
-    'reminders': {
-      'useDefault': false,
-      'overrides': [
-        {'method': 'email', 'minutes': 60},
-        {'method': 'popup', 'minutes': 20},
+    "reminders": {
+      "useDefault": false,
+      "overrides": [
+        {"method": "email", 'minutes': 60},
+        {"method": "popup", 'minutes': 20},
       ],
     },
-    'organizer': {
-      "email": "toregozh@gmail.com",
+    "organizer": {
+      "email": email1,
       "displayName": req.body.organizer.name
     }
   };
@@ -79,8 +91,9 @@ function inviteToMeeting(req, res) {
 
     var options = {
       headers: {
-        Authorization: 'Bearer '+ user.google.accessToken 
-      }
+        Authorization: 'Bearer '+ user.google.accessToken
+      },
+      json: true 
     };
 
     console.log(url);
@@ -88,8 +101,9 @@ function inviteToMeeting(req, res) {
         if (!error && response.statusCode == 200) {
 
           console.log('Success! event has created!');
-          console.log('this id needs to be saved:');
+          console.log('this google id needs to be saved:');
           console.log(response.body.id);
+          console.log("*******************");
           console.log(response.body);
 
         } else if (response.statusCode === 401) {
