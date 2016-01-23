@@ -14,6 +14,7 @@ var CURRENT_COLOR_ATTR_KEY = 'current-color';
 var USER_COLOR_ATTR_KEY = 'color';
 // var DEFAULT_PERSON_BLUE = '#81D4FA';
 var DEFAULT_PERSON_BLUE = '#BBC7DA';
+var SIDEBAR_SCROLL_SPEED = 500;
 
 var WHITE_COLOR = 'rgba(255, 255, 255, 0)';
 var ANIMATION_CLASS_NAME = 'animate';
@@ -183,14 +184,18 @@ $(document).ready(function(){
 	});
 
 	$('.grid-side-btn.left').click(function() {
-		$('#br').scrollLeft($('#br').scrollLeft() - 101); // 101 corresponds to the width of each column
+		$('#br').animate({
+			scrollLeft: $('#br').scrollLeft() - 202 // 101 corresponds to the width of each column
+		}, SIDEBAR_SCROLL_SPEED);
 		if($(this).hasClass('active')) {
 			downloadEarlierDays();
 		}
 	});
 
 	$('.grid-side-btn.right').click(function() {
-		$('#br').scrollLeft($('#br').scrollLeft() + 101); // 101 corresponds to the width of each column
+		$('#br').animate({
+			scrollLeft: $('#br').scrollLeft() + 202 // 101 corresponds to the width of each column
+		}, SIDEBAR_SCROLL_SPEED);
 		if($(this).hasClass('active')) {
 			downloadLaterDays();
 		}
