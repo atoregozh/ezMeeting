@@ -107,7 +107,7 @@ float: right!important;
   padding: 0;
   margin-top: 0;
   border-radius: 0;
-  width: 150px;
+  width: 170px;
   border: 1px solid #ccc;
   background-color: #f8f8f8;
 }
@@ -117,14 +117,19 @@ float: right!important;
   text-decoration: none;
   border-bottom: 1px solid #ccc;
   padding: 20px;
-  padding-left: 5px;
+  padding-left: 10px;
+  margin: 0 15px;
   text-align: left;
   color: #616161;
   background-color: #f8f8f8;
+  transition: padding-left 0s;
 }
 
 .popover a:hover, .popover a:focus {
   color: #616161;
+  padding-left: 15px;
+  transition: 0.3s;
+/*  transition-delay:0.1s;*/
 }
 
 .popover-content {
