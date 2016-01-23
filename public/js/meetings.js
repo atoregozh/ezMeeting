@@ -293,6 +293,8 @@ $(document).ready(function(){
 	});
 
 	$('#grid-refresh').click(function(){
+		var oldGridStartDate = gridStartDate;
+		var oldGridEndDate = gridEndDate;
 		if(!isGridDateRangeValid()) {
 			return;
 		}
@@ -300,30 +302,44 @@ $(document).ready(function(){
 			showWarning("Add participants to the meeting");
 			return;
 		}
+		for(var i = 0; i < userIdList.length; i++) {
+			animateUserPic(userIdList[i]);
+		}
 		$.ajax({
 			url: "/calendars?users=" +  userIdList.join(',') + "&from=" + gridStartDate.format() + "&to=" + gridEndDate.format(),
 			type: "GET",
 			data: {},
 			success: function(data) {
+				console.log(data);
 				// Todo: start here
-				// for(var i = 0; i < data.length; i++){
-				// 	var record = data[i];
-				// 	var userId = record.userId;
-				// 	var eventList = record.events;
-				// 	for(var a = 0; a < eventList.length; a++){
-				// 		var e = eventList[a];
-				// 		addUserEventToGrid(userId, moment(e.startTime), moment(e.endTime));
-				// 	}
-				// 	stopUserPicAnimation(userId);
-				// }
-			 //  console.log(data);
+				for(var i = 0; i < data.length; i++){
+				 	var record = data[i];
+				 	var userId = record.userId;
+				 	var eventList = record.events;
+
+				 	// Remove the user's previous events
+				 	var cellKeyList = removeUserFromCellKeyToUserSetMapping(userId);
+					removeUserEventsFromGrid(userId, cellKeyList);
+
+					// Add the user's new events
+				 	for(var a = 0; a < eventList.length; a++){
+				 		var e = eventList[a];
+				 		addUserEventToGrid(userId, moment(e.startTime), moment(e.endTime));
+				 	}
+				 	stopUserPicAnimation(userId);
+				 }
 			},
 			error: function(xhr, status, error) {
-			  // console.log("Error: " + error);
+				console.log("Error: " + error);
+				showError("Unable to refresh grid now. Please try again later.");
+				gridStartDate = oldGridStartDate;
+				$("#dp1").datepicker("update", gridStartDate.toDate());
+				gridEndDate = oldGridEndDate;
+				$("#dp2").datepicker("update", gridEndDate.toDate());
 			}
 		});
 
-	});
+	}); // End of grid refresh event handler.
 
 	switchToTab1();
 	addTimesToGrid();
@@ -387,7 +403,10 @@ function getUserCalendar(userIdList) {
 function addUserEventToGrid(userId, startTime, endTime) {
 	var st = roundDownTimeTo30Minutes(startTime);
 	var et = roundUpTimeTo30Minutes(endTime);
-	for(var cellTime = moment(st); cellTime < et; cellTime = cellTime.add(30, 'minutes')) {
+	if(et > gridEndDate){
+		et = gridEndDate;
+	}
+	for(var cellTime = moment(st); cellTime < et; cellTime = moment(cellTime).add(30, 'minutes')) {
 		var cellKey = getCellKey(cellTime);
 		var cell = getCellWithKey(cellKey);
 		// Add user circle to the relevant grid cells for tab 1.
@@ -396,7 +415,7 @@ function addUserEventToGrid(userId, startTime, endTime) {
 		cell.children('span[data-user-id="' + userId + '"]').first().css({'background-color': getUserColor(userId)});
 
 		// Check if the user had a previous appointment at this time slot.
-		if(!cellKeyToUserSet[cellKey][uId]) {
+		if(!cellKeyToUserSet[cellKey][userId]) {
 			// Add this to the field that keeps track of the mappings.
 			cellKeyToUserSet[cellKey][userId] = true;
 			var numOfMeetings = 0;
