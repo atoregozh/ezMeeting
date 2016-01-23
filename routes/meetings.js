@@ -5,6 +5,7 @@ var google = require('googleapis');
 var refresh = require('passport-oauth2-refresh');
 var User = require('../models/user');
 var configAuth = require('../config/auth');
+var moment = require('moment');
 
 // Handler for POST requests to /events
 router.post('/', function(req, res, next) {
@@ -17,104 +18,119 @@ router.get('/', ensureAuthenticated, function(req, res, next) {
 });
 
 router.get('/all', function(req, res) {
-  //var retries = 2;
+  getGCalendarEventsPerUser(req, res);
+}); //router.get('/all'... ends here
 
+function getGCalendarEventsPerUser(req, res) {
+  var retries = 2;
+  console.log('starting out getGCalendarEventsPerUser');
   var send401Response = function() {
     return res.status(401).end();
   };
 
   // Get the user's credentials.
+  console.log('finding users credentials');
   User.findById(req.user, function(err, user) {
     if(err || !user) { 
-      console.log(err);  // problems with finding user in db; errors!
-      throw err; 
+      return send401Response();   // problems with finding user in db; errors!
     }
 
-    // var url = 'https://www.googleapis.com/calendar/v3'+path+'?access_token='+access_token;
-    // needle.get('https://www.googleapis.com/calendar/v3/calendars/toregozh%40gmail.com/events', 
-    // {headers: {Authorization: 'Bearer '+ req.session.access_token}},  function(error, response) {
-    // if (!error && response.statusCode == 200)
-    //   console.log(response.body);
-    // res.send(response.body);
-  });
+    var makeRequest = function() {
+      retries--;
+      if(!retries) {
+        // Couldn't refresh the access token.
+        return send401Response();
+      }
     
+    var now = moment().toISOString();
+    console.log('Now ' + now);
+    var yearFromNow = moment().add(1,'y').toISOString();
+    console.log('YearFromNow ' + yearFromNow);
 
-    // var makeRequest = function() {
-    //   retries--;
-    //   if(!retries) {
-    //     // Couldn't refresh the access token.
-    //     return send401Response();
-    //   }
-
-      // Set the credentials and make the request.
-      var OAuth2 = google.auth.OAuth2;
-      var oauth2Client = new OAuth2(
-              configAuth.googleAuth.clientID, 
-              configAuth.googleAuth.clientSecret, 
-              configAuth.googleAuth.callbackURL);
-      oauth2Client.setCredentials({
-        access_token: user.google.accessToken,
-        refresh_token: user.google.refreshToken
-      });
-        console.log("from within meeting.js. Here's accessToken:");
-        console.log(user.google.accessToken);
-        console.log("from within meeting.js. Here's responseToken:");
-        console.log(user.google.refreshToken);
-
-      var googleCal = google.calendar('v3');
-      googleCal.events.list({
-        calendarId: user.email,
-        orderBy: 'startTime',
-        timeMin: (new Date()).toISOString(),
-        singleEvents: true,
-        fields: 'items(end,start,summary,description,location)'
-      })
-      .withAuthClient(OAuth2)
-      .execute(function(error, response) {
-        console.log('getting into success');
-        if (!error && response.statusCode === 200) {
-          // Success! Do something with the response
-            res.send(response.body);
-        console.log('nope not success, getting into else if block');
+    var url = 'https://www.googleapis.com/calendar/v3/calendars/'+user.email+'/events'+
+              '?orderBy=startTime&singleEvents=true&timeMax='+yearFromNow+'&timeMin='+now;
+    console.log(url);
+    needle.get(url, 
+              { headers: { Authorization: 'Bearer '+ user.google.accessToken } },  
+      function(error, response) {
+        if (!error && response.statusCode == 200) {
+          console.log('calling filterCalData');
+          console.log(response.body);
+          console.log(typeof response.body);
+          console.log('....-_-.......');
+          jsonUserMap = filterCalData(user,response.body);
+          res.send(jsonUserMap);
         } else if (response.statusCode === 401) {
-          // Access token expired.
-          // Try to fetch a new one.
+        // Access token expired.
+        // Try to fetch a new one.
           refresh.requestNewAccessToken('google', user.refreshToken, function(err, accessToken) {
             if (err || !accessToken) {
               return send401Response(); 
+              console.log('error!');
             }
 
             // Save the new accessToken for future use
-            user.save( { accessToken: accessToken }, function(err) {
+            user.save( { google: { accessToken: accessToken} }, function(err) {
               if (err) {
+                console.log('problems with saving new accessToken to db!');
                 console.log(err);  // problems with saving into db; errors!
                 throw err;
               } else {   
                 // Retry the request.
+                console.log('calling makeRequest again');
                 makeRequest();
               }
             });
           });
         } else {
           // There was another error, handle it appropriately.
+          console.log('some other error happened');
           console.log(response.body);
-          res.send(response.body);
-          //return res.status(response.statusCode).json(reason.message);
-        }
-      });//  googleCal.events.list ends here
-    // }; //makerequest ends here
-    // makeRequest();
+          res.sendStatus(response.statusCode);
+        }   
+      }); //end needle get
+    };
+    makeRequest();
   }); //User.findById ends here
-  // console.log('');
-  // console.log(req.session.access_token);
-  // needle.get('https://www.googleapis.com/calendar/v3/calendars/toregozh%40gmail.com/events', 
-  //   {headers: {Authorization: 'Bearer '+ req.session.access_token}},  function(error, response) {
-  //   if (!error && response.statusCode == 200)
-  //     console.log(response.body);
-  //   res.send(response.body);
-  // });
-}); //router.get('/all'... ends here
+}
 
+function filterCalData(user,data) {
+  console.log('Heres the json data');
+  console.log('....<3.......');
+  var json = JSON.parse(data);
+  var filteredJsonArr = [];
+  for( var item in json.items) {
+    console.log(item.id);
+    console.log(item.summary);
+    console.log(item.start);
+    if( item.start.dateTime === null ) {
+      // && typeof item.start.dateTime !== "object") &&
+      // (typeof(item.end.date) != 'undefined' || item.end.date !== null)) {
+      continue;
+    } else {
+
+      filteredJsonArr.push(
+        {
+          id: item.id,
+          ownerId: user._id, // Same as userId if this event was created by this user.
+          name: item.summary,
+          startTime: item.start.dateTime, 
+          endTime: item.end.dateTime,
+          isInternal: false, // False means it came from Google calendar or another external source
+          externalId: item.id // Would be empty if this event was generated by us.
+        } 
+      );
+      
+    }
+    
+  }
+  console.log('Heres the json array');
+  console.log(filteredJsonArr);
+  var userMap = {userId: user.google.id , events: filteredJsonArr};
+  return userMap;
+
+}
+  
 // route middleware to make sure a user is logged in
 function ensureAuthenticated(req, res, next) {
     // if user is authenticated in the session, carry on 
@@ -125,10 +141,5 @@ function ensureAuthenticated(req, res, next) {
     res.redirect('/');
 }
 
-
-// // GET events listing
-// router.get('/', function(req, res, next) {
-//  	res.send('Received GET request for /events');
-// });
 
 module.exports = router;
