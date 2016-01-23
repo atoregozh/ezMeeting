@@ -95,11 +95,14 @@ function getGCalendarEventsPerUser(req, res) {
 
 function filterCalData(user,data) {
   console.log('Heres the json data');
+  console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
   console.log(data);
+  console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
   console.log('....<3.......');
   console.log(typeof(data));
   var filteredJsonArr = [];
-  for( var item in data.items) {
+  for( var i = 0; i < data.items.length; i++) {
+    var item = data.items[i];
     console.log(item.id);
     console.log(item.summary);
     console.log(item.start);
