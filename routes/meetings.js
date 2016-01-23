@@ -12,7 +12,7 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/', ensureAuthenticated, function(req, res, next) {
-  res.render('meetings', {'title':'Create new meeting'});
+  res.render('meetings', {user: req.user,'title':'Create new meeting'});
 });
 
 router.get('/all', function(req, res) {

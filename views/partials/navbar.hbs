@@ -1,0 +1,57 @@
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <span id="app-logo">
+          <a href="./">
+                    APP NAME
+          </a>
+        </span>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item" id="nav-new-meeting">
+                <a class="nav-link" href="/meetings">
+                  <div class="nav-text">New Meeting
+                  </div>
+                  <div class="nav-icons">
+                    <span class="fa fa-calendar-plus-o ">
+                    </span>
+                  </div>
+                </a>
+            </li>
+            <li class="nav-item" id="nav-my-meeting">
+                <a class="nav-link" href="/home">
+                  <div class="nav-text">My Meetings
+                  </div>
+                  <div class="nav-icons">
+                    <span class="fa fa-list-alt " id="fa-list-spec"></span>
+                  </div>
+                </a>
+            </li>
+            <li class="nav-item" id="nav-notification">
+                <a class="nav-link" href="/meetings/all">
+                  <div class="nav-text">Notifications
+                  </div>
+                  <div class="nav-icons">
+                    <span class="fa fa-bell"></i>
+                    </span>
+                  </div>
+                </a>
+            </li>
+            <li class="nav-item" id="nav-profile" data-toggle="popover" data-content="
+                      <a href='/profile'>
+                        Profile
+                      </a>
+                      <a href='/logout'>
+                        Logout
+                      </a>
+                    " 
+                    title="">
+                <a class="nav-link" href="#">
+                <div class="nav-text">{{user.name.firstname}}
+                </div>
+                <div class="nav-icons">
+                  <span ><img id="nav-profile-img" src="{{user.pic}}" alt="User Profile Picture">
+                  </span>
+                </div>
+                </a>
+            </li>
+        </ul>
+    </nav>
