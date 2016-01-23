@@ -15,32 +15,29 @@ router.get('/', function(req, res, next) {
 
 	var data = [];
 
-	var hourShift;
-	var minutesBeforeNextMeeting;
-	var meetingDuration;
 	for(var i = 0; i < usersList.length; i++) {
 		var userId = usersList[i];
 		var userEvents = [];
 		// Get user events within the time range:
-		hourShift = hourShift = Math.floor((Math.random() * 48) + 1); // Random number between 1 and 48
-
+		var hourShift = Math.floor((Math.random() * 48) + 1); // Random number between 1 and 48
 		var currentStart = moment(from).add(hourShift, 'h');
-		minutesBeforeNextMeeting = Math.floor((Math.random() * 300) + 1); // Random number between 1 and 300
-		meetingDuration = Math.floor((Math.random() * 90) + 1); // Random number between 1 and 90
-		for(var b = 0; b < 20; b++) {
+		
+		for(var b = 0; b < 1000; b++) {
 			var startTime = currentStart;
-			var endTime = currentStart.add(meetingDuration, 'minutes').format();
+			var meetingDuration = Math.floor((Math.random() * 90) + 1); // Random number between 1 and 90
+			var endTime = currentStart.add(meetingDuration, 'minutes');
 
 			// Error check in case I mistakenly configure crap in the randomization logic.
 			if (startTime < from || endTime > to){
 				continue;
 			}
+			var minutesBeforeNextMeeting = Math.floor((Math.random() * 300) + 1); // Random number between 1 and 300
 			userEvents.push({
 				id: userId + '-' + b,
 				ownerId: userId,
 				name: 'Test event',
 				startTime: currentStart.format(),
-				endTime: currentStart.add(meetingDuration, 'minutes').format(),
+				endTime: endTime.format(),
 				isInternal: true
 				});
 			currentStart.add(minutesBeforeNextMeeting, 'minutes');

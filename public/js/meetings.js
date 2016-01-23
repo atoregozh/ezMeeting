@@ -93,7 +93,7 @@ $(document).ready(function(){
 	var dp1 = $('#dp1').datepicker({
 		format: 'mm/dd/yyyy',
 		autoclose: true,
-		startDate: '0d',
+		// startDate: '0d',
 		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
 		// console.log('clicked dp1');
@@ -104,7 +104,7 @@ $(document).ready(function(){
 	var dp2 = $('#dp2').datepicker({
 		format: 'mm/dd/yyyy',
 		autoclose: true,
-		startDate: '0d',
+		// startDate: '0d',
 		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
 
@@ -114,7 +114,7 @@ $(document).ready(function(){
 	var dp3 = $('#m-date').datepicker({
 		format: 'D, M d, yyyy',
 		autoclose: true,
-		startDate: '0d',
+		// startDate: '0d',
 		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
 
@@ -293,49 +293,62 @@ $(document).ready(function(){
 	});
 
 	$('#grid-refresh').click(function(){
-		var oldGridStartDate = gridStartDate;
-		var oldGridEndDate = gridEndDate;
-		if(!isGridDateRangeValid()) {
+		if(!isSpecifiedDateRangeValid()) {
+			showError("The start date should be earlier than the end date");
 			return;
 		}
 		if(userIdList.length < 1){
 			showWarning("Add participants to the meeting");
 			return;
 		}
-		for(var i = 0; i < userIdList.length; i++) {
-			animateUserPic(userIdList[i]);
-		}
+		startAllUserPicAnimation();
+		var startDate = moment($('#dp1').data('datepicker').getDate()).startOf('day');
+		var endDate = moment($('#dp2').data('datepicker').getDate()).endOf('day');
+
 		$.ajax({
-			url: "/calendars?users=" +  userIdList.join(',') + "&from=" + gridStartDate.format() + "&to=" + gridEndDate.format(),
+			url: "/calendars?users=" +  userIdList.join(',') + "&from=" + startDate.format() + "&to=" + endDate.format(),
 			type: "GET",
 			data: {},
 			success: function(data) {
-				console.log(data);
-				// Todo: start here
+
+				var userIdListBackup = userIdList.slice(0);
+
+				// Remove all users' previous events
+				for(var i = 0; i < userIdList.length; i++){
+					var uid = userIdList[i];
+					console.log('removing user with ID: ' + uid);
+					var cellKeyList = removeUserFromCellKeyToUserSetMapping(uid);
+					removeUserEventsFromGrid(uid, cellKeyList);	
+				}
+				console.log('-----sss-----');
+			 	console.log(cellKeyToUserSet);
+			 	console.log('-----xxx-----');
+
+			 	// Redraw the grids to ensure we're displaying the new range of days.
+			 	clearAllGridDisplayedDays();
+				drawGridDays(startDate, endDate);
+				userIdList = userIdListBackup;
+
 				for(var i = 0; i < data.length; i++){
 				 	var record = data[i];
 				 	var userId = record.userId;
 				 	var eventList = record.events;
 
-				 	// Remove the user's previous events
-				 	var cellKeyList = removeUserFromCellKeyToUserSetMapping(userId);
-					removeUserEventsFromGrid(userId, cellKeyList);
-
-					// Add the user's new events
+					// Add the user's events
 				 	for(var a = 0; a < eventList.length; a++){
 				 		var e = eventList[a];
 				 		addUserEventToGrid(userId, moment(e.startTime), moment(e.endTime));
 				 	}
 				 	stopUserPicAnimation(userId);
 				 }
+				 stopAllUserPicAnimation(); // In case there're users without any returned event.
 			},
 			error: function(xhr, status, error) {
 				console.log("Error: " + error);
 				showError("Unable to refresh grid now. Please try again later.");
-				gridStartDate = oldGridStartDate;
 				$("#dp1").datepicker("update", gridStartDate.toDate());
-				gridEndDate = oldGridEndDate;
 				$("#dp2").datepicker("update", gridEndDate.toDate());
+				stopAllUserPicAnimation();
 			}
 		});
 
@@ -343,7 +356,7 @@ $(document).ready(function(){
 
 	switchToTab1();
 	addTimesToGrid();
-	add7DaysToGrid();
+	addNext7DaysToGrid();
 	scrollCalendarToNineAm();
 
 	// $('#m-start').timepicker('setTime', DEFAULT_TIME);
@@ -355,27 +368,82 @@ $(document).ready(function(){
 	
 }); // End of $(document).ready()
 
-function isGridDateRangeValid() {
-	// Check the start and end date input fields. If they are invalid, this method displays an error message to 
-	// the user and returns false. Otherwise, it sets the gridStartDate and gridEndDate to values from the input 
-	// fields and returns true.
+function clearAllGridDisplayedDays() {
+	// Removes all the cells from the grid (including their headings). Leaves only the time cells. This can be 
+	// reversed (excluding the cell content) by calling drawGridDays() with the right start and end dates.
+	$('.h-col:not(.time)').remove();
+	$('.c-col:not(.time)').remove();
+	gridStartDate = null;
+	gridEndDate = null;
+}
+
+function drawGridDays(startDate, endDate) {
+	// Redraws all the cells within the range gridStartDate - gridEndDate (including their headings). This is a  
+	// reversal of clearAllGridDisplayedDays();
+	// If startDate and endDate are specified, the grid is redraw with to
+	if(startDate && endDate && (endDate >= startDate)) {
+		gridStartDate = null;
+		gridEndDate = null;
+	}else {
+		console.log('cannot redraw grid because of invalid startDate and endDate');
+		return;
+	}
+	for(var day = moment(startDate); day <= moment(endDate); day.add(1, 'days')){
+		addDayToGrid(day);
+	}
+}
+
+function updateGridDisplayedDays() {
 	var startDate = moment($('#dp1').data('datepicker').getDate()).startOf('day');
 	var endDate = moment($('#dp2').data('datepicker').getDate()).endOf('day');
-	if(endDate < startDate){
+	if((startDate.diff(gridStartDate) === 0) && (endDate.diff(gridEndDate) === 0)) {
+		console.log("The date range hasn't changed");
+		return false;
+	}
+	if(!isSpecifiedDateRangeValid()){
 		showError("The start date should be earlier than the end date");
 		return false;
-	}else {
-		gridStartDate = startDate;
-		gridEndDate = endDate;
-		return true;
 	}
+	for(var d = moment(gridEndDate).add(1, 'days'); d <= endDate; d = moment(d).add(1, 'days')){
+		addDayToGrid(d);
+		console.log('>>> adding: ' + d.format());
+	}
+	for(var d = moment(gridStartDate).subtract(1, 'days'); d >= startDate; d = moment(d).subtract(1, 'days')){
+		addDayToGrid(d);
+		console.log('>>> adding: ' + d.format());
+	}
+
+	/*
+	for(var i = 0; i < data.length; i++){
+	 	var record = data[i];
+	 	var userId = record.userId;
+	 	var eventList = record.events;
+
+	 	// Remove the user's previous events
+	 	var cellKeyList = removeUserFromCellKeyToUserSetMapping(userId);
+		removeUserEventsFromGrid(userId, cellKeyList);
+
+		// Add the user's new events
+	 	for(var a = 0; a < eventList.length; a++){
+	 		var e = eventList[a];
+	 		addUserEventToGrid(userId, moment(e.startTime), moment(e.endTime));
+	 	}
+	 	stopUserPicAnimation(userId);
+	 }
+	 */
+}
+
+function isSpecifiedDateRangeValid() {
+	var startDate = moment($('#dp1').data('datepicker').getDate()).startOf('day');
+	var endDate = moment($('#dp2').data('datepicker').getDate()).endOf('day');
+	return (endDate >= startDate);
 }
 
 function getUserCalendar(userIdList) {
 	// Retrieves the calendars from the server.
 	userIds = userIdList.join(',');
 	for(var i = 0; i < userIdList.length; i++){
-		animateUserPic(userIdList[i]);
+		startUserPicAnimation(userIdList[i]);
 	}
 	$.ajax({
 		url: "/calendars?users=" +  userIds + "&from=" + gridStartDate.format() + "&to=" + gridEndDate.format(),
@@ -430,6 +498,18 @@ function addUserEventToGrid(userId, startTime, endTime) {
 			cell.children('.busy-count').addClass('active');
 		}
 	}
+
+	// Add user Id to userIdList if missing.
+	var index = -1;
+	for(var i = 0; i < userIdList.length; i++){
+		if(userIdList[i] == userId){
+			index = i;
+			break;
+		}
+	}
+	if(index === -1) {
+		userIdList.push(userId);
+	}
 }
 
 // Removes all the user's bubbles from tab 1. In tab 2 and tab 3, it also disables the gray colors and updates the cell 
@@ -455,6 +535,7 @@ function removeUserEventsFromGrid(userId, cellKeyList) {
 }
 
 // Removes all the user's entries from the map and returns the keys of all the cells in which the user had an event.
+// Also removes the user Id from the userIdList
 function removeUserFromCellKeyToUserSetMapping(userId) {
 	var cellKeysOfUserEvents = [];
 	for(var cellKey in cellKeyToUserSet) {
@@ -463,6 +544,19 @@ function removeUserFromCellKeyToUserSetMapping(userId) {
 			cellKeyToUserSet[cellKey][userId] = false;
 		}
 	}
+
+	var index = -1;
+	for(var i = 0; i < userIdList.length; i++){
+		// Don't use === because the ID could be a number or string.
+		if(userIdList[i] == userId){
+			index = i;
+			break;
+		}
+	}
+	if(index != -1) {
+		userIdList.splice(index, 1);
+	}
+
 	return cellKeysOfUserEvents;
 }
 
@@ -626,37 +720,26 @@ function getCellWithKey(key) {
 	return $( 'div[key="' + key + '"]').first();
 }
 
-function add7DaysToGrid() {
-	var today = moment();
-	for(var i = 0; i < 7; i++) {
-		var day = moment(today).add(i, 'day');
+function addNext7DaysToGrid() {
+	var startOfToday = moment().startOf('day');
+	var endOfLastDay;
+	for(var day = moment(startOfToday); day < moment(startOfToday).add(7, 'day'); day.add(1, 'day')) {
+		endOfLastDay = moment(day).endOf('day');
 		addDayToGrid(day);
 	}
+	$("#dp1").datepicker("update", gridStartDate.toDate());
+	$("#dp2").datepicker("update", gridEndDate.toDate());
 }
 
-// Expects a moment day object.
+// Expects a moment day object. Note that this function simply updates the grid. 
+// It does not upate the necessary fields or check that the added date is not 
+// going to set the grid in a weird way.
 function addDayToGrid(day) {
 	var dayKey = day.format('_YYYY-MM-DD');
 	var tableHeading = day.format ('ddd M/D');
-	dayStart = moment(day).startOf('day');
-	if(!gridStartDate || (dayStart < gridStartDate)) {
-		gridStartDate = dayStart;
-		$("#dp1").datepicker("update", gridStartDate.toDate());
-		if(!gridEndDate) {
-			gridEndDate = moment(dayStart).endOf('day');
-			$("#dp2").datepicker("update", gridEndDate.toDate());
-		}
-		$('#tr').prepend(
-			'<div class="h-col">' + tableHeading + '</div>'
-		);
-		$('#br').prepend(
-			'<div class="c-col ' + dayKey + '">'
-		);
-		addRowsToDayCol($('.' + dayKey).first(), dayKey);
-	}
-	else if(!gridEndDate || (dayStart > gridEndDate)) {
-		gridEndDate = moment(dayStart).endOf('day');
-		$("#dp2").datepicker("update", gridEndDate.toDate());
+	var eod = moment(day).endOf('day');
+	var sod = moment(day).startOf('day');
+	if(!gridEndDate || (eod > gridEndDate)) {
 		$('#tr').append(
 			'<div class="h-col">' + tableHeading + '</div>'
 		);
@@ -664,7 +747,23 @@ function addDayToGrid(day) {
 			'<div class="c-col ' + dayKey + '">'
 		);
 		addRowsToDayCol($('.' + dayKey).first(), dayKey);
+		gridEndDate = eod;
+		if(!gridStartDate){
+			// This loop will execute if both gridStartDate and gridEndDate were undefined.
+			gridStartDate = sod; 
+		}
 	}
+	else if(!gridStartDate || (sod < gridStartDate)) {
+		$('#tr').prepend(
+			'<div class="h-col">' + tableHeading + '</div>'
+		);
+		$('#br').prepend(
+			'<div class="c-col ' + dayKey + '">'
+		);
+		addRowsToDayCol($('.' + dayKey).first(), dayKey);
+		gridStartDate = sod;
+	}
+	
 }
 
 function addRowsToDayCol(dayCol, dayKey){
@@ -758,7 +857,7 @@ function addUserToPicsPanel(userId, name, picUrl) {
 	var frame = getUserFrameFromGridPanel(userId);
 	frame.css({'border-color': currentColor});
 
-	// animateUserPic(userId);
+	// startUserPicAnimation(userId);
 }
 
 function removeUserFromPicsPanel(userId) {
@@ -790,13 +889,6 @@ function removeUserFromNameList(userId) {
 	});
 }
 
-function animateUserPic(userId) {
-	var frame = getUserFrameFromGridPanel(userId);
-	frame.css({'border-color': WHITE_COLOR});
-	frame.css({'border-top-color': frame.parent().attr(CURRENT_COLOR_ATTR_KEY)});
-	frame.addClass(ANIMATION_CLASS_NAME);
-}
-
 
 function getUserFrameFromGridPanel(userId){
 	// Returns the .person-frame jQuery object of the user with the specified ID
@@ -808,10 +900,29 @@ function getGridPersonFromGridPanel(userId){
 	return $('#' + userIdToGridPicId(userId));
 }
 
+function startUserPicAnimation(userId) {
+	var frame = getUserFrameFromGridPanel(userId);
+	frame.css({'border-color': WHITE_COLOR});
+	frame.css({'border-top-color': frame.parent().attr(CURRENT_COLOR_ATTR_KEY)});
+	frame.addClass(ANIMATION_CLASS_NAME);
+}
+
+function startAllUserPicAnimation() {
+	for(var i = 0; i < userIdList.length; i++) {
+		startUserPicAnimation(userIdList[i]);
+	}
+}
+
 function stopUserPicAnimation(userId) {
 	var frame = getUserFrameFromGridPanel(userId);
 	frame.removeClass(ANIMATION_CLASS_NAME);
 	frame.css({'border-color': frame.parent().attr(CURRENT_COLOR_ATTR_KEY)});
+}
+
+function stopAllUserPicAnimation() {
+	for(var i = 0; i < userIdList.length; i++){
+		stopUserPicAnimation(userIdList[i]);
+	}
 }
 
 function switchToTab1() {

@@ -335,6 +335,7 @@
 	overflow: hidden;
 	border: 1px solid #ccc;
 	font-size: 0;
+	width: 100%;
 }
 
 .calendar-header {
