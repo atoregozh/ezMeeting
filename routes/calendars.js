@@ -27,7 +27,7 @@ router.get('/', function(req, res, next) {
 		var currentStart = moment(from).add(hourShift, 'h');
 		minutesBeforeNextMeeting = Math.floor((Math.random() * 300) + 1); // Random number between 1 and 300
 		meetingDuration = Math.floor((Math.random() * 90) + 1); // Random number between 1 and 90
-		for(var b = 0; b < 10; b++) {
+		for(var b = 0; b < 20; b++) {
 			var startTime = currentStart;
 			var endTime = currentStart.add(meetingDuration, 'minutes').format();
 
