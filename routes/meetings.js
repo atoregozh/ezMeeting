@@ -1,10 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var needle = require('needle');
-var google = require('googleapis');
 var refresh = require('passport-oauth2-refresh');
 var User = require('../models/user');
-var configAuth = require('../config/auth');
 var moment = require('moment');
 
 // Handler for POST requests to /events
@@ -55,17 +53,16 @@ function getGCalendarEventsPerUser(req, res) {
       function(error, response) {
         if (!error && response.statusCode == 200) {
 
-          console.log('calling filterCalData');
-          var jsonUserMap = filterCalData(user,response.body);
-          console.log(jsonUserMap);
+          console.log('Success! calling filterUserCalData()');
+          var jsonUserMap = filterUserCalData(user,response.body);
           res.send(jsonUserMap);
         } else if (response.statusCode === 401) {
         // Access token expired.
         // Try to fetch a new one.
           refresh.requestNewAccessToken('google', user.refreshToken, function(err, accessToken) {
             if (err || !accessToken) {
-              return send401Response(); 
               console.log('error!');
+              return send401Response(); 
             }
 
             // Save the new accessToken for future use
@@ -93,22 +90,15 @@ function getGCalendarEventsPerUser(req, res) {
   }); //User.findById ends here
 }
 
-function filterCalData(user,data) {
-  console.log('Heres the json data');
-  console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
-  console.log(data);
-  console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
-  console.log('....<3.......');
-  console.log(typeof(data));
+function filterUserCalData(user,data) {
+  // console.log('Heres the json data');
+  // console.log(data);
+  // console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
   var filteredJsonArr = [];
   for( var i = 0; i < data.items.length; i++) {
     var item = data.items[i];
-    console.log(item.id);
-    console.log(item.summary);
-    console.log(item.start);
-    if( item.start.dateTime === null ) {
-      // && typeof item.start.dateTime !== "object") &&
-      // (typeof(item.end.date) != 'undefined' || item.end.date !== null)) {
+    if (( item.start.dateTime === null ) || (typeof(item.start.dateTime) == 'undefined') &&
+      (typeof(item.end.dateTime) == 'undefined' || item.end.Time === null)) {
       continue;
     } else {
 
