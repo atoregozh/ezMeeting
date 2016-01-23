@@ -7,8 +7,12 @@ var moment = require('moment');
 
 // Handler for POST requests to /events
 router.post('/', function(req, res, next) {
-	res.send('Received POST request for /events');
-  // save the card to db req.data get data from ajax
+  // 1. receive data from ajax req.data
+  // 2. reformat the json to fit google's api
+  // 3. send post request to google calendar
+  inviteToMeeting(req, res);
+  // 4. save meeting to db
+	//res.send('Received POST request for /events');
 });
 
 router.get('/', ensureAuthenticated, function(req, res, next) {
@@ -18,6 +22,92 @@ router.get('/', ensureAuthenticated, function(req, res, next) {
 router.get('/all', function(req, res) {
   getGCalendarEventsPerUser(req, res);
 }); //router.get('/all'... ends here
+
+function inviteToMeeting(req, res) {
+  var retries = 2;
+  console.log('starting out inviteToMeeting');
+  var send401Response = function() {
+    return res.status(401).end();
+  };
+
+  // Get the user's credentials.
+  console.log('finding users credentials');
+  User.findById(req.user, function(err, user) {
+    if(err || !user) { 
+      console.log('problems with finding user in db; errors!');
+      return send401Response();   // problems with finding user in db; errors!
+    }
+
+    var makeRequest = function() {
+      retries--;
+      if(!retries) {
+        // Couldn't refresh the access token.
+        return send401Response();
+      }
+    
+    //find emails from database
+    
+    var event = {
+    'summary': req.body.name,
+    'location': req.body.location,
+    'description': req.body.description,
+    'start': {
+      'dateTime': req.body.startTime
+    },
+    'end': {
+      'dateTime': req.body.endTime
+    },
+    'attendees': [
+      {'email': 'kesiena115@gmail.com'},
+      {'email': 'toregozh@gmail.com>'},
+    ],
+    'reminders': {
+      'useDefault': false,
+      'overrides': [
+        {'method': 'email', 'minutes': 60},
+        {'method': 'popup', 'minutes': 20},
+      ],
+    },
+    'organizer': {
+      "email": "toregozh@gmail.com",
+      "displayName": req.body.organizer.name
+    }
+  };
+
+    var url = 'https://www.googleapis.com/calendar/v3/calendars/'+user.email+'/events'+
+              '?sendNotifications=true';
+
+    var options = {
+      headers: {
+        Authorization: 'Bearer '+ user.google.accessToken 
+      }
+    };
+
+    console.log(url);
+    needle.post(url, event, options, function(error, response) {
+        if (!error && response.statusCode == 200) {
+
+          console.log('Success! event has created!');
+          console.log('this id needs to be saved:');
+          console.log(response.body.id);
+          console.log(response.body);
+
+        } else if (response.statusCode === 401) {
+        // Access token expired.
+        // Try to fetch a new one.
+          refreshAccessToken(user,makeRequest);
+        } else {
+          // There was another error, handle it appropriately.
+          console.log('some other error happened');
+          console.log(response.body);
+          res.sendStatus(response.statusCode);
+        }   
+      }); //end needle get
+    };
+    makeRequest();
+  }); //User.findById ends here
+
+}
 
 function getGCalendarEventsPerUser(req, res) {
   var retries = 2;
@@ -59,25 +149,7 @@ function getGCalendarEventsPerUser(req, res) {
         } else if (response.statusCode === 401) {
         // Access token expired.
         // Try to fetch a new one.
-          refresh.requestNewAccessToken('google', user.refreshToken, function(err, accessToken) {
-            if (err || !accessToken) {
-              console.log('error!');
-              return send401Response(); 
-            }
-
-            // Save the new accessToken for future use
-            user.save( { google: { accessToken: accessToken} }, function(err) {
-              if (err) {
-                console.log('problems with saving new accessToken to db!');
-                console.log(err);  // problems with saving into db; errors!
-                throw err;
-              } else {   
-                // Retry the request.
-                console.log('calling makeRequest again');
-                makeRequest();
-              }
-            });
-          });
+          refreshAccessToken(user,makeRequest);
         } else {
           // There was another error, handle it appropriately.
           console.log('some other error happened');
@@ -88,6 +160,29 @@ function getGCalendarEventsPerUser(req, res) {
     };
     makeRequest();
   }); //User.findById ends here
+}
+
+function refreshAccessToken(user, functiontoRepeat) {
+  refresh.requestNewAccessToken('google', user.google.refreshToken, 
+    function(err, accessToken) {
+      if (err || !accessToken) {
+        console.log('error! couldnt refresh the token!'); //couldn't refresh the token
+        return res.status(401).end(); 
+      }
+
+      // Save the new accessToken for future use
+      user.save( { google: { accessToken: accessToken} }, function(err) {
+        if (err) {
+          console.log('problems with saving new accessToken to db!');
+          console.log(err);  // problems with saving into db; errors!
+          throw err;
+        } else {   
+          // Retry the request.
+          console.log('calling makeRequest again');
+          functiontoRepeat;
+        }
+      });
+    });
 }
 
 function filterUserCalData(user,data) {
