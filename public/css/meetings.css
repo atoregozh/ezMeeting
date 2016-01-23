@@ -643,7 +643,7 @@ textarea {
 	width: 60px;
 	height: 60px;
 	border-radius: 50%;
-	border: 1px solid #ccc;
+	border: 1px solid #fff;
 }
 
 #organizer2 {
@@ -660,7 +660,7 @@ textarea {
 	height: 40px;
 	margin: 0 5px;
 	border-radius: 50%;
-	border: 1px solid #ccc;
+	border: 1px solid #fff;
 }
 
 #org-span1 {
