@@ -3,17 +3,14 @@ var router = express.Router();
 var needle = require('needle');
 var refresh = require('passport-oauth2-refresh');
 var User = require('../models/user');
+var Meeting = require('../models/meeting');
 var moment = require('moment');
+var mongoose = require('mongoose');
 
 // Handler for POST requests to /events
 router.post('/', function(req, res, next) {
-  // 1. receive data from ajax req.data
-  // 2. reformat the json to fit google's api
-  // 3. send post request to google calendar
   //@DEBUG console.log('ip2>>>>', req.connection.remoteAddress); this is to see where does the request coming from
   inviteToMeeting(req, res);
-  // 4. save meeting to db
-	//res.send('Received POST request for /events');
 });
 
 router.get('/', ensureAuthenticated, function(req, res, next) {
@@ -25,37 +22,45 @@ router.get('/all', function(req, res) {
 }); //router.get('/all'... ends here
 
 function inviteToMeeting(req, res) {
+  /*
+  * receive data from ajax req.data
+  * reformat the json to fit google's api
+  * send post request to google calendar
+  */
   var retries = 2;
   console.log('starting out inviteToMeeting');
   var send401Response = function() {
     return res.status(401).end();
   };
 
-  // see what's inside of session cookies
-  console.log('here is req.session');
-  console.log(req.session);
-  User.findOne({'email': req.session.logged_user_email}, function(err, user) {
-    if(err || !user) { 
-      console.log('heres the user');
-      console.log(user);
-      console.log('*****************');
-      console.log('problems with finding user in db; errors! Heres the error:');
-      console.log(err);
-      return send401Response();   // problems with finding user in db; errors!
-    }
-
-    var makeRequest = function() {
-      retries--;
-      if(!retries) {
-        // Couldn't refresh the access token.
-        return send401Response();
+  //prepare array or participant ids from request json
+  var participantIDs =[];
+  for ( var i = 0; i < req.body.participants.length; i++) {//req.body.participants is json object that has name and id
+    var p = req.body.participants[i];
+    participantIDs.push(p.id);
+  }
+  //find attendee emails from db based on the participant id
+  // check this ASYNCH CODE!
+  var participantEmails = [];
+  User.
+  where('_id').in(participantIDs).
+  exec(function(err, participantDocs){ //assumption that participantDocs is array of type User
+    if (err) {
+      console.log(err);  // handle errors!
+      return send401Response();   // problems with finding participant docs in db; errors!
+    } else {  
+      console.log('getting participant docs'); 
+      for (var i = 0; i < participantDocs.length; i++) {
+        var participant = participantDocs[i]; //participant is User document
+        participantEmails.push(participant.email);
+        console.log('Found ' + participant._id + ' with ' + participant.email); 
       }
-    
-    //find emails from database
-    var email1 = "toregozh@gmail.com";
-    var email2 = "kesiena115@gmail.com";
+      return participantEmails;
+    }
+  });
 
-    var event = {
+  // start building request object for google
+  var event = {
     "summary": req.body.name,
     "location": req.body.location,
     "description": req.body.description,
@@ -66,8 +71,7 @@ function inviteToMeeting(req, res) {
       "dateTime": req.body.endTime
     },
     "attendees": [
-      {"email": email1},
-      {"email": email2},
+      //fill this in below
     ],
     "reminders": {
       "useDefault": false,
@@ -77,46 +81,118 @@ function inviteToMeeting(req, res) {
       ],
     },
     "organizer": {
-      "email": email1,
       "displayName": req.body.organizer.name
     }
   };
+  //not done with building request object yet, fill attendees array with emails
+  for (var j = 0; i < participantEmails.length; j++) {
+    var email = participantEmails[j];
+    event.attendees.push( {'email': email} );
+  } 
+  
+  // find organizer and get his/her google accessToken
+  organizerId = req.body.organizer.id;
+  User.findById(organizerId, function(err, organizer) {
+    if(err || !organizer) { 
+      console.log('heres the organizer from db');
+      console.log(organizer);
+      console.log('*****************');
+      console.log('problems with finding organizer (user) in db; errors! Heres the error:');
+      console.log(err);
+      return send401Response();   // problems with finding user in db; errors!
+    }
 
-    var url = 'https://www.googleapis.com/calendar/v3/calendars/'+user.email+'/events'+
-              '?sendNotifications=true';
+    var makeRequest = function() {
+      retries--;
+      if(!retries) {
+        // Couldn't refresh the access token.
+        return send401Response();
+      }
+      
+      //add organizer email to event
+      event.organizer.push( {"email": organizer.email} );
 
-    var options = {
-      headers: {
-        Authorization: 'Bearer '+ user.google.accessToken
-      },
-      json: true 
-    };
+      var url = 'https://www.googleapis.com/calendar/v3/calendars/'+organizer.email+'/events'+
+                '?sendNotifications=true';
 
-    console.log(url);
-    needle.post(url, event, options, function(error, response) {
-        if (!error && response.statusCode == 200) {
+      var options = {
+        headers: {
+          Authorization: 'Bearer '+ organizer.google.accessToken
+        },
+        json: true 
+      };
 
-          console.log('Success! event has created!');
-          console.log('this google id needs to be saved:');
-          console.log(response.body.id);
-          console.log("*******************");
-          console.log(response.body);
+      console.log(url);
+      needle.post(url, event, options, function(error, response) {
+          if (!error && response.statusCode == 200) {
 
-        } else if (response.statusCode === 401) {
-        // Access token expired.
-        // Try to fetch a new one.
-          refreshAccessToken(user,makeRequest);
-        } else {
-          // There was another error, handle it appropriately.
-          console.log('some other error happened');
-          console.log(response.body);
-          res.sendStatus(response.statusCode);
-        }   
-      }); //end needle get
-    };
-    makeRequest();
-  }); //User.findById ends here
+            console.log('Success! event has created!');
+            console.log('this google id needs to be saved:');
+            console.log(response.body.id);
+            console.log("*******************");
+            console.log(response.body);
+            console.log("*******************");
+            console.log('Returning from inviteToMeeting()');
+            console.log('Calling processCreatedMeeting()');
+            processCreatedMeeting(participantIDs, organizerId, response.body);
+            console.log('Done with processCreatedMeeting()');
+            console.log('Sending Meeting ID back to Client');
+            res.send({"googleId": response.body.id} );
 
+          } else if (response.statusCode === 401) {
+          // Access token expired.
+          // Try to fetch a new one.
+            refreshAccessToken(user,makeRequest);
+          } else {
+            // There was another error, handle it appropriately.
+            console.log('some other error happened');
+            console.log(response.body);
+            res.sendStatus(response.statusCode);
+          }   
+        }); //needle.post ends here
+      }; //makeRequest ends here
+      makeRequest();
+    }); //User.findById ends here
+}
+
+function processCreatedMeeting(participantIDs, organizerId, res) {
+  /*processCreatedMeeting:
+    * save meeting to db
+  */
+  var newMeeting = new Meeting();
+  // set all of the relevant information
+  newMeeting.googleId = res.id;
+  newMeeting.name = res.summary;
+  newMeeting.isActive = true;
+  newMeeting.isDeleted = false;
+  newMeeting.startTime = res.start.dateTime;
+  newMeeting.endTime = res.end.dateTime;
+  newMeeting.description = res.description;
+  newMeeting.location = res.location;
+  newMeeting.organizerId = organizerId;
+  newMeeting.isInternal = true;
+
+  participantObjectIds = [];
+  console.log('Converting participant IDs from String to ObjectId');
+  for (var i = 0; i < participantIDs.length; i++) {
+    var stringId = participantIDs[i];
+    var objectId = mongoose.Types.ObjectId(stringId);
+    participantObjectIds.push(objectId);
+  } 
+
+  newMeeting.participants = participantObjectIds;
+
+  // save the meeting to database
+  // save is mongoose command
+  console.log('Starting to save newMeeting into db');
+  newMeeting.save(function(err) {
+    if (err) {
+        console.log(err);  // handle errors!
+        throw err;
+    } else {   
+        return done(null, newMeeting);
+    }
+  });
 }
 
 function getGCalendarEventsPerUser(req, res) {

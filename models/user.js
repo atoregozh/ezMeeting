@@ -52,7 +52,7 @@ var userSchema = new Schema({
    type: String
   },
   meetings: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId, //meetingid list
     ref: 'Meeting'
   }]
 });

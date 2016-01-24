@@ -39,7 +39,7 @@ var meetingSchema = new Schema({
     type: String
   },
   participants: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId, //userId list
     ref: 'User'
   }],
   isInternal: {
