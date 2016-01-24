@@ -96,6 +96,7 @@ $(document).ready(function(){
 		format: 'mm/dd/yyyy',
 		autoclose: true,
 		// startDate: '0d',
+		todayHighlight: true,
 		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
 		// console.log('clicked dp1');
@@ -107,6 +108,7 @@ $(document).ready(function(){
 		format: 'mm/dd/yyyy',
 		autoclose: true,
 		// startDate: '0d',
+		todayHighlight: true,
 		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
 
@@ -406,43 +408,6 @@ function drawGridDays(startDate, endDate) {
 	}
 }
 
-function updateGridDisplayedDays() {
-	var startDate = moment($('#dp1').data('datepicker').getDate()).startOf('day');
-	var endDate = moment($('#dp2').data('datepicker').getDate()).endOf('day');
-	if((startDate.diff(gridStartDate) === 0) && (endDate.diff(gridEndDate) === 0)) {
-		console.log("The date range hasn't changed");
-		return false;
-	}
-	if(!isSpecifiedDateRangeValid()){
-		showError("The start date should be earlier than the end date");
-		return false;
-	}
-	for(var d = moment(gridEndDate).add(1, 'days'); d <= endDate; d = moment(d).add(1, 'days')){
-		addDayToGrid(d);
-	}
-	for(var d = moment(gridStartDate).subtract(1, 'days'); d >= startDate; d = moment(d).subtract(1, 'days')){
-		addDayToGrid(d);
-	}
-
-	/*
-	for(var i = 0; i < data.length; i++){
-	 	var record = data[i];
-	 	var userId = record.userId;
-	 	var eventList = record.events;
-
-	 	// Remove the user's previous events
-	 	var cellKeyList = removeUserFromCellKeyToUserSetMapping(userId);
-		removeUserEventsFromGrid(userId, cellKeyList);
-
-		// Add the user's new events
-	 	for(var a = 0; a < eventList.length; a++){
-	 		var e = eventList[a];
-	 		addUserEventToGrid(userId, moment(e.startTime), moment(e.endTime));
-	 	}
-	 	stopUserPicAnimation(userId);
-	 }
-	 */
-}
 
 function isSpecifiedDateRangeValid() {
 	var startDate = moment($('#dp1').data('datepicker').getDate()).startOf('day');
@@ -760,8 +725,6 @@ function addNext7DaysToGrid() {
 		endOfLastDay = moment(day).endOf('day');
 		addDayToGrid(day);
 	}
-	$("#dp1").datepicker("update", gridStartDate.toDate());
-	$("#dp2").datepicker("update", gridEndDate.toDate());
 }
 
 // Expects a moment day object. Note that this function simply updates the grid and the relevant fields. 
@@ -780,7 +743,9 @@ function addDayToGrid(day) {
 		);
 		addRowsToDayCol($('.' + dayKey).first(), dayKey);
 		gridEndDate = eod;
-		$("#dp2").datepicker("update", gridEndDate.toDate());
+		// Using startOf() because the datepicker will not highlight a date unless it is at time 00:00
+		// Figured this out through random debugging.
+		$("#dp2").datepicker("update", moment(gridEndDate).startOf('days').toDate()); 
 		if(!gridStartDate){
 			// This loop will execute if both gridStartDate and gridEndDate were undefined.
 			gridStartDate = sod; 
@@ -798,7 +763,7 @@ function addDayToGrid(day) {
 		gridStartDate = sod;
 		$("#dp1").datepicker("update", gridStartDate.toDate());
 	}
-	
+	activateCalendarSideBtns();
 }
 
 function addRowsToDayCol(dayCol, dayKey){

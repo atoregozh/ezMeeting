@@ -288,7 +288,7 @@
 }
 
 .grid-side-btn {
-	width: 50px;
+	min-width: 50px;
 	border: 1px solid #ccc;
 	margin: 0;
 	padding: 0;
@@ -335,7 +335,6 @@
 	overflow: hidden;
 	border: 1px solid #ccc;
 	font-size: 0;
-	width: 100%;
 }
 
 .calendar-header {
@@ -530,10 +529,6 @@
     overflow: scroll;
     max-width: 100%;
     margin-left: 60px;
-}
-
-::-webkit-scrollbar { 
-    display: none; 
 }
 
 /*
