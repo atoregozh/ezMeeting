@@ -7,19 +7,30 @@ var Meeting = require('../models/meeting');
 var moment = require('moment');
 var mongoose = require('mongoose');
 
-// Handler for POST requests to /events
+// Handler for POST requests to /meetings
 router.post('/', function(req, res, next) {
   //@DEBUG console.log('ip2>>>>', req.connection.remoteAddress); this is to see where does the request coming from
   inviteToMeeting(req, res);
 });
 
+// Handler to render meetings
 router.get('/newmeeting', ensureAuthenticated, function(req, res, next) {
   res.render('meetings', {user: req.user,'title':'Create new meeting'});
 });
 
+//this route should be in calendar.js
 router.get('/all', function(req, res) {
   getGCalendarEventsPerUser(req, res);
-}); //router.get('/all'... ends here
+});
+
+// Handler for DELETE requests to /meetings/:id
+router.delete('/:id', function(req, res) {
+  var id = req.params.id;
+  
+
+});
+
+
 
 // Handler for GET requests to /meetings/:id
 router.get('/:id', function(req, res, next) {
