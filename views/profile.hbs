@@ -3,17 +3,92 @@
   <head>
     <title>{{ title }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel='stylesheet' href='/css/nav.css'/>
     <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/meetings.css'/>
+    <link rel='stylesheet' href='/css/bootstrap-datepicker.standalone.min.css'/>
+    <link rel='stylesheet' href='/css/bootstrap-timepicker.min.css'/>
+    <link rel='stylesheet' href='/css/profile.css'/>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script><script type='text/javascript' src='/js/meetings.js'/></script>
+    <script type="text/javascript" src="/js/nav.js"></script>
+    <!-- Datepicker: http://bootstrap-datepicker.readthedocs.org/en/latest/ -->
+    <script type='text/javascript' src='/js/bootstrap-datepicker.min.js'/></script>
+    <!-- https://github.com/jdewit/bootstrap-timepicker -->
+    <script type='text/javascript' src='/js/bootstrap-timepicker.min.js'/></script>
+    <script type='text/javascript' src='/js/moment.min.js'/></script>
+    <script type='text/javascript' src='/js/profile.js'/></script>
   </head>
   <body>
-    <div class="row">
-      <div class="col-xs-10">
-        <h1>Profile page is currently empty.</h1>
+    <!-- Navigation -->
+    {{> navbar}}
+    <!--End Navigation -->
+    <div class="container">      
+      <div class = "row">
+        <div class = "col-md-4" id = "profile-page-pic">
+        <img src="{{user.pic}}" alt="{{user.displayName}}">
+        </div>
+        <div class = "col-md-8">
+        <p id= "profile-page-name">{{user.displayName}}</p>
+        </div>
+      </div>     
+      <div class = "row grid-with-top">
+        <div class = "row">
+          <div class ="col-md-3">
+            <div class="grid-top-left">
+              <div class="grid-date-panel">
+                <input class="dp" id="dp1" placeholder="First date">
+                <input class="dp" id="dp2" placeholder="Last date">
+                </div>
+                <div class="btn blue-linear" id="grid-refresh">
+                                                          <i class="fa fa-refresh"></i>
+                </div>
+            </div>
+          </div>
+          <div class ="col-md-9">
+          <p  id = "availability">Availability</p>
+          </div>
+        </div>
+        <!--calendar grid-->
+        <div class = "row">
+          <div class="grid-panel">
+            <div class="grid-panel2">
+              <div class="grid-side-btn left btn active">
+                    <i class="fa fa-caret-left"></i>
+                </div>                                              
+                <div class="calendar-panel">
+                    <div class="calendar-header">
+                        <div id="tl">
+                            <div class="h-col time"><span>&nbsp;</span></div>
+                        </div>
+                        <div id="tr">
+                            <!-- <div class="h-col">Mon 11/1</div> -->
+                        </div>
+                    </div>
+                    <div class="calendar-content">
+                        <div id="bl">
+                            <div class="c-col time">
+                                <!-- <div class="c-row">00:00</div>
+                                <div class="c-row thirty"></div>
+                                -->
+                            </div>
+                        </div>
+                        <div id="br">
+                            <!-- <div class="c-col">
+                                <div class="c-row"></div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-side-btn right btn">
+                    <i class="fa fa-caret-right"></i>
+                </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>
