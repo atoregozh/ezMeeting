@@ -300,11 +300,11 @@
 
 .grid-side-btn:hover, .grid-side-btn:focus {
 	cursor: pointer;
-	border-color: rgb(73,155,234);
+	border-color: #2962FF;
 }
 
 .grid-side-btn:hover i, .grid-side-btn:focus i, .grid-side-btn.active i{
-	color: rgb(73,155,234);
+	color: #2962FF;
 }
 
 .grid-side-btn i {
@@ -547,7 +547,8 @@
 	position: fixed;
 	text-align: center;
 	z-index: 1000;
-	width: 100%;
+	left: 50%;
+    transform: translateX(-50%);
 }
 
 .alert {

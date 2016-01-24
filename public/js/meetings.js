@@ -52,16 +52,18 @@ For further details, see: http://stackoverflow.com/questions/3042886/set-data-st
 var cellKeyToUserSet = {}; // maps each cell Key to a set of user IDs for users that have a meeting in that timeslot.
 /*
 Color source: https://www.google.com/design/spec/style/color.html#color-color-palette
+#1565C0: Blue 800
 #FF8F00: Amber 800
 #EA80FC: Purple A100
 #2E7D32: Green 800
 #C2185B: Pink 700
+#64B5F6: Blue 300
 #FDD835: Yellow 600
 #6A1B9A: Purple 800
 #00E676: Green A400
 #A1887F: Brown 300
 */
-var colorPalette = ['#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#FDD835', '#6A1B9A', '#00E676', '#A1887F'];
+var colorPalette = ['#1565C0', '#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#64B5F6', '#FDD835', '#6A1B9A', '#00E676', '#A1887F'];
 
 $(document).ready(function(){
 
@@ -127,9 +129,9 @@ $(document).ready(function(){
 
 	// // ~~~~~ Start initializing timepicker ~~~~~
 
-	// $('#m-start').timepicker({
-	// 	minuteStep: 5,
-	// 	template: 'modal',
+	//  $('#m-start').timepicker({
+	//  	minuteStep: 5,
+	//  	template: 'modal',
 	// 	appendWidgetTo: 'body',
 	// 	showSeconds: false,
 	// 	showMeridian: true, // true ==> 12hr mode, false ==> 24hr mode
@@ -137,6 +139,8 @@ $(document).ready(function(){
 	// });
 
 	// $('#m-start').timepicker().on('changeTime.timepicker', function(e) {
+	// 	meetingStartTime = e;
+	// 	console.log("1");
 	// 	// console.log('The start hour is ' + e.time.hours);
 	// 	// console.log('The start minute is ' + e.time.minutes);
 	// });
@@ -151,6 +155,8 @@ $(document).ready(function(){
 	// });
 
 	// $('#m-end').timepicker().on('changeTime.timepicker', function(e) {
+	// 	console.log("2");
+	// 	meetingEndTime = e;
 	// });
 
 	// // ~~~~~ Finished initializing timepicker ~~~~~
@@ -270,10 +276,8 @@ $(document).ready(function(){
 	        	pic: '/img/default-user-pic.jpg',
 	        };
 	        // ~~~~~~~~~~~~~~~~~~~~~
-	        userIdList.push(user.id);
-	        addUserToNameList(user.id, user.name);
-	        addUserToPicsPanel(user.id, user.name, user.pic);
-	        getAndDisplayUserEvents([user.id], gridStartDate, gridEndDate);
+
+	        addNewParticipant(user.id, user.name, user.pic);
 
 	    }
 	});
@@ -380,6 +384,8 @@ $(document).ready(function(){
 	$("#m-date").prop('disabled', true);
 	// $("#m-start").prop('disabled', true);
 	// $("#m-end").prop('disabled', true);
+
+	addNewParticipant(S_USER_ID, S_DISPLAY_NAME, S_PIC_URL);
 	
 }); // End of $(document).ready()
 
@@ -455,6 +461,13 @@ function getAndDisplayUserEvents(userIdList, startDate, endDate) {
 			}
 		}
 	});
+}
+
+function addNewParticipant(userId, displayName, picUrl) {
+	userIdList.push(userId);
+    addUserToNameList(userId, displayName);
+    addUserToPicsPanel(userId, displayName, picUrl);
+    getAndDisplayUserEvents([userId], gridStartDate, gridEndDate);
 }
 
 function addUserEventToGrid(userId, startTime, endTime) {
@@ -666,11 +679,11 @@ function setDeleteButtonsForDay(dayString, doNotUpdateUI) {
 				isEarlierCellSelected = true;
 				keyOfSelectedCell = cellKey;
 				addDeleteButton(cell);
-				startTime = keyToDateObject(cellKey).format('h:mmA');
-				endTime = keyToDateObject(cellKey).add(30, 'minutes').format('h:mmA');
+				startTime = keyToDateObject(cellKey).format('hh:mma');
+				endTime = keyToDateObject(cellKey).add(30, 'minutes').format('hh:mma');
 			}
 			cell.attr(CLOSE_BTN_ATTR_KEY, keyOfSelectedCell);
-			endTime = keyToDateObject(cellKey).add(30, 'minutes').format('h:mmA');
+			endTime = keyToDateObject(cellKey).add(30, 'minutes').format('hh:mma');
 		} else {
 			isEarlierCellSelected = false;
 		}
@@ -836,8 +849,9 @@ function userIdToGridPicId(userId) {
 }
 
 function addUserToPicsPanel(userId, name, picUrl) {
+	// The user's ID should be part of userIdList before calling this function.
 	var id = userIdToGridPicId(userId);
-	var color = colorPalette[ userId % colorPalette.length];
+	var color = colorPalette[ (userIdList.length - 1) % colorPalette.length];
 	var currentColor = color;
 	if(currentTab != TAB1_ID) {
 		currentColor = DEFAULT_PERSON_BLUE;
@@ -1024,6 +1038,22 @@ function get12HourString(hr, min) {
 	return hr2 + ':' + addLeadingZero(min) + suffix;
 }
 
+function parse12HrTime(timeString){
+	// Expects a 6-digit string of the form: 02:05AM
+	var hour = Number(timeString.substring(0, 2));
+	var min = Number(timeString.substring(3, 5));
+	var meridian = timeString.substring(5);
+	if(meridian.toUpperCase().startsWith('P')) {
+		if(hour != 12) {
+			hour += 12;
+		}
+	}
+	else if (hour === 12){
+		hour = 0;
+	}
+	return {hour: hour, min:min};
+}
+
 function showInfo(mssg) {
 	addAlertPanelIfMissing();
 	var id = 'info-' + alertCount++;
@@ -1136,6 +1166,46 @@ function downloadLaterDays() {
 
 function saveMeeting() {
 	console.log(">>> Todo: implement save");
+	var title = $("#m-title").text().trim();
+	if(!title){
+		showError("Please enter a meeting title");
+		return;
+	}
+	var location = $("#m-location").val().trim();
+	var description = $("#m-desc").val().trim();
+	console.log(title);
+	console.log(location);
+	console.log(description);
+
+	var st = $('#m-start').html();
+	var et = $('#m-end').html();
+	if(st === DEFAULT_TIME && et === DEFAULT_TIME){
+		showError('Select meeting time by clicking or dragging on the grid');
+		return;
+	}
+	var date = moment($('#m-date').data('datepicker').getDate());
+	console.log(date.format());
+	var pst = parse12HrTime(st);
+	var startTime = moment(date).hour(pst.hour).minute(pst.min);
+	console.log(startTime.format());
+
+	var pet = parse12HrTime(et);
+	var endTime = moment(date).hour(pet.hour).minute(pet.min);
+	console.log(endTime.format());
+
+	if(startTime < moment()){
+		showError("Meeting should be scheduled for a future date");
+		return;
+	}
+
+	if(userIdList.length < 1){
+		showError("Add at least one participant");
+		return;
+	}
+	console.log(">>>> Todo: Save meeting");
+
+
+
 }
 
 function cancelMeeting(){
