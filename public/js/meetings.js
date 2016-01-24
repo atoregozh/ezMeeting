@@ -4,7 +4,7 @@ var TAB3_ID = 'tab3';
 
 var ALERT_TIMEOUT = 5000;
 var ALERT_FADEOUT = 2000;
-var SELECTED_CLASS = 'selected'; // CSS class add edto a selected grid while dragging.
+var SELECTED_CELL_CLASS = 'selected'; // CSS class add edto a selected grid while dragging.
 var DEFAULT_TIME = "00:00";
 // CSS attribute added to each selected grid. The value would be = the key of the cell 
 // that contains the close button for this cell.
@@ -14,7 +14,8 @@ var CURRENT_COLOR_ATTR_KEY = 'current-color';
 var USER_COLOR_ATTR_KEY = 'color';
 // var DEFAULT_PERSON_BLUE = '#81D4FA';
 var DEFAULT_PERSON_BLUE = '#BBC7DA';
-var SIDEBAR_SCROLL_SPEED = 500;
+var SIDE_BTN_SCROLL_SPEED = 500;
+var SIDE_BTN_ADDITIONAL_DAYS = 3;
 
 var WHITE_COLOR = 'rgba(255, 255, 255, 0)';
 var ANIMATION_CLASS_NAME = 'animate';
@@ -51,16 +52,18 @@ For further details, see: http://stackoverflow.com/questions/3042886/set-data-st
 var cellKeyToUserSet = {}; // maps each cell Key to a set of user IDs for users that have a meeting in that timeslot.
 /*
 Color source: https://www.google.com/design/spec/style/color.html#color-color-palette
+#1565C0: Blue 800
 #FF8F00: Amber 800
 #EA80FC: Purple A100
 #2E7D32: Green 800
 #C2185B: Pink 700
+#64B5F6: Blue 300
 #FDD835: Yellow 600
 #6A1B9A: Purple 800
 #00E676: Green A400
 #A1887F: Brown 300
 */
-var colorPalette = ['#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#FDD835', '#6A1B9A', '#00E676', '#A1887F'];
+var colorPalette = ['#1565C0', '#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#64B5F6', '#FDD835', '#6A1B9A', '#00E676', '#A1887F'];
 
 $(document).ready(function(){
 
@@ -95,6 +98,7 @@ $(document).ready(function(){
 		format: 'mm/dd/yyyy',
 		autoclose: true,
 		// startDate: '0d',
+		todayHighlight: true,
 		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
 		// console.log('clicked dp1');
@@ -106,6 +110,7 @@ $(document).ready(function(){
 		format: 'mm/dd/yyyy',
 		autoclose: true,
 		// startDate: '0d',
+		todayHighlight: true,
 		orientation: 'left bottom'
 	}).on('changeDate', function(ev) {
 
@@ -124,9 +129,9 @@ $(document).ready(function(){
 
 	// // ~~~~~ Start initializing timepicker ~~~~~
 
-	// $('#m-start').timepicker({
-	// 	minuteStep: 5,
-	// 	template: 'modal',
+	//  $('#m-start').timepicker({
+	//  	minuteStep: 5,
+	//  	template: 'modal',
 	// 	appendWidgetTo: 'body',
 	// 	showSeconds: false,
 	// 	showMeridian: true, // true ==> 12hr mode, false ==> 24hr mode
@@ -134,6 +139,8 @@ $(document).ready(function(){
 	// });
 
 	// $('#m-start').timepicker().on('changeTime.timepicker', function(e) {
+	// 	meetingStartTime = e;
+	// 	console.log("1");
 	// 	// console.log('The start hour is ' + e.time.hours);
 	// 	// console.log('The start minute is ' + e.time.minutes);
 	// });
@@ -148,6 +155,8 @@ $(document).ready(function(){
 	// });
 
 	// $('#m-end').timepicker().on('changeTime.timepicker', function(e) {
+	// 	console.log("2");
+	// 	meetingEndTime = e;
 	// });
 
 	// // ~~~~~ Finished initializing timepicker ~~~~~
@@ -186,7 +195,7 @@ $(document).ready(function(){
 	$('.grid-side-btn.left').click(function() {
 		$('#br').animate({
 			scrollLeft: $('#br').scrollLeft() - 202 // 101 corresponds to the width of each column
-		}, SIDEBAR_SCROLL_SPEED);
+		}, SIDE_BTN_SCROLL_SPEED);
 		if($(this).hasClass('active')) {
 			downloadEarlierDays();
 		}
@@ -195,7 +204,7 @@ $(document).ready(function(){
 	$('.grid-side-btn.right').click(function() {
 		$('#br').animate({
 			scrollLeft: $('#br').scrollLeft() + 202 // 101 corresponds to the width of each column
-		}, SIDEBAR_SCROLL_SPEED);
+		}, SIDE_BTN_SCROLL_SPEED);
 		if($(this).hasClass('active')) {
 			downloadLaterDays();
 		}
@@ -240,6 +249,14 @@ $(document).ready(function(){
 		}
 	});
 
+	$("#save-btn").click(function(){
+		saveMeeting();
+	});
+
+	$("#cancel-btn").click(function(){
+		cancelMeeting();
+	});
+
 	$("#m-guest-search").keyup(function(e) {
 	    if (e.keyCode == 13) { // Enter key
 	        var input = $("#m-guest-search").val().trim();
@@ -259,10 +276,8 @@ $(document).ready(function(){
 	        	pic: '/img/default-user-pic.jpg',
 	        };
 	        // ~~~~~~~~~~~~~~~~~~~~~
-	        userIdList.push(user.id);
-	        addUserToNameList(user.id, user.name);
-	        addUserToPicsPanel(user.id, user.name, user.pic);
-	        getUserCalendar([user.id]);
+
+	        addNewParticipant(user.id, user.name, user.pic);
 
 	    }
 	});
@@ -277,18 +292,11 @@ $(document).ready(function(){
 
 
 	// Not sure why click is not working here, hence we're using mousedown and touchstart (for mobile devices)
-	$('#br').on({
-		'mousedown': function(e){
-			e.stopPropagation(); // Ensures that the div containing the button also gets deleted.
-			var key = $(this).parent().attr('key');
-			clearSelectedDivsWithCloseBtn(key);
-		},
-		'touchstart': function(e){
-			e.stopPropagation(); // Ensures that the div containing the button also gets deleted.
-			var key = $(this).parent().attr('key');
-			clearSelectedDivsWithCloseBtn(key);
-		}
-	}, ' .c-row .' + CLOSE_BTN_CSS_CLASS);
+	$('#br').on('mousedown touchstart', ' .c-row .' + CLOSE_BTN_CSS_CLASS, function(e){
+		e.stopPropagation(); // Ensures that the div containing the button also gets deleted.
+		var key = $(this).parent().attr('key');
+		clearSelectedDivsWithCloseBtn(key);
+	});
 
 
 	$(window).on('mouseup', function(){
@@ -321,18 +329,24 @@ $(document).ready(function(){
 				// Remove all users' previous events
 				for(var i = 0; i < userIdList.length; i++){
 					var uid = userIdList[i];
-					console.log('removing user with ID: ' + uid);
 					var cellKeyList = removeUserFromCellKeyToUserSetMapping(uid);
 					removeUserEventsFromGrid(uid, cellKeyList);	
 				}
-				console.log('-----sss-----');
-			 	console.log(cellKeyToUserSet);
-			 	console.log('-----xxx-----');
 
-			 	// Redraw the grids to ensure we're displaying the new range of days.
+				var selectedCells = getKeyListOfSelectedCells(); // Get list of selected cells
+
+			 	// Redraw the grids to ensure we're displaying the new range of days. This process also wipes out the selected cells.
 			 	clearAllGridDisplayedDays();
 				drawGridDays(startDate, endDate);
 				userIdList = userIdListBackup;
+
+				// Restore selected cells.
+				if(selectedCells.length > 0){
+					$.each(selectedCells, function(index, value){
+						getCellWithKey(value).addClass(SELECTED_CELL_CLASS);
+					});
+					setDeleteButtonsForDay(getDayStringFromKey(selectedCells[0]), true);
+				}		
 
 				for(var i = 0; i < data.length; i++){
 				 	var record = data[i];
@@ -350,9 +364,9 @@ $(document).ready(function(){
 			},
 			error: function(xhr, status, error) {
 				console.log("Error: " + error);
-				showError("Unable to refresh grid now. Please try again later.");
-				$("#dp1").datepicker("update", gridStartDate.toDate());
-				$("#dp2").datepicker("update", gridEndDate.toDate());
+				showError("Unable to refresh grid now. Please try again later");
+				// $("#dp1").datepicker("update", gridStartDate.toDate());
+				// $("#dp2").datepicker("update", gridEndDate.toDate());
 				stopAllUserPicAnimation();
 			}
 		});
@@ -370,6 +384,8 @@ $(document).ready(function(){
 	$("#m-date").prop('disabled', true);
 	// $("#m-start").prop('disabled', true);
 	// $("#m-end").prop('disabled', true);
+
+	addNewParticipant(S_USER_ID, S_DISPLAY_NAME, S_PIC_URL);
 	
 }); // End of $(document).ready()
 
@@ -398,45 +414,6 @@ function drawGridDays(startDate, endDate) {
 	}
 }
 
-function updateGridDisplayedDays() {
-	var startDate = moment($('#dp1').data('datepicker').getDate()).startOf('day');
-	var endDate = moment($('#dp2').data('datepicker').getDate()).endOf('day');
-	if((startDate.diff(gridStartDate) === 0) && (endDate.diff(gridEndDate) === 0)) {
-		console.log("The date range hasn't changed");
-		return false;
-	}
-	if(!isSpecifiedDateRangeValid()){
-		showError("The start date should be earlier than the end date");
-		return false;
-	}
-	for(var d = moment(gridEndDate).add(1, 'days'); d <= endDate; d = moment(d).add(1, 'days')){
-		addDayToGrid(d);
-		console.log('>>> adding: ' + d.format());
-	}
-	for(var d = moment(gridStartDate).subtract(1, 'days'); d >= startDate; d = moment(d).subtract(1, 'days')){
-		addDayToGrid(d);
-		console.log('>>> adding: ' + d.format());
-	}
-
-	/*
-	for(var i = 0; i < data.length; i++){
-	 	var record = data[i];
-	 	var userId = record.userId;
-	 	var eventList = record.events;
-
-	 	// Remove the user's previous events
-	 	var cellKeyList = removeUserFromCellKeyToUserSetMapping(userId);
-		removeUserEventsFromGrid(userId, cellKeyList);
-
-		// Add the user's new events
-	 	for(var a = 0; a < eventList.length; a++){
-	 		var e = eventList[a];
-	 		addUserEventToGrid(userId, moment(e.startTime), moment(e.endTime));
-	 	}
-	 	stopUserPicAnimation(userId);
-	 }
-	 */
-}
 
 function isSpecifiedDateRangeValid() {
 	var startDate = moment($('#dp1').data('datepicker').getDate()).startOf('day');
@@ -444,14 +421,19 @@ function isSpecifiedDateRangeValid() {
 	return (endDate >= startDate);
 }
 
-function getUserCalendar(userIdList) {
-	// Retrieves the calendars from the server.
+
+function getAndDisplayUserEvents(userIdList, startDate, endDate) {
+	// Retrieves the calendars from the server and adds them to the calendar. This method expects the calendar grid
+	// to already contain the dates between the specified startDate and endDate.
+	if(!userIdList || userIdList.length < 1) {
+		return;
+	}
 	userIds = userIdList.join(',');
 	for(var i = 0; i < userIdList.length; i++){
 		startUserPicAnimation(userIdList[i]);
 	}
 	$.ajax({
-		url: "/calendars?users=" +  userIds + "&from=" + gridStartDate.format() + "&to=" + gridEndDate.format(),
+		url: "/calendars?users=" +  userIds + "&from=" + startDate.format() + "&to=" + endDate.format(),
 		type: "GET",
 		data: {},
 		success: function(data) {
@@ -465,19 +447,34 @@ function getUserCalendar(userIdList) {
 				}
 				stopUserPicAnimation(userId);
 			}
-		  console.log(data);
+			for(var i = 0; i < userIdList.length; i++){
+				// Stops the animation for users that may not have any returned event.
+				stopUserPicAnimation(userIdList[i]); 
+			}
 		},
 		error: function(xhr, status, error) {
-		  console.log("Error: " + error);
+			console.log("Error: " + error);
+			showError("Unable to refresh grid now. Please try again later");
+			for(var i = 0; i < userIdList.length; i++){
+				// Stops the animation for users that may not have any returned event.
+				stopUserPicAnimation(userIdList[i]); 
+			}
 		}
 	});
+}
+
+function addNewParticipant(userId, displayName, picUrl) {
+	userIdList.push(userId);
+    addUserToNameList(userId, displayName);
+    addUserToPicsPanel(userId, displayName, picUrl);
+    getAndDisplayUserEvents([userId], gridStartDate, gridEndDate);
 }
 
 function addUserEventToGrid(userId, startTime, endTime) {
 	var st = roundDownTimeTo30Minutes(startTime);
 	var et = roundUpTimeTo30Minutes(endTime);
 	if(et > gridEndDate){
-		et = gridEndDate;
+		et = moment(gridEndDate);
 	}
 	for(var cellTime = moment(st); cellTime < et; cellTime = moment(cellTime).add(30, 'minutes')) {
 		var cellKey = getCellKey(cellTime);
@@ -487,7 +484,8 @@ function addUserEventToGrid(userId, startTime, endTime) {
 		// Color the added circle appropriately
 		cell.children('span[data-user-id="' + userId + '"]').first().css({'background-color': getUserColor(userId)});
 
-		// Check if the user had a previous appointment at this time slot.
+		// Check if the user had a previous appointment at this time slot. Only update the mapping (between the userId and this cell key) 
+		// and increment the count (in tab3) if the user did not have any previous appointment in this time slot.
 		if(!cellKeyToUserSet[cellKey][userId]) {
 			// Add this to the field that keeps track of the mappings.
 			cellKeyToUserSet[cellKey][userId] = true;
@@ -590,7 +588,7 @@ function roundUpTimeTo30Minutes(time) {
 
 function mouseEnterCell(key) {
 	if(isdragging && (getDayStringFromKey(key) === firstSelectedDay)) {
-		getCellWithKey(key).addClass(SELECTED_CLASS);
+		getCellWithKey(key).addClass(SELECTED_CELL_CLASS);
 	}
 	var objectOfUserIDs = cellKeyToUserSet[key];
 	$('.person-img-overlay').removeClass('inviz');
@@ -602,6 +600,14 @@ function mouseEnterCell(key) {
 			gridPerson.children('.person-img-overlay').addClass('inviz');
 		}
 	}
+}
+
+function getKeyListOfSelectedCells() {
+	var selectedKeys = [];
+	$('.c-row.selected').each(function(){
+		selectedKeys.push($(this).attr('key'));
+	});
+	return selectedKeys;
 }
 
 function mouseLeaveCell(key) {
@@ -622,7 +628,7 @@ function clearSelectedDivsWithCloseBtn(key) {
 }
 
 function clearAllSelectedCells(doNotUpdateUI) {
-	 $('.c-row.' + SELECTED_CLASS).each(function(){
+	 $('.c-row.' + SELECTED_CELL_CLASS).each(function(){
 	 	clearThisSelectedCell($(this), doNotUpdateUI);
 	 });
 }
@@ -630,7 +636,7 @@ function clearAllSelectedCells(doNotUpdateUI) {
 // Expects a jQuery object
 function clearThisSelectedCell(cell, doNotUpdateUI) {
 	var cellKey = cell.attr('key');
-	cell.removeClass(SELECTED_CLASS);
+	cell.removeClass(SELECTED_CELL_CLASS);
 	cell.removeAttr(CLOSE_BTN_ATTR_KEY);
 	cell.find('.' + CLOSE_BTN_CSS_CLASS).remove();
 	// The next line ensures that the time input fields get set to the right values.
@@ -668,16 +674,16 @@ function setDeleteButtonsForDay(dayString, doNotUpdateUI) {
 	for(var i = 0; i < dayTimes.length; i++) {
 		var cellKey = '_' + dayString + '_' + dayTimes[i];
 		var cell = getCellWithKey(cellKey);
-		if(cell.hasClass(SELECTED_CLASS)){
+		if(cell.hasClass(SELECTED_CELL_CLASS)){
 			if(!isEarlierCellSelected){
 				isEarlierCellSelected = true;
 				keyOfSelectedCell = cellKey;
 				addDeleteButton(cell);
-				startTime = keyToDateObject(cellKey).format('h:mmA');
-				endTime = keyToDateObject(cellKey).add(30, 'minutes').format('h:mmA');
+				startTime = keyToDateObject(cellKey).format('hh:mma');
+				endTime = keyToDateObject(cellKey).add(30, 'minutes').format('hh:mma');
 			}
 			cell.attr(CLOSE_BTN_ATTR_KEY, keyOfSelectedCell);
-			endTime = keyToDateObject(cellKey).add(30, 'minutes').format('h:mmA');
+			endTime = keyToDateObject(cellKey).add(30, 'minutes').format('hh:mma');
 		} else {
 			isEarlierCellSelected = false;
 		}
@@ -732,13 +738,10 @@ function addNext7DaysToGrid() {
 		endOfLastDay = moment(day).endOf('day');
 		addDayToGrid(day);
 	}
-	$("#dp1").datepicker("update", gridStartDate.toDate());
-	$("#dp2").datepicker("update", gridEndDate.toDate());
 }
 
-// Expects a moment day object. Note that this function simply updates the grid. 
-// It does not upate the necessary fields or check that the added date is not 
-// going to set the grid in a weird way.
+// Expects a moment day object. Note that this function simply updates the grid and the relevant fields. 
+// It does not check whether the added date is going to create gaps in the grid dates.
 function addDayToGrid(day) {
 	var dayKey = day.format('_YYYY-MM-DD');
 	var tableHeading = day.format ('ddd M/D');
@@ -753,9 +756,13 @@ function addDayToGrid(day) {
 		);
 		addRowsToDayCol($('.' + dayKey).first(), dayKey);
 		gridEndDate = eod;
+		// Using startOf() because the datepicker will not highlight a date unless it is at time 00:00
+		// Figured this out through random debugging.
+		$("#dp2").datepicker("update", moment(gridEndDate).startOf('days').toDate()); 
 		if(!gridStartDate){
 			// This loop will execute if both gridStartDate and gridEndDate were undefined.
 			gridStartDate = sod; 
+			$("#dp1").datepicker("update", gridStartDate.toDate());
 		}
 	}
 	else if(!gridStartDate || (sod < gridStartDate)) {
@@ -767,8 +774,9 @@ function addDayToGrid(day) {
 		);
 		addRowsToDayCol($('.' + dayKey).first(), dayKey);
 		gridStartDate = sod;
+		$("#dp1").datepicker("update", gridStartDate.toDate());
 	}
-	
+	activateCalendarSideBtns();
 }
 
 function addRowsToDayCol(dayCol, dayKey){
@@ -841,8 +849,9 @@ function userIdToGridPicId(userId) {
 }
 
 function addUserToPicsPanel(userId, name, picUrl) {
+	// The user's ID should be part of userIdList before calling this function.
 	var id = userIdToGridPicId(userId);
-	var color = colorPalette[ userId % colorPalette.length];
+	var color = colorPalette[ (userIdList.length - 1) % colorPalette.length];
 	var currentColor = color;
 	if(currentTab != TAB1_ID) {
 		currentColor = DEFAULT_PERSON_BLUE;
@@ -1029,6 +1038,22 @@ function get12HourString(hr, min) {
 	return hr2 + ':' + addLeadingZero(min) + suffix;
 }
 
+function parse12HrTime(timeString){
+	// Expects a 6-digit string of the form: 02:05AM
+	var hour = Number(timeString.substring(0, 2));
+	var min = Number(timeString.substring(3, 5));
+	var meridian = timeString.substring(5);
+	if(meridian.toUpperCase().startsWith('P')) {
+		if(hour != 12) {
+			hour += 12;
+		}
+	}
+	else if (hour === 12){
+		hour = 0;
+	}
+	return {hour: hour, min:min};
+}
+
 function showInfo(mssg) {
 	addAlertPanelIfMissing();
 	var id = 'info-' + alertCount++;
@@ -1115,9 +1140,74 @@ function addLeadingZero(int) {
 }
 
 function downloadEarlierDays() {
-	console.log('>>> TODO: implement downloadEarlierDays()');
+	var endDate = moment(gridStartDate).subtract(1 , 'day').endOf('day');
+	var startDate = moment(endDate).subtract((SIDE_BTN_ADDITIONAL_DAYS - 1), 'day').startOf('day');
+	console.log('downloading earlier events');
+	console.log('start: ' + startDate.format());
+	console.log('end: ' + endDate.format());
+	// Note: This has to be done in reverse order. Otherwise, we'll end up with gaps in the grid dates and this would lead to an error.
+	for(var day = moment(endDate); day >= startDate; day.subtract(1, 'days')){
+		addDayToGrid(day);
+	}
+	getAndDisplayUserEvents(userIdList, startDate, endDate);
 }
 
 function downloadLaterDays() {
-	console.log('>>> TODO: implement downloadLaterDays()');
+	var startDate = moment(gridEndDate).add(1, 'day').startOf('day');
+	var endDate = moment(startDate).add((SIDE_BTN_ADDITIONAL_DAYS - 1) , 'day').endOf('day');
+	console.log('downloading later events');
+	console.log('start: ' + startDate.format());
+	console.log('end: ' + endDate.format());
+	for(var day = moment(startDate); day <= endDate; day.add(1, 'days')){
+		addDayToGrid(day);
+	}
+	getAndDisplayUserEvents(userIdList, startDate, endDate);
+}
+
+function saveMeeting() {
+	console.log(">>> Todo: implement save");
+	var title = $("#m-title").text().trim();
+	if(!title){
+		showError("Please enter a meeting title");
+		return;
+	}
+	var location = $("#m-location").val().trim();
+	var description = $("#m-desc").val().trim();
+	console.log(title);
+	console.log(location);
+	console.log(description);
+
+	var st = $('#m-start').html();
+	var et = $('#m-end').html();
+	if(st === DEFAULT_TIME && et === DEFAULT_TIME){
+		showError('Select meeting time by clicking or dragging on the grid');
+		return;
+	}
+	var date = moment($('#m-date').data('datepicker').getDate());
+	console.log(date.format());
+	var pst = parse12HrTime(st);
+	var startTime = moment(date).hour(pst.hour).minute(pst.min);
+	console.log(startTime.format());
+
+	var pet = parse12HrTime(et);
+	var endTime = moment(date).hour(pet.hour).minute(pet.min);
+	console.log(endTime.format());
+
+	if(startTime < moment()){
+		showError("Meeting should be scheduled for a future date");
+		return;
+	}
+
+	if(userIdList.length < 1){
+		showError("Add at least one participant");
+		return;
+	}
+	console.log(">>>> Todo: Save meeting");
+
+
+
+}
+
+function cancelMeeting(){
+	console.log(">>> Todo: implement cancel");
 }

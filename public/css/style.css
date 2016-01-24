@@ -60,6 +60,11 @@ html input[disabled] {
     background-color: #ccc;
 }
 
+/* Hide all scroll bars */
+::-webkit-scrollbar { 
+    display: none; 
+}
+
 /*~~~~~~ Start of debug CSS ~~~~~~*/
 /* Comment out this section after debugging */
 
