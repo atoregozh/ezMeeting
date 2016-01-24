@@ -10,7 +10,7 @@ router.post('/', function(req, res, next) {
   // 1. receive data from ajax req.data
   // 2. reformat the json to fit google's api
   // 3. send post request to google calendar
-            console.log('ip2>>>>', req.connection.remoteAddress);
+  //@DEBUG console.log('ip2>>>>', req.connection.remoteAddress); this is to see where does the request coming from
   inviteToMeeting(req, res);
   // 4. save meeting to db
 	//res.send('Received POST request for /events');
@@ -31,13 +31,9 @@ function inviteToMeeting(req, res) {
     return res.status(401).end();
   };
 
-  // Get the user's credentials.
+  // see what's inside of session cookies
   console.log('here is req.session');
   console.log(req.session);
-  console.log('here are user credentials from req.session');
-  console.log(req.session.logged_user_email); 
-  console.log('*****************');
-  console.log('body: ', req.body)
   User.findOne({'email': req.session.logged_user_email}, function(err, user) {
     if(err || !user) { 
       console.log('heres the user');
