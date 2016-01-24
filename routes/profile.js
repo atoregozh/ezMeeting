@@ -3,7 +3,7 @@ var router = express.Router();
 
 // Handler for GET requests
 router.get('/', ensureAuthenticated, function(req, res, next) {
- res.render('profile', {'title':'My event title'});
+ res.render('profile', {user: req.user});
 });
 
 // route middleware to make sure a user is logged in
