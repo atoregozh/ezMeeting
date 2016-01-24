@@ -531,6 +531,11 @@
     max-width: 100%;
     margin-left: 60px;
 }
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
 /*
 #tr::-webkit-scrollbar, #bl::-webkit-scrollbar {
 	width: 0px;
