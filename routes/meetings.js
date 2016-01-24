@@ -234,10 +234,6 @@ function processCreatedMeeting(participantIDs, organizerId, res) {
   console.log('Converting participant IDs from String to ObjectId');
   for (var i = 0; i < participantIDs.length; i++) {
     var stringId = participantIDs[i];
-    console.log("**************");
-    console.log("printing String Id");
-    console.log(stringId);
-    console.log("**************");
     var objectId = new mongoose.Types.ObjectId(stringId);
     participantObjectIds.push(objectId);
   } 
@@ -247,15 +243,28 @@ function processCreatedMeeting(participantIDs, organizerId, res) {
   // save the meeting to database
   // save is mongoose command
   console.log('Starting to save newMeeting into db');
-  newMeeting.save(function(err) {
+  newMeeting.save(function(err, res) {
     if (err) {
         console.log(err);  // handle errors!
         throw err;
     } else { 
-        console.log('Saved newmeeting to db successfully');  
-        return;
+        console.log('Saved newmeeting to db successfully'); 
+        console.log('Calling addMeetingToUsers'); 
+
+        addMeetingToUsers(participantObjectIds,res._id);
     }
   });
+}
+
+function addMeetingToUsers(participantObjectIds, meetingId) {
+  User.update({ _id: { $in: participantObjectIds }}, { $push: { meetings: meetingId }}, {multi: true}, function(err, results) {
+    if (err) {
+      console.log(err);
+    } else {
+      return;
+    }
+  });
+
 }
 
 function getGCalendarEventsPerUser(req, res) {
