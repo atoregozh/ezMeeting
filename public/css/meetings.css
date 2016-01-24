@@ -300,11 +300,11 @@
 
 .grid-side-btn:hover, .grid-side-btn:focus {
 	cursor: pointer;
-	border-color: #00aeef;
+	border-color: rgb(73,155,234);
 }
 
 .grid-side-btn:hover i, .grid-side-btn:focus i, .grid-side-btn.active i{
-	color: #00aeef;
+	color: rgb(73,155,234);
 }
 
 .grid-side-btn i {
@@ -335,6 +335,7 @@
 	overflow: hidden;
 	border: 1px solid #ccc;
 	font-size: 0;
+	width: 100%;
 }
 
 .calendar-header {
