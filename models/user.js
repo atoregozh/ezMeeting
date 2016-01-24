@@ -1,8 +1,12 @@
 // load the things we need
 var mongoose = require('mongoose');
+//********USER MODEL*******************
+//*************************************
+
+var Schema = mongoose.Schema;
 
 // define the schema for our user model
-var userSchema = mongoose.Schema({
+var userSchema = new Schema({
   
   google: {
     accessToken: {
@@ -46,10 +50,12 @@ var userSchema = mongoose.Schema({
   },
   pic: { //link to user's profile picture
    type: String
-  } 
-  //meetings: [meetingId, meetingId, ...] INCOMPLETE!
-  //meetings: [Schema.Types.ObjectId]
-  });
+  },
+  meetings: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Meeting'
+  }]
+});
 
 // create the model for users and expose it to our app
 module.exports = mongoose.model('User', userSchema);
