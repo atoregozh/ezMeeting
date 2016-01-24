@@ -83,7 +83,6 @@ function inviteToMeeting(req, res) {
   * reformat the json to fit google's api
   * send post request to google calendar
   */
-  var retries = 2;
   console.log('starting out inviteToMeeting');
   var send401Response = function() {
     return res.status(401).end();
@@ -95,8 +94,8 @@ function inviteToMeeting(req, res) {
     var p = req.body.participants[i];
     participantIDs.push(p.id);
   }
+
   //find attendee emails from db based on the participant id
-  // check this ASYNCH CODE!
   var participantEmails = [];
   User.
   where('_id').in(participantIDs).
@@ -111,104 +110,107 @@ function inviteToMeeting(req, res) {
         participantEmails.push(participant.email);
         console.log('Found ' + participant._id + ' with ' + participant.email); 
       }
-      return participantEmails;
-    }
-  });
 
-  // start building request object for google
-  var event = {
-    "summary": req.body.name,
-    "location": req.body.location,
-    "description": req.body.description,
-    "start": {
-      "dateTime": req.body.startTime
-    },
-    "end": {
-      "dateTime": req.body.endTime
-    },
-    "attendees": [
-      //fill this in below
-    ],
-    "reminders": {
-      "useDefault": false,
-      "overrides": [
-        {"method": "email", 'minutes': 60},
-        {"method": "popup", 'minutes': 20},
-      ],
-    },
-    "organizer": {
-      "displayName": req.body.organizer.name
-    }
-  };
-  //not done with building request object yet, fill attendees array with emails
-  for (var j = 0; i < participantEmails.length; j++) {
-    var email = participantEmails[j];
-    event.attendees.push( {'email': email} );
-  } 
-  
-  // find organizer and get his/her google accessToken
-  organizerId = req.body.organizer.id;
-  User.findById(organizerId, function(err, organizer) {
-    if(err || !organizer) { 
-      console.log('heres the organizer from db');
-      console.log(organizer);
-      console.log('*****************');
-      console.log('problems with finding organizer (user) in db; errors! Heres the error:');
-      console.log(err);
-      return send401Response();   // problems with finding user in db; errors!
-    }
-
-    var makeRequest = function() {
-      retries--;
-      if(!retries) {
-        // Couldn't refresh the access token.
-        return send401Response();
+      // start building request object for google
+      var event = {
+        "summary": req.body.name,
+        "location": req.body.location,
+        "description": req.body.description,
+        "start": {
+          "dateTime": req.body.startTime
+        },
+        "end": {
+          "dateTime": req.body.endTime
+        },
+        "attendees": [
+          //fill this in below
+        ],
+        "reminders": {
+          "useDefault": false,
+          "overrides": [
+            {"method": "email", 'minutes': 60},
+            {"method": "popup", 'minutes': 20},
+          ],
+        },
+        "organizer": {
+          "displayName": req.body.organizer.name
+        }
+      };
+      //not done with building request object yet, fill attendees array with emails
+      for (var j = 0; j < participantEmails.length; j++) {
+        var email = participantEmails[j];
+        event.attendees.push( {'email': email} );
       }
       
-      //add organizer email to event
-      event.organizer.push( {"email": organizer.email} );
+      // find organizer and get his/her google accessToken
+      organizerId = req.body.organizer.id;
+      User.findById(organizerId, function(err, organizer) {
+        if(err || !organizer) { 
+          console.log('heres the organizer from db');
+          console.log(organizer);
+          console.log('*****************');
+          console.log('problems with finding organizer (user) in db; errors! Heres the error:');
+          console.log(err);
+          return send401Response();   // problems with finding user in db; errors!
+        }
+        var retries = 2;
+        var makeRequest = function() {
+          console.log('retries is now ' + retries);
+          retries--;
+          if(!retries) {
+            // Couldn't refresh the access token.
+            console.log('thres no more retries left');
+            return send401Response();
+          }
+          
+          //add organizer email to event
+          event.organizer.email = organizer.email;
 
-      var url = 'https://www.googleapis.com/calendar/v3/calendars/'+organizer.email+'/events'+
-                '?sendNotifications=true';
+          var url = 'https://www.googleapis.com/calendar/v3/calendars/'+organizer.email+'/events'+
+                    '?sendNotifications=true';
 
-      var options = {
-        headers: {
-          Authorization: 'Bearer '+ organizer.google.accessToken
-        },
-        json: true 
-      };
+          var options = {
+            headers: {
+              Authorization: 'Bearer '+ organizer.google.accessToken
+            },
+            json: true 
+          };
 
-      console.log(url);
-      needle.post(url, event, options, function(error, response) {
-          if (!error && response.statusCode == 200) {
+          console.log(url);
+          console.log('user access Token before calling processCreatedMeeting: ' + organizer.google.accessToken);
+          console.log('user refresh Token before calling processCreatedMeeting: ' + organizer.google.refreshToken);
+          needle.post(url, event, options, function(error, response) {
+              if (!error && response.statusCode == 200) {
 
-            console.log('Success! event has created!');
-            console.log('this google id needs to be saved:');
-            console.log(response.body.id);
-            console.log("*******************");
-            console.log(response.body);
-            console.log("*******************");
-            console.log('Returning from inviteToMeeting()');
-            console.log('Calling processCreatedMeeting()');
-            processCreatedMeeting(participantIDs, organizerId, response.body);
-            console.log('Done with processCreatedMeeting()');
-            console.log('Sending Meeting ID back to Client');
-            res.send({"googleId": response.body.id} );
+                console.log('Success! event has created!');
+                console.log('this google id needs to be saved:');
+                console.log(response.body.id);
+                console.log("*******************");
+                console.log(response.body);
+                console.log("*******************");
+                console.log('Returning from inviteToMeeting()');
+                console.log('Calling processCreatedMeeting()');
+                processCreatedMeeting(participantIDs, organizerId, response.body);
+                console.log('Done with processCreatedMeeting()');
+                console.log('Sending Meeting ID back to Client');
+                res.send({"googleId": response.body.id} );
 
-          } else if (response.statusCode === 401) {
-          // Access token expired.
-          // Try to fetch a new one.
-            refreshAccessToken(user,makeRequest);
-          } else {
-            // There was another error, handle it appropriately.
-            console.log('some other error happened');
-            console.log(response.body);
-            res.sendStatus(response.statusCode);
-          }   
-        }); //needle.post ends here
-      }; //makeRequest ends here
-      makeRequest();
-    }); //User.findById ends here
+              } else if (response.statusCode === 401) {
+              // Access token expired.
+              // Try to fetch a new one.
+                refreshAccessToken(organizer,makeRequest);
+              } else {
+                // There was another error, handle it appropriately.
+                console.log('some other error happened');
+                console.log(response.body);
+                res.sendStatus(response.statusCode);
+              }   
+            }); //needle.post ends here
+          }; //makeRequest ends here
+          makeRequest();
+        }); //User.findById ends here
+      } //else
+  }); //finish finding participantEmails
 }
 
 function processCreatedMeeting(participantIDs, organizerId, res) {
@@ -225,14 +227,18 @@ function processCreatedMeeting(participantIDs, organizerId, res) {
   newMeeting.endTime = res.end.dateTime;
   newMeeting.description = res.description;
   newMeeting.location = res.location;
-  newMeeting.organizerId = mongoose.Types.ObjectId(organizerId);
+  newMeeting.organizerId = new mongoose.Types.ObjectId(organizerId);
   newMeeting.isInternal = true;
 
   participantObjectIds = [];
   console.log('Converting participant IDs from String to ObjectId');
   for (var i = 0; i < participantIDs.length; i++) {
     var stringId = participantIDs[i];
-    var objectId = mongoose.Types.ObjectId(stringId);
+    console.log("**************");
+    console.log("printing String Id");
+    console.log(stringId);
+    console.log("**************");
+    var objectId = new mongoose.Types.ObjectId(stringId);
     participantObjectIds.push(objectId);
   } 
 
@@ -245,8 +251,9 @@ function processCreatedMeeting(participantIDs, organizerId, res) {
     if (err) {
         console.log(err);  // handle errors!
         throw err;
-    } else {   
-        return done(null, newMeeting);
+    } else { 
+        console.log('Saved newmeeting to db successfully');  
+        return;
     }
   });
 }
@@ -264,7 +271,7 @@ function getGCalendarEventsPerUser(req, res) {
     if(err || !user) { 
       return send401Response();   // problems with finding user in db; errors!
     }
-
+    console.log(user);
     var makeRequest = function() {
       retries--;
       if(!retries) {
@@ -280,6 +287,8 @@ function getGCalendarEventsPerUser(req, res) {
     var url = 'https://www.googleapis.com/calendar/v3/calendars/'+user.email+'/events'+
               '?orderBy=startTime&singleEvents=true&timeMax='+yearFromNow+'&timeMin='+now;
     console.log(url);
+    console.log('user access Token is: ' + user.google.accessToken);
+    console.log('user refresh Token is: ' + user.google.refreshToken);
     needle.get(url, 
               { headers: { Authorization: 'Bearer '+ user.google.accessToken } },  
       function(error, response) {
@@ -305,6 +314,7 @@ function getGCalendarEventsPerUser(req, res) {
 }
 
 function refreshAccessToken(user, functiontoRepeat) {
+  console.log('refresh token used to be:' + user.google.refreshToken);
   refresh.requestNewAccessToken('google', user.google.refreshToken, 
     function(err, accessToken) {
       if (err || !accessToken) {
@@ -321,7 +331,8 @@ function refreshAccessToken(user, functiontoRepeat) {
         } else {   
           // Retry the request.
           console.log('calling makeRequest again');
-          functiontoRepeat;
+          console.log('now refresh token is ' + user.google.refreshToken);
+          functiontoRepeat();
         }
       });
     });

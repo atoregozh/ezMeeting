@@ -22,11 +22,11 @@ var meetingSchema = new Schema({
     type: Boolean // false if the meetings gets cancelled
   },
   startTime: {
-    type: String,
+    type: Date,
     requred: true // ISO String
   },
   endTime: {
-    type: String,
+    type: Date,
     requred: true // ISO String
   },
   description: {

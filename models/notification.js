@@ -21,8 +21,8 @@ var notificationSchema = new Schema({
     ref: 'User'
   },
   timeStamp: {
-    type: String,
-    requred: true // ISO String
+    type: Date,
+    requred: true // created_at
   }
 });
 
