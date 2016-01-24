@@ -6,20 +6,22 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel='stylesheet' href='/css/style.css'/>
     <link rel='stylesheet' href='/css/nav.css'/>
-    <link rel='stylesheet' href='/css/meetings.css'/>
+    <link rel='stylesheet' href='/css/newmeeting.css'/>
     <link rel='stylesheet' href='/css/bootstrap-datepicker.standalone.min.css'/>
     <link rel='stylesheet' href='/css/bootstrap-timepicker.min.css'/>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script type='text/javascript' src='/js/meetings.js'/></script>
+    <script type='text/javascript' src='/js/newmeeting.js'/></script>
     <script type="text/javascript" src="/js/nav.js"></script>
     <!-- Datepicker: http://bootstrap-datepicker.readthedocs.org/en/latest/ -->
     <script type='text/javascript' src='/js/bootstrap-datepicker.min.js'/></script>
     <!-- https://github.com/jdewit/bootstrap-timepicker -->
     <script type='text/javascript' src='/js/bootstrap-timepicker.min.js'/></script>
     <script type='text/javascript' src='/js/moment.min.js'/></script>
+    <!-- Algolia is used for autocomplete: https://www.algolia.com -->
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
   </head>
   <body>
     <!-- Navigation -->
@@ -50,8 +52,8 @@
                                 </div>
                                 <div class="m-details">
                                     <div class="m-panel1">
-                                        <!-- <input id="m-title" placeholder="Meeting Title"> -->
-                                        <div id="m-title" class="text-container" contenteditable="true" data-ph="Meeting Title"></div>
+                                        <input id="m-title" placeholder="Meeting Title">
+                                        <!-- <div id="m-title" class="text-container" contenteditable="true" data-ph="Meeting Title"></div> -->
                                         <div class="m-panel2b">
                                             <div class="m-panel2">
                                                 <input class="dp" id="m-date" placeholder="Date">
@@ -63,7 +65,7 @@
                                             </div>
                                             <div class="m-panel2c">
                                                 <!-- This instructions help fill up the space (meant for the meeting time )in an aesthetically pleasing way. This space fill up ensures that the grid does keep sliding down and up when the user selects a timeslot or cancels their selection while working on an xs screen size (e.g. mobile phone).  -->
-                                                <p>Select meeting time by clicking or dragging over the grid</p>
+                                                <p>Select meeting time by clicking or dragging on the grid</p>
                                             </div>
                                         </div>
                                         <input id="m-location" placeholder="Location">

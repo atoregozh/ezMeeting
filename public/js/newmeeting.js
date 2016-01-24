@@ -33,6 +33,8 @@ var user_count = 0;
 // empty but it should never be null or undefined.
 var userIdList = []; 
 
+var CALENDER_ENDPOINT = '/mockcalendars';
+
 /* 
 cellKeyToUserSet simulates a list of HashSets. Each field corresponds to a given cell (i.e. 30min slot) while 
 the value is an object with fields names that are the ID of each user that is busy in that time slot.
@@ -64,6 +66,7 @@ Color source: https://www.google.com/design/spec/style/color.html#color-color-pa
 #A1887F: Brown 300
 */
 var colorPalette = ['#1565C0', '#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#64B5F6', '#FDD835', '#6A1B9A', '#00E676', '#A1887F'];
+
 
 $(document).ready(function(){
 
@@ -258,7 +261,7 @@ $(document).ready(function(){
 	});
 
 	$("#cancel-btn").click(function(){
-		cancelMeeting();
+		cancelMeetingNotYetCreated();
 	});
 
 	$("#m-guest-search").keyup(function(e) {
@@ -323,7 +326,7 @@ $(document).ready(function(){
 		var endDate = moment($('#dp2').data('datepicker').getDate()).endOf('day');
 
 		$.ajax({
-			url: "/calendars?users=" +  userIdList.join(',') + "&from=" + startDate.format() + "&to=" + endDate.format(),
+			url: CALENDER_ENDPOINT + "?users=" +  userIdList.join(',') + "&from=" + startDate.format() + "&to=" + endDate.format(),
 			type: "GET",
 			data: {},
 			success: function(data) {
@@ -390,6 +393,10 @@ $(document).ready(function(){
 	// $("#m-end").prop('disabled', true);
 
 	addNewParticipant(S_USER_ID, S_DISPLAY_NAME, S_PIC_URL);
+
+	// Algolia
+	var client = algoliasearch("SE79GLOIEP", "2de5e4f53a32c9e9db7dbde79a203965");
+	index = client.initIndex('ezmeeting_users_test');
 	
 }); // End of $(document).ready()
 
@@ -437,7 +444,7 @@ function getAndDisplayUserEvents(userIdList, startDate, endDate) {
 		startUserPicAnimation(userIdList[i]);
 	}
 	$.ajax({
-		url: "/calendars?users=" +  userIds + "&from=" + startDate.format() + "&to=" + endDate.format(),
+		url: CALENDER_ENDPOINT + "?users=" +  userIds + "&from=" + startDate.format() + "&to=" + endDate.format(),
 		type: "GET",
 		data: {},
 		success: function(data) {
@@ -1186,7 +1193,7 @@ function downloadLaterDays() {
 
 function saveMeeting() {
 	console.log(">>> Todo: implement save");
-	var title = $("#m-title").text().trim();
+	var title = $("#m-title").val().trim();
 	if(!title){
 		showError("Please enter a meeting title");
 		return;
@@ -1214,7 +1221,7 @@ function saveMeeting() {
 	console.log(endTime.format());
 
 	if(startTime < moment()){
-		showError("Meeting should be scheduled for a future date");
+		showError("Meeting time should be in the future");
 		return;
 	}
 
@@ -1267,6 +1274,22 @@ function goToUrl(url){
 	window.location.href = url;
 }
 
-function cancelMeeting(){
+function cancelMeetingNotYetCreated(){
 	goToUrl("/home");
 }
+
+function algoliaSearch(query) {
+	// Callback example
+	index.search(query, function searchDone(err, content) {
+	  // err is either `null` or an `Error` object, with a `message` property
+	  // content is either the result of the command or `undefined`
+
+	  if (err) {
+	    console.error(err);
+	    return;
+	  }
+
+	  console.log(content);
+	});
+}
+

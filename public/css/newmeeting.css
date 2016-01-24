@@ -639,6 +639,7 @@ textarea {
 	font-weight: bold;
 	background-color: #fff;
 	max-height: 78px;
+	height: 40px;
 	overflow: scroll;
 }
 

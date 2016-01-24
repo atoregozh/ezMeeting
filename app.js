@@ -54,16 +54,20 @@ app.use(passport.session()); // persistent login sessions
 var routes = require('./routes/index')(passport); // load our index.js and pass in our app and fully configured passport
 var home = require('./routes/home');
 var meetings = require('./routes/meetings');
+var newmeeting = require('./routes/newmeeting');
 var profile = require('./routes/profile');
 var test = require('./routes/test');
 var calendars = require('./routes/calendars');
+var mockcalendars = require('./routes/mockcalendars'); // Todo: Delete after implementing calendar.js
 
 app.use('/', routes);
 app.use('/meetings', meetings);
+app.use('/newmeeting', newmeeting);
 app.use('/home', home);
 app.use('/profile', profile);
 app.use('/test', test);
-app.use('/calendars', calendars);
+app.use('/mockcalendars', mockcalendars); // Todo: Delete after implementing calendar.js
+
 
 
 // error handlers ================================================
