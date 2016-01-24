@@ -36,7 +36,8 @@ var meetingSchema = new Schema({
     type: String
   },
   organizerId : {
-    type: String
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
   participants: [{
     type: mongoose.Schema.Types.ObjectId, //userId list

@@ -13,13 +13,58 @@ router.post('/', function(req, res, next) {
   inviteToMeeting(req, res);
 });
 
-router.get('/', ensureAuthenticated, function(req, res, next) {
+router.get('/newmeeting', ensureAuthenticated, function(req, res, next) {
   res.render('meetings', {user: req.user,'title':'Create new meeting'});
 });
 
 router.get('/all', function(req, res) {
   getGCalendarEventsPerUser(req, res);
 }); //router.get('/all'... ends here
+
+// Handler for GET requests to /meetings/:id
+router.get('/:id', function(req, res, next) {
+   var meetingJson = {};
+   
+   var id = req.params.id;
+   Meeting.find({ googleId: id }, function(err, meeting) {
+    if(err || !meeting) { 
+      console.log('heres the meeting from db');
+      console.log(meeting);
+      console.log('*****************');
+      console.log('problems with finding meeting in db; errors! Heres the error:');
+      console.log(err);
+    } else {
+      //start constructing json for response
+      meetingJson = {
+        "googleId": meeting.googleId,
+        "name": meeting.name,
+        "startTime": meeting.startTime,
+        "endTime": meeting.endTime,
+        "description": meeting.description,
+        "location": meeting.location,
+        "organizer": {
+          id: meeting.organizerId.toString(),
+          name: meeting.organizerId.displayName,
+          pic: meeting.organizerId.pic
+        },
+        "participants": [
+        ]
+      };
+      
+      var participantsArrOfIds = meeting.participants;
+      for ( var i = 0; i < participantsArrOfIds.length; i++) {
+        var pId = participantsArrOfIds[i];
+
+        meetingJson.push({
+          "id": pId.toString(),
+          "name": pId.name,
+          "pic": pId.pic
+        });
+      }
+    } //end else
+  }); // end find from db
+  res.send(meetingJson);
+});
 
 function inviteToMeeting(req, res) {
   /*
@@ -169,7 +214,7 @@ function processCreatedMeeting(participantIDs, organizerId, res) {
   newMeeting.endTime = res.end.dateTime;
   newMeeting.description = res.description;
   newMeeting.location = res.location;
-  newMeeting.organizerId = organizerId;
+  newMeeting.organizerId = mongoose.Types.ObjectId(organizerId);
   newMeeting.isInternal = true;
 
   participantObjectIds = [];
