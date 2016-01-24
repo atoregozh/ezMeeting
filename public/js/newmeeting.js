@@ -241,7 +241,7 @@ $(document).ready(function(){
 	});
 
 	$('#b5').click(function() {
-		showLoadingSpinner("I am loading");
+		showLoading("I am loading");
 	});
 
 	// ~~~~~ End of test div ~~~~~
@@ -1099,7 +1099,7 @@ function hideLoadingSpinner() {
 	$('.alert.loading').remove();
 }
 
-function showLoadingSpinner(mssg) {
+function showLoading(mssg) {
 	// It's up to the caller to hide the spinner by calling hideLoadingSpinner()
 	// Source of loading PNG: http://www.chimply.com/Generator#classic-spinner,loopingCircle
 	addAlertPanelIfMissing();
@@ -1239,7 +1239,7 @@ function saveMeeting() {
 			name: displayName
 		});
 	});
-	showLoadingSpinner("Saving your meeting");
+	showLoading("Saving your meeting");
 	$.ajax({
 		url: "/meetings",
 		type: "POST",
