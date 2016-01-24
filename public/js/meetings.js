@@ -4,7 +4,7 @@ var TAB3_ID = 'tab3';
 
 var ALERT_TIMEOUT = 5000;
 var ALERT_FADEOUT = 2000;
-var SELECTED_CLASS = 'selected'; // CSS class add edto a selected grid while dragging.
+var SELECTED_CELL_CLASS = 'selected'; // CSS class add edto a selected grid while dragging.
 var DEFAULT_TIME = "00:00";
 // CSS attribute added to each selected grid. The value would be = the key of the cell 
 // that contains the close button for this cell.
@@ -241,6 +241,14 @@ $(document).ready(function(){
 		}
 	});
 
+	$("#save-btn").click(function(){
+		saveMeeting();
+	});
+
+	$("#cancel-btn").click(function(){
+		cancelMeeting();
+	});
+
 	$("#m-guest-search").keyup(function(e) {
 	    if (e.keyCode == 13) { // Enter key
 	        var input = $("#m-guest-search").val().trim();
@@ -319,14 +327,21 @@ $(document).ready(function(){
 					var cellKeyList = removeUserFromCellKeyToUserSetMapping(uid);
 					removeUserEventsFromGrid(uid, cellKeyList);	
 				}
-				console.log('-----sss-----');
-			 	console.log(cellKeyToUserSet);
-			 	console.log('-----xxx-----');
 
-			 	// Redraw the grids to ensure we're displaying the new range of days.
+				var selectedCells = getKeyListOfSelectedCells(); // Get list of selected cells
+
+			 	// Redraw the grids to ensure we're displaying the new range of days. This process also wipes out the selected cells.
 			 	clearAllGridDisplayedDays();
 				drawGridDays(startDate, endDate);
 				userIdList = userIdListBackup;
+
+				// Restore selected cells.
+				if(selectedCells.length > 0){
+					$.each(selectedCells, function(index, value){
+						getCellWithKey(value).addClass(SELECTED_CELL_CLASS);
+					});
+					setDeleteButtonsForDay(getDayStringFromKey(selectedCells[0]), true);
+				}		
 
 				for(var i = 0; i < data.length; i++){
 				 	var record = data[i];
@@ -596,7 +611,7 @@ function roundUpTimeTo30Minutes(time) {
 
 function mouseEnterCell(key) {
 	if(isdragging && (getDayStringFromKey(key) === firstSelectedDay)) {
-		getCellWithKey(key).addClass(SELECTED_CLASS);
+		getCellWithKey(key).addClass(SELECTED_CELL_CLASS);
 	}
 	var objectOfUserIDs = cellKeyToUserSet[key];
 	$('.person-img-overlay').removeClass('inviz');
@@ -608,6 +623,14 @@ function mouseEnterCell(key) {
 			gridPerson.children('.person-img-overlay').addClass('inviz');
 		}
 	}
+}
+
+function getKeyListOfSelectedCells() {
+	var selectedKeys = [];
+	$('.c-row.selected').each(function(){
+		selectedKeys.push($(this).attr('key'));
+	});
+	return selectedKeys;
 }
 
 function mouseLeaveCell(key) {
@@ -628,7 +651,7 @@ function clearSelectedDivsWithCloseBtn(key) {
 }
 
 function clearAllSelectedCells(doNotUpdateUI) {
-	 $('.c-row.' + SELECTED_CLASS).each(function(){
+	 $('.c-row.' + SELECTED_CELL_CLASS).each(function(){
 	 	clearThisSelectedCell($(this), doNotUpdateUI);
 	 });
 }
@@ -636,7 +659,7 @@ function clearAllSelectedCells(doNotUpdateUI) {
 // Expects a jQuery object
 function clearThisSelectedCell(cell, doNotUpdateUI) {
 	var cellKey = cell.attr('key');
-	cell.removeClass(SELECTED_CLASS);
+	cell.removeClass(SELECTED_CELL_CLASS);
 	cell.removeAttr(CLOSE_BTN_ATTR_KEY);
 	cell.find('.' + CLOSE_BTN_CSS_CLASS).remove();
 	// The next line ensures that the time input fields get set to the right values.
@@ -674,7 +697,7 @@ function setDeleteButtonsForDay(dayString, doNotUpdateUI) {
 	for(var i = 0; i < dayTimes.length; i++) {
 		var cellKey = '_' + dayString + '_' + dayTimes[i];
 		var cell = getCellWithKey(cellKey);
-		if(cell.hasClass(SELECTED_CLASS)){
+		if(cell.hasClass(SELECTED_CELL_CLASS)){
 			if(!isEarlierCellSelected){
 				isEarlierCellSelected = true;
 				keyOfSelectedCell = cellKey;
@@ -1145,4 +1168,12 @@ function downloadLaterDays() {
 		addDayToGrid(day);
 	}
 	getAndDisplayUserEvents(userIdList, startDate, endDate);
+}
+
+function saveMeeting() {
+	console.log(">>> Todo: implement save");
+}
+
+function cancelMeeting(){
+	console.log(">>> Todo: implement cancel");
 }
