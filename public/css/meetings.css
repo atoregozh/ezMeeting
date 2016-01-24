@@ -193,11 +193,11 @@
 
 .person-img-overlay {
 	border-radius: 50px;
-    width: 40px;
-    height: 40px;
+    width: 52px;
+    height: 52px;
     position: absolute;
-    top: 27px;
-    left: 24px;
+    top: 21px;
+    left: 18px;
     background-color: #fff;
     opacity: 0.7;
     display: block;

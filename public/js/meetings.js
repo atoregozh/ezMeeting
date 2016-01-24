@@ -323,7 +323,6 @@ $(document).ready(function(){
 				// Remove all users' previous events
 				for(var i = 0; i < userIdList.length; i++){
 					var uid = userIdList[i];
-					console.log('removing user with ID: ' + uid);
 					var cellKeyList = removeUserFromCellKeyToUserSetMapping(uid);
 					removeUserEventsFromGrid(uid, cellKeyList);	
 				}
