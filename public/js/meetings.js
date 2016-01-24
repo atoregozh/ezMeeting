@@ -14,7 +14,8 @@ var CURRENT_COLOR_ATTR_KEY = 'current-color';
 var USER_COLOR_ATTR_KEY = 'color';
 // var DEFAULT_PERSON_BLUE = '#81D4FA';
 var DEFAULT_PERSON_BLUE = '#BBC7DA';
-var SIDEBAR_SCROLL_SPEED = 500;
+var SIDE_BTN_SCROLL_SPEED = 500;
+var SIDE_BTN_ADDITIONAL_DAYS = 3;
 
 var WHITE_COLOR = 'rgba(255, 255, 255, 0)';
 var ANIMATION_CLASS_NAME = 'animate';
@@ -186,7 +187,7 @@ $(document).ready(function(){
 	$('.grid-side-btn.left').click(function() {
 		$('#br').animate({
 			scrollLeft: $('#br').scrollLeft() - 202 // 101 corresponds to the width of each column
-		}, SIDEBAR_SCROLL_SPEED);
+		}, SIDE_BTN_SCROLL_SPEED);
 		if($(this).hasClass('active')) {
 			downloadEarlierDays();
 		}
@@ -195,7 +196,7 @@ $(document).ready(function(){
 	$('.grid-side-btn.right').click(function() {
 		$('#br').animate({
 			scrollLeft: $('#br').scrollLeft() + 202 // 101 corresponds to the width of each column
-		}, SIDEBAR_SCROLL_SPEED);
+		}, SIDE_BTN_SCROLL_SPEED);
 		if($(this).hasClass('active')) {
 			downloadLaterDays();
 		}
@@ -262,7 +263,7 @@ $(document).ready(function(){
 	        userIdList.push(user.id);
 	        addUserToNameList(user.id, user.name);
 	        addUserToPicsPanel(user.id, user.name, user.pic);
-	        getUserCalendar([user.id]);
+	        getAndDisplayUserEvents([user.id], gridStartDate, gridEndDate);
 
 	    }
 	});
@@ -277,18 +278,11 @@ $(document).ready(function(){
 
 
 	// Not sure why click is not working here, hence we're using mousedown and touchstart (for mobile devices)
-	$('#br').on({
-		'mousedown': function(e){
-			e.stopPropagation(); // Ensures that the div containing the button also gets deleted.
-			var key = $(this).parent().attr('key');
-			clearSelectedDivsWithCloseBtn(key);
-		},
-		'touchstart': function(e){
-			e.stopPropagation(); // Ensures that the div containing the button also gets deleted.
-			var key = $(this).parent().attr('key');
-			clearSelectedDivsWithCloseBtn(key);
-		}
-	}, ' .c-row .' + CLOSE_BTN_CSS_CLASS);
+	$('#br').on('mousedown touchstart', ' .c-row .' + CLOSE_BTN_CSS_CLASS, function(e){
+		e.stopPropagation(); // Ensures that the div containing the button also gets deleted.
+		var key = $(this).parent().attr('key');
+		clearSelectedDivsWithCloseBtn(key);
+	});
 
 
 	$(window).on('mouseup', function(){
@@ -350,9 +344,9 @@ $(document).ready(function(){
 			},
 			error: function(xhr, status, error) {
 				console.log("Error: " + error);
-				showError("Unable to refresh grid now. Please try again later.");
-				$("#dp1").datepicker("update", gridStartDate.toDate());
-				$("#dp2").datepicker("update", gridEndDate.toDate());
+				showError("Unable to refresh grid now. Please try again later");
+				// $("#dp1").datepicker("update", gridStartDate.toDate());
+				// $("#dp2").datepicker("update", gridEndDate.toDate());
 				stopAllUserPicAnimation();
 			}
 		});
@@ -411,11 +405,9 @@ function updateGridDisplayedDays() {
 	}
 	for(var d = moment(gridEndDate).add(1, 'days'); d <= endDate; d = moment(d).add(1, 'days')){
 		addDayToGrid(d);
-		console.log('>>> adding: ' + d.format());
 	}
 	for(var d = moment(gridStartDate).subtract(1, 'days'); d >= startDate; d = moment(d).subtract(1, 'days')){
 		addDayToGrid(d);
-		console.log('>>> adding: ' + d.format());
 	}
 
 	/*
@@ -444,14 +436,19 @@ function isSpecifiedDateRangeValid() {
 	return (endDate >= startDate);
 }
 
-function getUserCalendar(userIdList) {
-	// Retrieves the calendars from the server.
+
+function getAndDisplayUserEvents(userIdList, startDate, endDate) {
+	// Retrieves the calendars from the server and adds them to the calendar. This method expects the calendar grid
+	// to already contain the dates between the specified startDate and endDate.
+	if(!userIdList || userIdList.length < 1) {
+		return;
+	}
 	userIds = userIdList.join(',');
 	for(var i = 0; i < userIdList.length; i++){
 		startUserPicAnimation(userIdList[i]);
 	}
 	$.ajax({
-		url: "/calendars?users=" +  userIds + "&from=" + gridStartDate.format() + "&to=" + gridEndDate.format(),
+		url: "/calendars?users=" +  userIds + "&from=" + startDate.format() + "&to=" + endDate.format(),
 		type: "GET",
 		data: {},
 		success: function(data) {
@@ -465,10 +462,18 @@ function getUserCalendar(userIdList) {
 				}
 				stopUserPicAnimation(userId);
 			}
-		  console.log(data);
+			for(var i = 0; i < userIdList.length; i++){
+				// Stops the animation for users that may not have any returned event.
+				stopUserPicAnimation(userIdList[i]); 
+			}
 		},
 		error: function(xhr, status, error) {
-		  console.log("Error: " + error);
+			console.log("Error: " + error);
+			showError("Unable to refresh grid now. Please try again later");
+			for(var i = 0; i < userIdList.length; i++){
+				// Stops the animation for users that may not have any returned event.
+				stopUserPicAnimation(userIdList[i]); 
+			}
 		}
 	});
 }
@@ -487,7 +492,8 @@ function addUserEventToGrid(userId, startTime, endTime) {
 		// Color the added circle appropriately
 		cell.children('span[data-user-id="' + userId + '"]').first().css({'background-color': getUserColor(userId)});
 
-		// Check if the user had a previous appointment at this time slot.
+		// Check if the user had a previous appointment at this time slot. Only update the mapping (between the userId and this cell key) 
+		// and increment the count (in tab3) if the user did not have any previous appointment in this time slot.
 		if(!cellKeyToUserSet[cellKey][userId]) {
 			// Add this to the field that keeps track of the mappings.
 			cellKeyToUserSet[cellKey][userId] = true;
@@ -736,9 +742,8 @@ function addNext7DaysToGrid() {
 	$("#dp2").datepicker("update", gridEndDate.toDate());
 }
 
-// Expects a moment day object. Note that this function simply updates the grid. 
-// It does not upate the necessary fields or check that the added date is not 
-// going to set the grid in a weird way.
+// Expects a moment day object. Note that this function simply updates the grid and the relevant fields. 
+// It does not check whether the added date is going to create gaps in the grid dates.
 function addDayToGrid(day) {
 	var dayKey = day.format('_YYYY-MM-DD');
 	var tableHeading = day.format ('ddd M/D');
@@ -753,9 +758,11 @@ function addDayToGrid(day) {
 		);
 		addRowsToDayCol($('.' + dayKey).first(), dayKey);
 		gridEndDate = eod;
+		$("#dp2").datepicker("update", gridEndDate.toDate());
 		if(!gridStartDate){
 			// This loop will execute if both gridStartDate and gridEndDate were undefined.
 			gridStartDate = sod; 
+			$("#dp1").datepicker("update", gridStartDate.toDate());
 		}
 	}
 	else if(!gridStartDate || (sod < gridStartDate)) {
@@ -767,6 +774,7 @@ function addDayToGrid(day) {
 		);
 		addRowsToDayCol($('.' + dayKey).first(), dayKey);
 		gridStartDate = sod;
+		$("#dp1").datepicker("update", gridStartDate.toDate());
 	}
 	
 }
@@ -1115,9 +1123,26 @@ function addLeadingZero(int) {
 }
 
 function downloadEarlierDays() {
-	console.log('>>> TODO: implement downloadEarlierDays()');
+	var endDate = moment(gridStartDate).subtract(1 , 'day').endOf('day');
+	var startDate = moment(endDate).subtract((SIDE_BTN_ADDITIONAL_DAYS - 1), 'day').startOf('day');
+	console.log('downloading earlier events');
+	console.log('start: ' + startDate.format());
+	console.log('end: ' + endDate.format());
+	// Note: This has to be done in reverse order. Otherwise, we'll end up with gaps in the grid dates and this would lead to an error.
+	for(var day = moment(endDate); day >= startDate; day.subtract(1, 'days')){
+		addDayToGrid(day);
+	}
+	getAndDisplayUserEvents(userIdList, startDate, endDate);
 }
 
 function downloadLaterDays() {
-	console.log('>>> TODO: implement downloadLaterDays()');
+	var startDate = moment(gridEndDate).add(1, 'day').startOf('day');
+	var endDate = moment(startDate).add((SIDE_BTN_ADDITIONAL_DAYS - 1) , 'day').endOf('day');
+	console.log('downloading later events');
+	console.log('start: ' + startDate.format());
+	console.log('end: ' + endDate.format());
+	for(var day = moment(startDate); day <= endDate; day.add(1, 'days')){
+		addDayToGrid(day);
+	}
+	getAndDisplayUserEvents(userIdList, startDate, endDate);
 }
