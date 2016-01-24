@@ -461,7 +461,7 @@ function addUserEventToGrid(userId, startTime, endTime) {
 	var st = roundDownTimeTo30Minutes(startTime);
 	var et = roundUpTimeTo30Minutes(endTime);
 	if(et > gridEndDate){
-		et = gridEndDate;
+		et = moment(gridEndDate);
 	}
 	for(var cellTime = moment(st); cellTime < et; cellTime = moment(cellTime).add(30, 'minutes')) {
 		var cellKey = getCellKey(cellTime);
