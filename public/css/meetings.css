@@ -566,7 +566,7 @@
 	font-size: 16px;
 }
 
-.alert.info, .blue-linear:hover, .blue-linear:focus {
+.blue-linear:hover, .blue-linear:focus {
 	border: 1px solid #1565C0;
 	color: white;
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#499bea+0,207ce5+100;Blue+3d+%237 */
@@ -577,9 +577,10 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#499bea', endColorstr='#207ce5',GradientType=0 ); /* IE6-9 */
 }
 
-.alert.error, #cancel-btn:hover, #cancel-btn:focus {
+#cancel-btn:hover, #cancel-btn:focus {
 	border: 1px solid #C62828;
 	color: white;
+	background-color: #EF9A9A;
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff3019+0,cf0404+100;Red+3D */
 	background: rgb(255,48,25); /* Old browsers */
 	background: -moz-linear-gradient(top,  rgba(255,48,25,1) 0%, rgba(207,4,4,1) 100%); /* FF3.6-15 */
@@ -588,15 +589,22 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#cf0404',GradientType=0 ); /* IE6-9 */
 }
 
-.alert.warning {
-	border: 1px solid #F57C00;
-	color: black;
-	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffc578+0,fb9d23+100;Orange+3D+%233 */
-	background: rgb(255,197,120); /* Old browsers */
-	background: -moz-linear-gradient(top,  rgba(255,197,120,1) 0%, rgba(251,157,35,1) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top,  rgba(255,197,120,1) 0%,rgba(251,157,35,1) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom,  rgba(255,197,120,1) 0%,rgba(251,157,35,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffc578', endColorstr='#fb9d23',GradientType=0 ); /* IE6-9 */
+.alert.error {
+	border: 1px solid #C62828;
+	background-color: #FFCDD2;
+	color: #C62828;
+}
+
+.alert.info{
+	border: 1px solid #1B5E20;
+	color: #fff;
+	background-color: #43A047;
+}
+
+.alert.warning, .alert.loading  {
+	border: 1px solid #FF8F00;
+	color: #FF6F00;
+	background-color: #FFE082;
 }
 
 .m-details {
@@ -961,4 +969,11 @@ textarea {
     border-radius: 50%;
     display: inline-block;
     margin: 5px 1px 2px 0;
+}
+
+.loading-pic {
+	margin-left: 20px;
+	width: 14px;
+	position: relative;
+	top: 2px;
 }

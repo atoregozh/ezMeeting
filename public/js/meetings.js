@@ -237,6 +237,10 @@ $(document).ready(function(){
 		addUserToNameList(userId, name);
 	});
 
+	$('#b5').click(function() {
+		showLoadingSpinner("I am loading");
+	});
+
 	// ~~~~~ End of test div ~~~~~
 
 	$("#m-guest-search").focus(function(){
@@ -1084,6 +1088,22 @@ function showWarning(mssg) {
 	}, ALERT_TIMEOUT);
 }
 
+function hideLoadingSpinner() {
+	$('.alert.loading').remove();
+}
+
+function showLoadingSpinner(mssg) {
+	// It's up to the caller to hide the spinner by calling hideLoadingSpinner()
+	// Source of loading PNG: http://www.chimply.com/Generator#classic-spinner,loopingCircle
+	addAlertPanelIfMissing();
+	var id = 'loading-' + alertCount++;
+	$('#alert-panel').append(
+		'<div>' +
+			'<div class="alert loading" id="' + id + '">' + mssg + '<img src="/img/rolling.gif" alt="loading" class="loading-pic">' +
+		'</div>'
+	);
+}
+
 function showError(mssg) {
 	addAlertPanelIfMissing();
 	var id = 'info-' + alertCount++;
@@ -1202,12 +1222,51 @@ function saveMeeting() {
 		showError("Add at least one participant");
 		return;
 	}
-	console.log(">>>> Todo: Save meeting");
+	
+	listOfParticipants = [];
+	$.each(userIdList, function(index, userId){
+		var gridPerson = getGridPersonFromGridPanel(userId);
+		var displayName = gridPerson.children('.grid-name').first().html();
+		listOfParticipants.push({
+			id: userId,
+			name: displayName
+		});
+	});
+	showLoadingSpinner("Saving your meeting");
+	$.ajax({
+		url: "/meetings",
+		type: "POST",
+		data: {
+			name: title,
+			startTime: startTime.format(),
+			endTime: endTime.format(),
+			description: description,
+			location: location,
+			organizer: {
+				id: S_USER_ID,
+				name: S_DISPLAY_NAME
+			},
+			participants: listOfParticipants
+		},
 
-
+		success: function(data) {
+			hideLoadingSpinner();
+			window.localStorage.setItem('mssg', 'Invitation sent to all participants');
+			window.localStorage.setItem('time', moment().format());
+			goToUrl("/home");
+		},
+		error: function(xhr, status, error) {
+			hideLoadingSpinner();
+			showError("An error occurred while saving your meeting. Please retry.");
+		}
+	});
 
 }
 
+function goToUrl(url){
+	window.location.href = url;
+}
+
 function cancelMeeting(){
-	console.log(">>> Todo: implement cancel");
+	goToUrl("/home");
 }
