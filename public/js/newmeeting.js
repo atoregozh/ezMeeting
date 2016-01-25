@@ -54,7 +54,6 @@ For further details, see: http://stackoverflow.com/questions/3042886/set-data-st
 var cellKeyToUserSet = {}; // maps each cell Key to a set of user IDs for users that have a meeting in that timeslot.
 /*
 Color source: https://www.google.com/design/spec/style/color.html#color-color-palette
-#1565C0: Blue 800
 #FF8F00: Amber 800
 #EA80FC: Purple A100
 #2E7D32: Green 800
@@ -65,7 +64,7 @@ Color source: https://www.google.com/design/spec/style/color.html#color-color-pa
 #00E676: Green A400
 #A1887F: Brown 300
 */
-var colorPalette = ['#1565C0', '#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#64B5F6', '#FDD835', '#6A1B9A', '#00E676', '#A1887F'];
+var colorPalette = ['#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#64B5F6', '#FDD835', '#6A1B9A', '#00E676', '#A1887F'];
 
 
 $(document).ready(function(){

@@ -22,8 +22,11 @@
 #my-meetings {
   padding: 10px 7px;
   background-color: #f8f8f8;
-  box-shadow: 1px 1px 5px #CACACA;
+  box-shadow: 2px 2px 10px #CACACA;
+  margin-bottom: 10px;
   max-height: 610px;
+  min-height: 300px;
+  overflow: auto;
 }
 
 .dashboard-header {
@@ -264,8 +267,10 @@ a.plain:hover, a.plain:focus {
 }
 
 .notification-card {
-  box-shadow: 1px 2px 5px #CACACA;
+  box-shadow: 2px 2px 10px #CACACA;
+  margin-bottom: 10px;
   max-height: 610px;
+  min-height: 300px;
   overflow: auto;
   background-color: #f8f8f8;
   padding: 10px 0;
