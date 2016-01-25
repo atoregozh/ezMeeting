@@ -1,12 +1,11 @@
 var express = require('express');
 var router = express.Router();
 
-// var db = 
-//         [{'name': 'New Meeting Name',
-//   'location': '77 mass av',
-//   'date': 'Jan 1, 2016', 'startTime':'10:30', 'endTime':'11:30'}]
+var db = 
+        [{'name': 'New Meeting Name', 'id': 'asafsaddsa',
+  'location': '77 mass av', 'description': 'The meeting description', 'startTime':"2016-01-25T02:01:07-05:00", 'endTime':"2016-01-25T03:01:50-05:00"}]
 
-var db = []
+//var db = []
 
   // =====================================
   // DASHBOARD ===========================

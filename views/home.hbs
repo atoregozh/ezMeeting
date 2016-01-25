@@ -26,12 +26,9 @@
               <h2 class="dashboard-header">My Meetings</h2>
             </div>
               <div class="meeting-cards-div">
-                {{#each meetings }}
+                {{#each meetings}}
                 <!-- Meeting 1 -->
-                <div class="meeting-card">
-                  <button type="button" class="btn btn-default meeting-options">
-                    <i class="fa fa-ellipsis-v"></i>
-                  </button>
+                <div class="meeting-card" data-meeting-id="{{id}}">
                   <div class="meeting">
                     <div class="meeting-name">
                       <p>{{name}}</p>
@@ -41,8 +38,8 @@
                         <i class="fa fa-clock-o"></i>  
                       </div>
                       <div class="datetime-text">
-                        <p> {{date}} </p>
-                        <p> {{startTime}}am-{{endTime}}pm </p>
+                        <p class="meeting-date"></p>
+                        <p> <span class="start-time">{{startTime}}</span>-<span class="end-time">{{endTime}}</span></p>
 
                   {{!--       <p> {{getTime startTime endTime }} HANDLEBARS func--}} 
                       </div>
