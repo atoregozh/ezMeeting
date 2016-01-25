@@ -1,67 +1,122 @@
-var express = require('express');
-var router = express.Router();
-var moment = require('moment');
+// PACKAGES //
+var router = require('express').Router();
+var utils = require('../utils');
+var User = require('../models/user');
 
-router.get('/', function(req, res, next) {
-	var from = new Date(req.query.from);
-	var to = new Date(req.query.to);
+
+// Handler for GET requests to /calendars/?users=id1,id2&from=ISOString1to=ISOString2
+router.get('/', function(req, res) {
+	var from = req.query.from;
+	var to = req.query.to;
 	var users = req.query.users;
 	var usersList = users.split(',');
-	// console.log('req.query.from = ' + req.query.from);
-	// console.log('req.query.to = ' + req.query.to);
-	console.log('users = ' + users);
-	console.log('from = ' + from);
-	console.log('to = ' + to);
 
-	var data = [];
-
-	for(var i = 0; i < usersList.length; i++) {
-		var userId = usersList[i];
-		var userEvents = [];
-		// Get user events within the time range:
-		var hourShift = Math.floor((Math.random() * 48) + 1); // Random number between 1 and 48
-		var currentStart = moment(from).add(hourShift, 'h');
-		
-		for(var b = 0; b < 1000; b++) {
-			var startTime = currentStart;
-			var meetingDuration = Math.floor((Math.random() * 90) + 1); // Random number between 1 and 90
-			var endTime = currentStart.add(meetingDuration, 'minutes');
-
-			// Error check in case I mistakenly configure crap in the randomization logic.
-			if (startTime < from || endTime > to){
-				continue;
-			}
-			var minutesBeforeNextMeeting = Math.floor((Math.random() * 300) + 1); // Random number between 1 and 300
-			userEvents.push({
-				id: userId + '-' + b,
-				ownerId: userId,
-				name: 'Test event',
-				startTime: currentStart.format(),
-				endTime: endTime.format(),
-				isInternal: true
-				});
-			currentStart.add(minutesBeforeNextMeeting, 'minutes');
-		}
-		data.push({
-			userId: userId,
-			events: userEvents
-		});
-	}
-	console.log(JSON.stringify(data, null, 4));
-	res.send(data);
+	User.find({ _id: { $in: usersList } }, function(err, users) {
+		if (err) {
+			console.log(err);
+      utils.sendErrResponse(res, 503, err);
+    } else {
+    	console.log('getting users docs'); 
+    	var respArr = [];
+			for (var i = 0; i < users.length; i++) {
+				var user = users[i]; //participant is User document with all the fields set
+				var userMap = getGCalendarEventsPerUser(user,from, to);
+				respArr.push(userMap);
+      }
+      result = {"data": respArr};
+      console.log("sending to successfully");
+      utils.sendSuccessResponse(res, result);
+    }
+	});
 });
 
+function getGCalendarEventsPerUser(user,from, to) {
+  var retries = 2;
+  console.log('starting out getGCalendarEventsPerUser');
+
+  var makeRequest = function() {
+    retries--;
+    if(!retries) {
+      // Couldn't refresh the access token.
+      utils.sendErrResponse(res, 401, "Couldn't refresh the access token");
+    }
+
+  var url = 'https://www.googleapis.com/calendar/v3/calendars/'+user.email+'/events'+
+            '?orderBy=startTime&singleEvents=true&timeMax='+to+'&timeMin='+from;
+  console.log(url);
+  console.log('user access Token is: ' + user.google.accessToken);
+  console.log('user refresh Token is: ' + user.google.refreshToken);
+  needle.get(url, 
+            { headers: { Authorization: 'Bearer '+ user.google.accessToken } },  
+    function(error, googleResponse) {
+      if (!error && googleResponse.statusCode == 200) {
+
+        console.log('Success! calling filterUserCalData()');
+        var jsonUserMap = filterUserCalData(user,response.body);
+        return jsonUserMap;
+      } else if (googleResponse.statusCode === 401) {
+      // Access token expired.
+      // Try to fetch a new one.
+        refreshAccessToken(user,makeRequest);
+      } else {
+        // There was another error, handle it appropriately.
+        console.log('some other error happened');
+        console.log(googleResponse.body);
+        utils.sendErrResponse(googleResponse, 500, err);
+      }   
+    }); //end needle get
+  };
+  makeRequest();
+}
+
+function filterUserCalData(user,data) {
+  var filteredJsonArr = [];
+  for( var i = 0; i < data.items.length; i++) {
+    var item = data.items[i];
+    if (( item.start.dateTime === null ) || (typeof(item.start.dateTime) == 'undefined') &&
+      (typeof(item.end.dateTime) == 'undefined' || item.end.Time === null)) {
+      continue;
+    } else {
+
+      filteredJsonArr.push({
+          id: item.id,
+          name: item.summary,
+          startTime: item.start.dateTime, 
+          endTime: item.end.dateTime,
+          isInternal: false, // False means it came from Google calendar or another external source
+       });
+    }
+  }
+  console.log('Heres the json array');
+  console.log(filteredJsonArr);
+  var userMap = {userId: user._id , events: filteredJsonArr};
+  return userMap;
+}
+
+
+function refreshAccessToken(user, functiontoRepeat) {
+  console.log('refresh token used to be:' + user.google.refreshToken);
+  refresh.requestNewAccessToken('google', user.google.refreshToken, 
+    function(err, accessToken) {
+      if (err || !accessToken) {
+        console.log('error! couldnt refresh the token!'); //couldn't refresh the token
+        return res.status(401).end(); 
+      }
+
+      // Save the new accessToken for future use
+      user.save( { google: { accessToken: accessToken} }, function(err) {
+        if (err) {
+          console.log('problems with saving new accessToken to db!');
+          console.log(err);  // problems with saving into db; errors!
+          throw err;
+        } else {   
+          // Retry the request.
+          console.log('calling makeRequest again');
+          console.log('now refresh token is ' + user.google.refreshToken);
+          functiontoRepeat();
+        }
+      });
+    });
+}
+
 module.exports = router;
-
-
-
-// // GET events listing
-// router.get('/', function(req, res, next) {
-//  	res.send('Received GET request for /events');
-// });
-
-// // Handler for GET requests to /events/:id
-// router.get('/:id', function(req, res, next) {
-// 	var id = req.params.id;
-// 	res.render('events', {'title':'My event title', 'id': id})
-// });
