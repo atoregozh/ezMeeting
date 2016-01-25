@@ -876,7 +876,6 @@ textarea {
 	width: 100%;
     border: 1px solid #aaa;
     height: 30px;
-    font-size: 0;
     display: flex;
     background-color: white;
     border-radius: 20px;
@@ -928,9 +927,13 @@ textarea {
 	width: 100%;
 	display: flex;
 	padding: 7px 0 2px 0;
-	border-bottom: 1px solid #ccc;
+	/*border-bottom: 1px solid #ccc;*/
 }
-
+/*
+.guests-row:last-child {
+	border-bottom: none;
+}
+*/
 .guests-row:hover, .guests-row:focus {
 	background-color: #eee
 }
@@ -972,35 +975,50 @@ textarea {
 
 /* Algolia */
 .demo { text-align: center; margin: 40px auto;width: 600px; }
+
 .algolia-autocomplete {
-width: 100%;
+	width: 100%;
+	height: 100%;
+	font-size: 12px;
 }
+
 .algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
-width: 100%;
+	width: 100%;
 }
+
 .algolia-autocomplete .aa-hint {
-color: #999;
+	color: #999;
 }
+
 .algolia-autocomplete .aa-dropdown-menu {
-width: 100%;
-background-color: #fff;
-border: 1px solid #999;
-border-top: none;
+	width: 100%;
+	background-color: #fff;
+	border: 1px solid #999;
+	border-top: none;
 }
+
 .algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
-cursor: pointer;
-padding: 5px 4px;
+	cursor: pointer;
+	padding: 5px 4px;
+	border-top: 1px solid #aaa;
 }
+
+.algolia-autocomplete .aa-dropdown-menu .aa-suggestion:first-child {
+	border-top: none;
+}
+
 .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
-background-color: #B2D7FF;
+	background-color: #B2D7FF;
 }
+
 .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
-font-weight: bold;
-font-style: normal;
+	font-weight: bold;
+	font-style: normal;
 }
+
 .algolia-autocomplete .category {
-text-align: left;
-background: #efefef;
-padding: 10px 5px;
-font-weight: bold;
+	text-align: left;
+	background: #efefef;
+	padding: 10px 5px;
+	font-weight: bold;
 }

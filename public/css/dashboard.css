@@ -18,6 +18,14 @@
   max-height: 610px;
   min-height: 300px;
   overflow: auto;
+  margin-right: 15px;
+}
+
+@media (max-width: 768px) { /* Phones */
+
+  #my-meetings {
+    margin-right: 0px;
+  }
 }
 
 .dashboard-header {
