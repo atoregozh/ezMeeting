@@ -299,7 +299,7 @@
 	border-color: #34495e;
 }
 
-.grid-side-btn:hover i, .grid-side-btn:focus i, .grid-side-btn.active i{
+.grid-side-btn:hover i, .grid-side-btn:focus i {
 	color: #34495e;
 }
 
