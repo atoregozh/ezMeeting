@@ -33,7 +33,7 @@ var user_count = 0;
 // empty but it should never be null or undefined.
 var userIdList = []; 
 
-// var CALENDER_ENDPOINT = '/mockcalendars';
+var CALENDER_ENDPOINT = '/calendars';
 var CALENDER_ENDPOINT = '/calendars';
 
 /* 

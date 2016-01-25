@@ -6,6 +6,8 @@ var User = require('../models/user');
 var Meeting = require('../models/meeting');
 var moment = require('moment');
 var mongoose = require('mongoose');
+var Notification = require('../models/notification');
+
 
 // Handler for POST requests to /meetings
 router.post('/', function(req, res, next) {
@@ -172,8 +174,8 @@ function inviteToMeeting(req, res) {
           };
 
           console.log(url);
-          console.log('user access Token before calling processCreatedMeeting: ' + organizer.google.accessToken);
-          console.log('user refresh Token before calling processCreatedMeeting: ' + organizer.google.refreshToken);
+          console.log('user access Token before calling createMeeting: ' + organizer.google.accessToken);
+          console.log('user refresh Token before calling createMeeting: ' + organizer.google.refreshToken);
           needle.post(url, event, options, function(error, response) {
               if (!error && response.statusCode == 200) {
 
@@ -184,9 +186,21 @@ function inviteToMeeting(req, res) {
                 console.log(response.body);
                 console.log("*******************");
                 console.log('Returning from inviteToMeeting()');
-                console.log('Calling processCreatedMeeting()');
-                processCreatedMeeting(participantIDs, organizerId, response.body);
-                console.log('Done with processCreatedMeeting()');
+                console.log('Calling createMeeting()');
+                meetingId = createMeeting(participantIDs, organizerId, response.body);
+                console.log('Calling addNewMeetingToUsers'); 
+                addNewMeetingToUsers(participantObjectIds,meetingId);
+                console.log('Calling createNotification()');
+                for(var k=0; k< participantIDs; k++) {
+                  if(participantIDs[k] === req.session.user._id) {
+                    console.log('organizerId2 and participantIDs[k] are equal');
+                    createNotification("scheduled", meetingId, participantIDs[k]);
+                  } else {
+                    createNotification("inviteToMeeting", meetingId, participantIDs[k]);
+                  }
+                }
+                console.log('finished creating notifications');
+
                 console.log('Sending Meeting ID back to Client');
                 res.send({"googleId": response.body.id} );
 
@@ -208,8 +222,8 @@ function inviteToMeeting(req, res) {
   }); //finish finding participantEmails
 }
 
-function processCreatedMeeting(participantIDs, organizerId, res) {
-  /*processCreatedMeeting:
+function createMeeting(participantIDs, organizerId, res) {
+  /*createMeeting:
     * save meeting to db
   */
   var newMeeting = new Meeting();
@@ -244,20 +258,37 @@ function processCreatedMeeting(participantIDs, organizerId, res) {
         throw err;
     } else { 
         console.log('Saved newmeeting to db successfully'); 
-        console.log('Calling addMeetingToUsers'); 
-        addMeetingToUsers(participantObjectIds,res._id);
+        return res._id;
     }
   });
 }
 
-function addMeetingToUsers(participantObjectIds, meetingId) {
+function addNewMeetingToUsers(participantObjectIds, meetingId) {
   User.update({ _id: { $in: participantObjectIds }}, { $push: { meetings: meetingId }}, {multi: true}, function(err, results) {
     if (err) {
       console.log(err);
     } else {
       console.log('Added newmeeting users successfully'); 
-      console.log('Calling ');
       return;
+    }
+  });
+}
+
+function createNotification(typeString, meetingId, userId) {
+  var newNotification = new Notification();
+  // set all of the relevant information
+  newNotification.type = typeString;
+  newNotification.meetingId = new mongoose.Types.ObjectId(meetingId);
+  newNotification.userId = new mongoose.Types.ObjectId(userId);
+  newNotification.timeStamp = moment();
+
+  newNotification.save(function(err, res) {
+    if (err) {
+        console.log(err);  // handle errors!
+        throw err;
+    } else { 
+        console.log('Saved newNotification to db successfully'); 
+        return;
     }
   });
 }

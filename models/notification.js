@@ -8,15 +8,11 @@ var notificationSchema = new Schema({
     type: String, //cancelMeeting, inviteToMeeting, rescheduleMeeting, scheduledYourMeeting
     required: true
   },
-  meetingName: {
-    type: String,
-    ref: 'Meeting'
-  },
-  meetingUrl: {
+  meetingId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Meeting'
   },
-  organizerId: {
+  userId: {//organizer or a participant
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
