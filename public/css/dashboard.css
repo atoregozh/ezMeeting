@@ -266,6 +266,14 @@ a.plain:hover, a.plain:focus {
     color: #00aeef;
 }
 
+#notifications {
+  width: 0;
+  height: 0;
+  position: relative;
+  top: -60px;
+
+}
+
 .notification-card {
   box-shadow: 2px 2px 10px #CACACA;
   margin-bottom: 10px;
