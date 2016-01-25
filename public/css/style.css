@@ -65,6 +65,17 @@ html input[disabled] {
     display: none; 
 }
 
+.container {
+  margin-top: 75px;
+}
+
+@media (max-width: 768px) { /* Phones */
+	.container {
+		margin-left: 15px;
+		margin-right: 15px;
+	}
+}
+
 /*~~~~~~ Start of debug CSS ~~~~~~*/
 /* Comment out this section after debugging */
 

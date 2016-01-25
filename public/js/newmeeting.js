@@ -967,12 +967,14 @@ function addUserToNameList(userId, name) {
 	$('#'+id).slideDown(function(){
 		$(this).removeClass('inviz');
 	});
+	$('#guests-count').html($('.guests-row').length);
 }
 
 function removeUserFromNameList(userId) {
 	var id = userIdToListId(userId);
 	$('#'+id).slideUp(function(){
 		$(this).remove();
+		$('#guests-count').html($('.guests-row').length);
 	});
 }
 

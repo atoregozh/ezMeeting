@@ -10,15 +10,6 @@
 
 /*~~~~~~ End of debug CSS ~~~~~~*/
 
-.container {
-  margin-top: 75px;
-}
-
-#app-logo {
-  display: inline-block;
-  padding: 18px;
-}
-
 #my-meetings {
   padding: 10px 7px;
   background-color: #f8f8f8;
@@ -27,6 +18,14 @@
   max-height: 610px;
   min-height: 300px;
   overflow: auto;
+  margin-right: 15px;
+}
+
+@media (max-width: 768px) { /* Phones */
+
+  #my-meetings {
+    margin-right: 0px;
+  }
 }
 
 .dashboard-header {
