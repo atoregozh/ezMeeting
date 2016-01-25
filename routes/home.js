@@ -1,12 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
-// var db = 
-//         [{'name': 'New Meeting Name',
-//   'location': '77 mass av',
-//   'date': 'Jan 1, 2016', 'startTime':'10:30', 'endTime':'11:30'}]
+var db = 
+        [{'name': 'New Meeting Name',
+  'location': '77 mass av',
+  'date': 'Jan 1, 2016', 'startTime':'10:30', 'endTime':'11:30'}]
 
-var db = []
+// var db = [];
 
   // =====================================
   // DASHBOARD ===========================
@@ -17,7 +17,7 @@ var db = []
   router.get('/', ensureAuthenticated, function(req, res) {
     // User.findById(req.session.passport.user, function(err, user) {
       console.log('Authenticated the user! Here are the details of user:');
-      console.log(req.user);
+      console.log(req.user); //@TODO implement algolia indexing here @Kesiena
       res.render('home', {
             user : req.user, // get the user out of session and pass to template
             meetings: db

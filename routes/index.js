@@ -32,7 +32,7 @@ var authenticatePassport = function(passport) {
 
   // the callback after google has authenticated the user
   router.get('/auth/google/callback',
-          passport.authenticate('google', { failureRedirect : '/test' }),
+          passport.authenticate('google', { failureRedirect : '/' }), //@TODO first authentication comes here for unknown reasons; fix later, user shouldn't come here on failure of authentication
           function (req, res) {
             // Successful authentication, redirect home.
             req.session.logged_user_email = req.user.email;

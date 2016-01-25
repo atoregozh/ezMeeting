@@ -250,7 +250,6 @@ function processCreatedMeeting(participantIDs, organizerId, res) {
     } else { 
         console.log('Saved newmeeting to db successfully'); 
         console.log('Calling addMeetingToUsers'); 
-
         addMeetingToUsers(participantObjectIds,res._id);
     }
   });
@@ -261,66 +260,14 @@ function addMeetingToUsers(participantObjectIds, meetingId) {
     if (err) {
       console.log(err);
     } else {
+      console.log('Added newmeeting users successfully'); 
+      console.log('Calling ');
       return;
     }
   });
-
 }
 
-function getGCalendarEventsPerUser(req, res) {
-  var retries = 2;
-  console.log('starting out getGCalendarEventsPerUser');
-  var send401Response = function() {
-    return res.status(401).end();
-  };
 
-  // Get the user's credentials.
-  console.log('finding users credentials');
-  User.findById(req.user, function(err, user) {
-    if(err || !user) { 
-      return send401Response();   // problems with finding user in db; errors!
-    }
-    console.log(user);
-    var makeRequest = function() {
-      retries--;
-      if(!retries) {
-        // Couldn't refresh the access token.
-        return send401Response();
-      }
-    
-    var now = moment().toISOString();
-    console.log('Now ' + now);
-    var yearFromNow = moment().add(1,'y').toISOString();
-    console.log('YearFromNow ' + yearFromNow);
-
-    var url = 'https://www.googleapis.com/calendar/v3/calendars/'+user.email+'/events'+
-              '?orderBy=startTime&singleEvents=true&timeMax='+yearFromNow+'&timeMin='+now;
-    console.log(url);
-    console.log('user access Token is: ' + user.google.accessToken);
-    console.log('user refresh Token is: ' + user.google.refreshToken);
-    needle.get(url, 
-              { headers: { Authorization: 'Bearer '+ user.google.accessToken } },  
-      function(error, response) {
-        if (!error && response.statusCode == 200) {
-
-          console.log('Success! calling filterUserCalData()');
-          var jsonUserMap = filterUserCalData(user,response.body);
-          res.send(jsonUserMap);
-        } else if (response.statusCode === 401) {
-        // Access token expired.
-        // Try to fetch a new one.
-          refreshAccessToken(user,makeRequest);
-        } else {
-          // There was another error, handle it appropriately.
-          console.log('some other error happened');
-          console.log(response.body);
-          res.sendStatus(response.statusCode);
-        }   
-      }); //end needle get
-    };
-    makeRequest();
-  }); //User.findById ends here
-}
 
 function refreshAccessToken(user, functiontoRepeat) {
   console.log('refresh token used to be:' + user.google.refreshToken);
