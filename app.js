@@ -59,6 +59,7 @@ var profile = require('./routes/profile');
 var test = require('./routes/test');
 var calendars = require('./routes/calendars');
 var mockcalendars = require('./routes/mockcalendars'); // Todo: Delete after implementing calendar.js
+var notifications = require('./routes/notifications');
 
 app.use('/', routes);
 app.use('/meetings', meetings);
@@ -68,6 +69,7 @@ app.use('/profile', profile);
 app.use('/test', test);
 app.use('/calendars', calendars);
 app.use('/mockcalendars', mockcalendars); // Todo: Delete after implementing calendar.js
+app.use('/notifications', notifications);
 
 
 // error handlers ================================================
