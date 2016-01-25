@@ -35,7 +35,8 @@ var authenticatePassport = function(passport) {
           passport.authenticate('google', { failureRedirect : '/' }), //@TODO first authentication comes here for unknown reasons; fix later, user shouldn't come here on failure of authentication
           function (req, res) {
             // Successful authentication, redirect home.
-            req.session.logged_user_email = req.user.email;
+            req.session.user = req.user;
+            req.session.logged_user_email = req.user.email; 
             console.log("PRINTING LOGGED USER EMAIL AND SAVING TO SESSION");
             console.log(req.session.logged_user_email);
             console.log(req.connection.remoteAddress);

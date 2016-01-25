@@ -17,7 +17,6 @@ var db =
     // User.findById(req.session.passport.user, function(err, user) {
       console.log('Authenticated the user! Here are the details of user:');
       console.log(req.user); //@TODO implement algolia indexing here @Kesiena
-      console.log(req.user);
       res.render('home', {
             user : req.user, // get the user out of session and pass to template
             meetings: db

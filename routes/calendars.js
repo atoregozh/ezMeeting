@@ -19,12 +19,11 @@ router.get('/', function(req, res) {
 			console.log(err);
       utils.sendErrResponse(res, 503, err);
     } else {
-    	var respArr = [];
     	var listOfFunctions = [];
 
     	listOfFunctions = users.map(function(user){
     		return function(callback){
-    			getGCalendarEventsPerUser2(callback, user,fromTime, toTime, res);	
+    			getGCalendarEventsPerUser2(callback, user,fromTime, toTime);	
     		};
     	});
 
@@ -64,7 +63,7 @@ router.get('/', function(req, res) {
 	});
 });
 
-function getGCalendarEventsPerUser2(callback, user, fromTime, toTime, res) {
+function getGCalendarEventsPerUser2(callback, user, fromTime, toTime) {
 	var retries = 2;
   console.log('starting out getGCalendarEventsPerUser2');
 
