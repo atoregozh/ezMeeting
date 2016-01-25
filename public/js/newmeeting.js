@@ -546,16 +546,16 @@ function addUserEventToGrid(userId, startTime, endTime) {
 	for(var cellTime = moment(st); cellTime < et; cellTime = moment(cellTime).add(30, 'minutes')) {
 		var cellKey = getCellKey(cellTime);
 		var cell = getCellWithKey(cellKey);
-		// Add user circle to the relevant grid cells for tab 1.
-		cell.prepend('<span class="grid-cell-circle" data-user-id="' + userId + '"></span>');
-		// Color the added circle appropriately
-		cell.children('span[data-user-id="' + userId + '"]').first().css({'background-color': getUserColor(userId)});
 
-		// Check if the user had a previous appointment at this time slot. Only update the mapping (between the userId and this cell key) 
-		// and increment the count (in tab3) if the user did not have any previous appointment in this time slot.
+		// Check if the user had a previous appointment at this time slot. Only proceed with this addition if the user did 
+		// not have any previous appointment in this time slot.
 		if(!cellKeyToUserSet[cellKey][userId]) {
 			// Add this to the field that keeps track of the mappings.
 			cellKeyToUserSet[cellKey][userId] = true;
+			// Add user circle to the relevant grid cells for tab 1.
+			cell.prepend('<span class="grid-cell-circle" data-user-id="' + userId + '"></span>');
+			// Color the added circle appropriately
+			cell.children('span[data-user-id="' + userId + '"]').first().css({'background-color': getUserColor(userId)});
 			var numOfMeetings = 0;
 			for(var uId in cellKeyToUserSet[cellKey]) {
 				if(cellKeyToUserSet[cellKey][uId]){
