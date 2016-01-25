@@ -33,7 +33,8 @@ var user_count = 0;
 // empty but it should never be null or undefined.
 var userIdList = []; 
 
-var CALENDER_ENDPOINT = '/mockcalendars';
+// var CALENDER_ENDPOINT = '/mockcalendars';
+var CALENDER_ENDPOINT = '/calendars';
 
 /* 
 cellKeyToUserSet simulates a list of HashSets. Each field corresponds to a given cell (i.e. 30min slot) while 
@@ -322,6 +323,38 @@ $(document).ready(function(){
 			mouseUpAfterMouseDown();
 		}
 	});
+
+	// ~~~~~~~~~~~~~ Algolia ~~~~~~~~~~~~~ 
+	// Replace the following values by your ApplicationID and ApiKey.
+	var client = algoliasearch('SE79GLOIEP', '2de5e4f53a32c9e9db7dbde79a203965');
+	// Replace the following value by the name of the index you want to query.
+	// var index = client.initIndex('ezmeeting_users_test');
+	var index = client.initIndex('autocomplete_tutorial');
+
+	// basic autocomplete 
+	/*
+    $('#m-guest-search').autocomplete(null, {
+      source: $.fn.autocomplete.sources.hits(index),
+      displayKey: 'name'
+    });
+*/
+// with a template and highlighting
+    var template = Hogan.compile('<picture><img src="{{{image_url}}}" /></picture>' +
+      '<div>{{{_highlightResult.email.value}}}</div>' +
+      '<div class="text-right"><small>{{{_highlightResult.name.value}}}</span></div>');
+    $('#m-guest-search').autocomplete(null, {
+      source: $.fn.autocomplete.sources.hits(index, {hitsPerPage: 10}),
+      displayKey: 'name',
+      templates: {
+        suggestion: function(hit) {
+          return template.render(hit);
+        }
+      }
+    });
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+
 
 	$('#grid-refresh').click(function(){
 		if(!isSpecifiedDateRangeValid()) {
