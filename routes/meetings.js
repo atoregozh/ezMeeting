@@ -262,8 +262,6 @@ function addMeetingToUsers(participantObjectIds, meetingId) {
   });
 }
 
-function 
-
 
 
 function refreshAccessToken(user, functiontoRepeat) {
