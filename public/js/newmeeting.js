@@ -540,8 +540,14 @@ function addNewParticipant(userId, displayName, picUrl) {
 function addUserEventToGrid(userId, startTime, endTime) {
 	var st = roundDownTimeTo30Minutes(startTime);
 	var et = roundUpTimeTo30Minutes(endTime);
+	
+	// Ignore events that are out of the boundaries we care about.
+	if(et < gridStartDate || st > gridEndDate){
+		return;
+	}
+
 	if(et > gridEndDate){
-		et = moment(gridEndDate);
+		et = moment(gridEndDate); // For events that ends later that the gridEndDate
 	}
 	for(var cellTime = moment(st); cellTime < et; cellTime = moment(cellTime).add(30, 'minutes')) {
 		var cellKey = getCellKey(cellTime);
