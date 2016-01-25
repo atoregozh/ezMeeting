@@ -10,15 +10,6 @@
 
 /*~~~~~~ End of debug CSS ~~~~~~*/
 
-.container {
-  margin-top: 75px;
-}
-
-#app-logo {
-  display: inline-block;
-  padding: 18px;
-}
-
 #my-meetings {
   padding: 10px 7px;
   background-color: #f8f8f8;

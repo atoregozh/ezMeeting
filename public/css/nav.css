@@ -103,10 +103,6 @@ float: right!important;
   color: #fff;
 }
 
-.container {
-  margin-top: 60px;
-}
-
 @media (max-width: 1024px) { /* Phones and tablets */
   .nav-item .nav-text {
     display: none;
@@ -117,6 +113,15 @@ float: right!important;
   .navbar-nav>li>a {
     padding-top: 17px;
   }
+}
+
+@media (max-width: 390px) { 
+	/* We ordinarily shouldn't have devices with such tiny screen. But this is a precaution, just in 
+	case someone resizes their browser window to a very narrow width. This represents the nav btns 
+	from wrapping unto a 2nd line. */
+	#app-logo {
+		display: none;
+	}
 }
 
 .popover {
