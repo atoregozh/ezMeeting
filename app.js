@@ -66,8 +66,8 @@ app.use('/newmeeting', newmeeting);
 app.use('/home', home);
 app.use('/profile', profile);
 app.use('/test', test);
+app.use('/calendars', calendars);
 app.use('/mockcalendars', mockcalendars); // Todo: Delete after implementing calendar.js
-
 
 
 // error handlers ================================================

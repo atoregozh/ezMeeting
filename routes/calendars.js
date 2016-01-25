@@ -1,48 +1,81 @@
 // PACKAGES //
-var router = require('express').Router();
+router = require('express').Router();
 var utils = require('../utils');
 var User = require('../models/user');
+var needle = require('needle');
+async = require("async");
 
 
 // Handler for GET requests to /calendars/?users=id1,id2&from=ISOString1to=ISOString2
 router.get('/', function(req, res) {
-	var from = req.query.from;
-	var to = req.query.to;
+	var fromTime = req.query.from;
+	var toTime = req.query.to;
 	var users = req.query.users;
 	var usersList = users.split(',');
+
 
 	User.find({ _id: { $in: usersList } }, function(err, users) {
 		if (err) {
 			console.log(err);
       utils.sendErrResponse(res, 503, err);
     } else {
-    	console.log('getting users docs'); 
     	var respArr = [];
-			for (var i = 0; i < users.length; i++) {
-				var user = users[i]; //participant is User document with all the fields set
-				var userMap = getGCalendarEventsPerUser(user,from, to);
-				respArr.push(userMap);
-      }
-      result = {"data": respArr};
-      console.log("sending to successfully");
-      utils.sendSuccessResponse(res, result);
+    	var listOfFunctions = [];
+
+    	listOfFunctions = users.map(function(user){
+    		return function(callback){
+    			getGCalendarEventsPerUser2(callback, user,fromTime, toTime, res);	
+    		};
+    	});
+
+    	async.parallel(listOfFunctions, function(err, results){
+    		if(err){
+    			utils.sendErrResponse(res, 503, err);
+    		}else {
+    			res.send(results);
+    		}
+    	});
+
+      /**** Async example *****
+
+      var allResults = [];
+    	console.log('--------');
+    	var optionalCallback = function(err, results){
+    		console.log(results);
+    		console.log("Tada!");
+    		console.log(allResults);
+    	};
+
+    	var listOfFunctions = [];
+    	for(var i = 0; i < 5; i++){
+    		listOfFunctions.push(function(innerCallback){
+    			// getGCalendarEventsPerUser(usersList[i],fromTime, toTime, res);
+    			setTimeout(function(){
+    				allResults.push('result');
+    				innerCallback(null, 'func-' + i);    				
+    			}, 200);
+    		});
+    	}
+    	console.log('1');
+    	async.parallel(listOfFunctions, optionalCallback);
+    	console.log('2');
+			*/
     }
 	});
 });
 
-function getGCalendarEventsPerUser(user,from, to) {
-  var retries = 2;
-  console.log('starting out getGCalendarEventsPerUser');
+function getGCalendarEventsPerUser2(callback, user, fromTime, toTime, res) {
+	var retries = 2;
+  console.log('starting out getGCalendarEventsPerUser2');
 
-  var makeRequest = function() {
+  var makeRequest = function(callback) {
     retries--;
     if(!retries) {
       // Couldn't refresh the access token.
-      utils.sendErrResponse(res, 401, "Couldn't refresh the access token");
+      callback({error: "Couldn't refresh the access token for " + userId} , null);
     }
-
-  var url = 'https://www.googleapis.com/calendar/v3/calendars/'+user.email+'/events'+
-            '?orderBy=startTime&singleEvents=true&timeMax='+to+'&timeMin='+from;
+  var url = 'https://www.googleapis.com/calendar/v3/calendars/' + user.email + '/events'+
+            '?orderBy=startTime&singleEvents=true&timeMax='+ toTime +'&timeMin='+fromTime;
   console.log(url);
   console.log('user access Token is: ' + user.google.accessToken);
   console.log('user refresh Token is: ' + user.google.refreshToken);
@@ -52,7 +85,47 @@ function getGCalendarEventsPerUser(user,from, to) {
       if (!error && googleResponse.statusCode == 200) {
 
         console.log('Success! calling filterUserCalData()');
-        var jsonUserMap = filterUserCalData(user,response.body);
+        var jsonUserMap = filterUserCalData(user,googleResponse.body);
+        console.log('returning from filterUserCalData');
+        callback(null, jsonUserMap);
+      } else if (googleResponse.statusCode === 401) {
+      // Access token expired.
+      // Try to fetch a new one.
+        refreshAccessToken(user,makeRequest);
+      } else {
+        callback({error: "Bad request for " + userId}, null);
+      }       
+    }); //end needle get
+  };
+
+  makeRequest(callback);
+	return;
+}    			
+
+
+function getGCalendarEventsPerUser(user,fromTime, toTime, res) {
+  var retries = 2;
+  console.log('starting out getGCalendarEventsPerUser');
+
+  var makeRequest = function() {
+    retries--;
+    if(!retries) {
+      // Couldn't refresh the access token.
+      utils.sendErrResponse(res, 401, "Couldn't refresh the access token");
+    }
+  var url = 'https://www.googleapis.com/calendar/v3/calendars/' + user.email + '/events'+
+            '?orderBy=startTime&singleEvents=true&timeMax='+ toTime +'&timeMin='+fromTime;
+  console.log(url);
+  console.log('user access Token is: ' + user.google.accessToken);
+  console.log('user refresh Token is: ' + user.google.refreshToken);
+  needle.get(url, 
+            { headers: { Authorization: 'Bearer '+ user.google.accessToken } },  
+    function(error, googleResponse) {
+      if (!error && googleResponse.statusCode == 200) {
+
+        console.log('Success! calling filterUserCalData()');
+        var jsonUserMap = filterUserCalData(user,googleResponse.body);
+        console.log('returning from filterUserCalData');
         return jsonUserMap;
       } else if (googleResponse.statusCode === 401) {
       // Access token expired.
@@ -62,7 +135,7 @@ function getGCalendarEventsPerUser(user,from, to) {
         // There was another error, handle it appropriately.
         console.log('some other error happened');
         console.log(googleResponse.body);
-        utils.sendErrResponse(googleResponse, 500, err);
+        utils.sendErrResponse(res, 500, 'Bad Request');
       }   
     }); //end needle get
   };
@@ -90,6 +163,7 @@ function filterUserCalData(user,data) {
   console.log('Heres the json array');
   console.log(filteredJsonArr);
   var userMap = {userId: user._id , events: filteredJsonArr};
+  console.log('returning from filterUserCalData');
   return userMap;
 }
 
