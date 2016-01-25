@@ -288,6 +288,18 @@ $(document).ready(function(){
 	    }
 	});
 
+	$("#m-title").keyup(function(e) {
+	    if (e.keyCode == 13) { // Enter key
+	    	$("#m-location").focus();
+		}
+	});
+
+	$("#m-location").keyup(function(e) {
+	    if (e.keyCode == 13) { // Enter key
+	    	$("#m-desc").focus();
+		}
+	});
+
 	$('#guests-content').on('click', ' .name-list-close', function(){
 		var userId = $(this).attr('data-user-id');
 		removeUserFromPicsPanel(userId);
@@ -346,13 +358,25 @@ $(document).ready(function(){
 				drawGridDays(startDate, endDate);
 				userIdList = userIdListBackup;
 
+				// Clear the meeting time if the user refreshes the grid to a period outside the previously 
+				// selected meeting time.
+				var mt = getSelectedMeetingTime();
+				if(mt.startTime && mt.endTime){
+					if(mt.startTime < gridStartDate || mt.endTime > gridEndDate){
+						$('#m-start').text(DEFAULT_TIME);	
+						$('#m-end').text(DEFAULT_TIME);
+						$('.m-panel2').hide(); // Hide date & time
+						$('.m-panel2c').slideDown(); // Show the instructions
+					}
+				}
+
 				// Restore selected cells.
 				if(selectedCells.length > 0){
 					$.each(selectedCells, function(index, value){
 						getCellWithKey(value).addClass(SELECTED_CELL_CLASS);
 					});
 					setDeleteButtonsForDay(getDayStringFromKey(selectedCells[0]), true);
-				}		
+				}	
 
 				for(var i = 0; i < data.length; i++){
 				 	var record = data[i];
@@ -701,8 +725,8 @@ function setDeleteButtonsForDay(dayString, doNotUpdateUI) {
 	if(doNotUpdateUI) {
 		return;
 	} else {
-		$('#m-start').html(startTime);
-		$('#m-end').html(endTime);
+		$('#m-start').text(startTime);
+		$('#m-end').text(endTime);
 		if(startTime === DEFAULT_TIME && endTime === DEFAULT_TIME) {
 			$("#m-date").val('');
 			$('.m-panel2').hide(); // Hide date & time
@@ -1267,6 +1291,23 @@ function saveMeeting() {
 		}
 	});
 
+}
+
+function getSelectedMeetingTime() {
+	// It's up to the caller to ensure that the user has actually selected a time.
+	var st = $('#m-start').html();
+	var et = $('#m-end').html();
+	if(st === DEFAULT_TIME && et === DEFAULT_TIME){
+		return {startTime: null, endTime: null};
+	}
+	var date = moment($('#m-date').data('datepicker').getDate());
+
+	var pst = parse12HrTime(st);
+	var startTime = moment(date).hour(pst.hour).minute(pst.min);
+
+	var pet = parse12HrTime(et);
+	var endTime = moment(date).hour(pet.hour).minute(pet.min);
+	return {startTime: startTime, endTime: endTime};
 }
 
 function goToUrl(url){
