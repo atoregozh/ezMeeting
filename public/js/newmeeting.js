@@ -288,6 +288,18 @@ $(document).ready(function(){
 	    }
 	});
 
+	$("#m-title").keyup(function(e) {
+	    if (e.keyCode == 13) { // Enter key
+	    	$("#m-location").focus();
+		}
+	});
+
+	$("#m-location").keyup(function(e) {
+	    if (e.keyCode == 13) { // Enter key
+	    	$("#m-desc").focus();
+		}
+	});
+
 	$('#guests-content').on('click', ' .name-list-close', function(){
 		var userId = $(this).attr('data-user-id');
 		removeUserFromPicsPanel(userId);
