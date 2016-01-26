@@ -16,9 +16,7 @@ var userSchema = new Schema({
       trim: true
     },
     refreshToken: {
-      type: String, 
-      required: true, 
-      unique: true, 
+      type: String,  
       trim: true
     },
     id: {
