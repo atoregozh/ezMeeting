@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-
+// PACKAGES //
+router = require('express').Router();
+var Meeting = require('../models/meeting');
 var algoliasearch = require('algoliasearch');
 var client = algoliasearch("SE79GLOIEP", "9bc3123e557c4da31d1388f9a26da8b4");
 //index = client.initIndex('ezmeeting_users_test');
@@ -22,8 +22,6 @@ var db =
           },
           'participants': [
           {
-            'id': 'asfsdafdsfa',
-            'name': 'Michael Jordan',
             'pic': '/img/default-user-pic.jpg'
           },
           {
@@ -57,9 +55,7 @@ var db =
             'pic': '/img/default-user-pic.jpg'
           }
           ]}]
-
-//var db = []
-
+    
   // =====================================
   // DASHBOARD ===========================
   // route for showing the dashboard page
@@ -85,21 +81,46 @@ var db =
 		console.log(content);
 	});
 
+    var listOfUserMeetings = [];
+    Meeting.find( { $and:[ { isDeleted: false }, {organizerId: req.session.user._id } ] } )
+    .populate('participants')
+    .sort({startTime: -1}).limit(18).exec(function(err, userMeetings) {
+      if (err) {
+        console.log(err);  // handle errors!
+        res.status(503).end();   // problems with finding notification docs in db; errors!
+      } else {
+        listOfUserMeetings = userMeetings.map(function(userMeeting){
+          return {
+            name : userMeeting.name,
+            id : userMeeting._id,
+            location : userMeeting.location,
+            description: userMeeting.description,
+            startTime : userMeeting.startTime,
+            endTime : userMeeting.endTime,
+            organizerPic : req.session.user.pic,
+            participants : [{
+              pic: participants.pic
+            }]
+          };
+        });
+        console.log('>>> user meetings');
+        console.log(listOfUserMeetings.length);
+        console.log(listOfUserMeetings.length - 7);
+        console.log(listOfUserMeetings);
+        extraParticipants = listOfUserMeetings.length - 7;
+        listOfUserMeetings.push({"extraParticipants": extraParticipants});
+      } // End of else
+    }); //end of exec
 
-    // User.findById(req.session.passport.user, function(err, user) {
       console.log('Authenticated the user! Here are the details of user:');
-      console.log(req.user); //@TODO implement algolia indexing here @Kesiena
+      console.log(req.user); 
       res.render('home', {
             user : req.user, // get the user out of session and pass to template
-            meetings: db
+            meetings: listOfUserMeetings
             }
-      // if(err) {
-      //   console.log(err);  // handle errors
-      // } else {
-      //   res.render('home', { user: user});
-      // }
+
     );
-});
+}); //end of router.get
 
 // route middleware to make sure a user is logged in
 function ensureAuthenticated(req, res, next) {
