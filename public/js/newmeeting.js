@@ -341,6 +341,15 @@ $(document).ready(function(){
 	    $("#m-guest-search").val("");
 	  });
 
+	  $("#m-guest-search").focusout(function() {
+	  	setTimeout(function(){
+	  		// To clear the search box when the user tabs out of the box. For some reason, focusout() alone doesn't clear it,
+	  		// hence the timeout.
+	  		$("#m-guest-search").val("");
+	  	}, 5);
+  	});
+  
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
