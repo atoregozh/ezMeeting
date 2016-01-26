@@ -6,11 +6,10 @@ var SCHEDULED_YOUR_MEETING = 'scheduledYourMeeting';
 var INVITE_TO_MEETING = 'inviteToMeeting';
 var CANCEL_MEETING = 'cancelMeeting';
 
-var iconMap = {
-    SCHEDULED_YOUR_MEETING : '<i class="fa fa-calendar-check-o calendar-schedule"></i>',
-    INVITE_TO_MEETING : '<i class="fa fa-calendar-plus-o calendar-invite"></i>',
-    CANCEL_MEETING : '<i class="fa fa-calendar-times-o calendar-cancel"></i>'
-};
+var iconMap = {};
+iconMap[SCHEDULED_YOUR_MEETING] = '<i class="fa fa-calendar-check-o calendar-schedule"></i>';
+iconMap[INVITE_TO_MEETING] = '<i class="fa fa-calendar-plus-o calendar-invite"></i>';
+iconMap[CANCEL_MEETING] = '<i class="fa fa-calendar-times-o calendar-cancel"></i>';
 
 $(document).ready(function(){
     formatMeetingTimes();
@@ -52,7 +51,7 @@ $(document).ready(function(){
                     '<div class="notification-text">' +
                         getNotificationMessage(type, displayName, meetingName, meetingId, startTime) +
                     '</div>' +
-                '</div>'
+                '</div>';
 
                 $('#notifications-panel').append(notificationDiv);
 
@@ -70,7 +69,7 @@ function getNotificationMessage(type, displayName, meetingName, meetingId, meeti
         return displayName + ' cancelled <a href="/meetings/' + meetingId + '">' + meetingName + '</a>';
     }
     else if(type === SCHEDULED_YOUR_MEETING) {
-        return '<a href="/meetings/' + meetingId + '"> is scheduled for ' + meetingTime.format(DATE_FORMAT);
+        return '<a href="/meetings/' + meetingId + '">' + meetingName + '</a> is scheduled for ' + meetingTime.format(DATE_FORMAT);
     }
     else if(type === INVITE_TO_MEETING) {
         return displayName + ' has invited you to <a href="/meetings/' + meetingId + '">' + meetingName + '</a>';
