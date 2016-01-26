@@ -408,11 +408,12 @@ $(document).ready(function(){
 				$('.m-panel2c').hide(); // Hide the instructions
 				$('.m-panel2').slideDown(); // Reveal the date and time.
 				$("#m-location").val(location);
+				$(".m-top-label").show();
 				$("#m-location").prop('disabled', true);
 				$("#m-desc").val(description);
 				$("#m-desc").prop('disabled', true);
 				$(".guests-header").hide();
-				$("#m-details-btn").css({'visibility':'hidden'});
+				$("#m-details-btns").css({'visibility':'hidden'});
 
 
 				for(var d = moment(startTime).subtract(2, 'd'); d <= moment(startTime).add(3, 'd'); d.add(1, 'd')){

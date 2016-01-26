@@ -58,6 +58,11 @@
   background-color: #fff;
 }
 
+.meeting-card:hover, .meeting-card:focus{
+  border-color: #008cc9;
+  cursor: pointer;
+}
+
 .meeting-card-inviz {
   position: relative;
   border: 1px solid #fff;

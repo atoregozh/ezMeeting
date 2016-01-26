@@ -62,6 +62,11 @@ $(document).ready(function(){
         }
     });
 
+    $('.meeting-card').click(function(){
+        var meetingId = $(this).attr('data-meeting-id');
+        window.location.href = '/meetings/' + meetingId;
+    });
+
 });
 
 
