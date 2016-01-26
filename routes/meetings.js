@@ -7,17 +7,13 @@ var Meeting = require('../models/meeting');
 var moment = require('moment');
 var mongoose = require('mongoose');
 var Notification = require('../models/notification');
+var utils = require('../utils');
 
 
 // Handler for POST requests to /meetings
 router.post('/', function(req, res, next) {
   //@DEBUG console.log('ip2>>>>', req.connection.remoteAddress); this is to see where does the request coming from
   inviteToMeeting(req, res);
-});
-
-// Handler to render meetings
-router.get('/newmeeting', ensureAuthenticated, function(req, res, next) {
-  res.render('meetings', {user: req.user,'title':'Create new meeting'});
 });
 
 // Handler for DELETE requests to /meetings/:id
@@ -34,44 +30,54 @@ router.get('/:id', function(req, res, next) {
    var meetingJson = {};
    
    var id = req.params.id;
-   Meeting.find({ googleId: id }, function(err, meeting) {
+   Meeting.findOne({ _id: id })
+   .populate('organizer')
+   .populate('participants')
+   .exec(function(err, meeting) {
     if(err || !meeting) { 
-      console.log('heres the meeting from db');
-      console.log(meeting);
       console.log('*****************');
       console.log('problems with finding meeting in db; errors! Heres the error:');
       console.log(err);
+      utils.sendErrResponse(res, 404, err);
     } else {
       //start constructing json for response
+      console.log('heres the meeting from db');
+      console.log(meeting);
+      console.log('heres the organizer from meeting');
+      // console.log(meeting.organizer);
+
+      console.log('>>> org id = ' + meeting.organizer._id);
       meetingJson = {
-        "googleId": meeting.googleId,
+        "id": meeting._id,
         "name": meeting.name,
         "startTime": meeting.startTime,
         "endTime": meeting.endTime,
         "description": meeting.description,
         "location": meeting.location,
         "organizer": {
-          id: meeting.organizerId.toString(),
-          name: meeting.organizerId.displayName,
-          pic: meeting.organizerId.pic
+          id: meeting.organizer._id,
+          name: meeting.organizer.displayName,
+          pic: meeting.organizer.pic
         },
         "participants": [
         ]
       };
       
-      var participantsArrOfIds = meeting.participants;
-      for ( var i = 0; i < participantsArrOfIds.length; i++) {
-        var pId = participantsArrOfIds[i];
+      var participantObjects = meeting.participants;
+      var participantsList = [];
+      for ( var i = 0; i < participantObjects.length; i++) {
+        var pObject = participantObjects[i];
 
-        meetingJson.push({
-          "id": pId.toString(),
-          "name": pId.name,
-          "pic": pId.pic
+        participantsList.push({
+          "id": pObject._id,
+          "name": pObject.displayName,
+          "pic": pObject.pic
         });
       }
+      meetingJson.participants = participantsList;
+      res.send(meetingJson);
     } //end else
   }); // end find from db
-  res.send(meetingJson);
 });
 
 function inviteToMeeting(req, res) {
@@ -187,23 +193,7 @@ function inviteToMeeting(req, res) {
                 console.log("*******************");
                 console.log('Returning from inviteToMeeting()');
                 console.log('Calling createMeeting()');
-                meetingId = createMeeting(participantIDs, organizerId, response.body);
-                console.log('Calling addNewMeetingToUsers'); 
-                addNewMeetingToUsers(participantObjectIds,meetingId);
-                console.log('Calling createNotification()');
-                for(var k=0; k< participantIDs; k++) {
-                  if(participantIDs[k] === req.session.user._id) {
-                    console.log('organizerId2 and participantIDs[k] are equal');
-                    createNotification("scheduled", meetingId, participantIDs[k]);
-                  } else {
-                    createNotification("inviteToMeeting", meetingId, participantIDs[k]);
-                  }
-                }
-                console.log('finished creating notifications');
-
-                console.log('Sending Meeting ID back to Client');
-                res.send({"googleId": response.body.id} );
-
+                createMeeting(participantIDs, organizerId, response.body, res);                
               } else if (response.statusCode === 401) {
               // Access token expired.
               // Try to fetch a new one.
@@ -222,7 +212,7 @@ function inviteToMeeting(req, res) {
   }); //finish finding participantEmails
 }
 
-function createMeeting(participantIDs, organizerId, res) {
+function createMeeting(participantIDs, organizerId, res, sendResponse) {
   /*createMeeting:
     * save meeting to db
   */
@@ -236,7 +226,7 @@ function createMeeting(participantIDs, organizerId, res) {
   newMeeting.endTime = res.end.dateTime;
   newMeeting.description = res.description;
   newMeeting.location = res.location;
-  newMeeting.organizerId = new mongoose.Types.ObjectId(organizerId);
+  newMeeting.organizer = new mongoose.Types.ObjectId(organizerId);
   newMeeting.isInternal = true;
 
   participantObjectIds = [];
@@ -257,13 +247,34 @@ function createMeeting(participantIDs, organizerId, res) {
         console.log(err);  // handle errors!
         throw err;
     } else { 
+    	var meetingId = res._id;
+    	console.log(newMeeting);
         console.log('Saved newmeeting to db successfully'); 
-        return res._id;
+        console.log('Calling addNewMeetingToUsers'); 
+        addNewMeetingToUsers(participantObjectIds, meetingId);
+
+        // Add notifications to database
+        console.log('Started createNotification');
+        for(var k=0; k< participantIDs.length; k++) {
+          if(participantIDs[k] === organizerId) {
+            console.log('organizerId and participantIDs are equal');
+            createNotification("scheduledYourMeeting", meetingId, participantIDs[k]);
+          } else {
+          	console.log('organizerId and participantIDs are not equal');
+            createNotification("inviteToMeeting", meetingId, participantIDs[k]);
+          }
+        }
+        console.log('finished creating notifications');
+        console.log('sending ID as response for meeting ID: ' + meetingId);
+        sendResponse.send(meetingId);
     }
   });
 }
 
 function addNewMeetingToUsers(participantObjectIds, meetingId) {
+  console.log('inside adding meeting to users');
+  console.log(participantObjectIds);
+  console.log(meetingId);
   User.update({ _id: { $in: participantObjectIds }}, { $push: { meetings: meetingId }}, {multi: true}, function(err, results) {
     if (err) {
       console.log(err);

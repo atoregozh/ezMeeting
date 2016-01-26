@@ -35,7 +35,7 @@ var meetingSchema = new Schema({
   location: {
     type: String
   },
-  organizerId : {
+  organizer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
