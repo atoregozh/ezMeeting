@@ -18,10 +18,47 @@ router.post('/', ensureAuthenticated, function(req, res, next) {
 
 // Handler for DELETE requests to /meetings/:id
 router.delete('/:id', ensureAuthenticated, function(req, res) {
-  var id = req.params.id;
-  
-
+  var meetingId = req.params.id;
+  var meetingGId;
+  Meeting.update({ _id: meetingId}, { isDeleted: true }, {upsert: true}, function(err, result) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('Meeting is set to be deleted'); 
+    meetingGId = result.googleId;
+  }
 });
+  var retries = 2;
+  var makeRequest = function() {
+    console.log('retries is now ' + retries);
+    retries--;
+    if(!retries) {
+      // Couldn't refresh the access token.
+      console.log('thres no more retries left');
+      return send401Response();
+    }
+  var email = req.session.user.email;
+  var url = 'https://www.googleapis.com/calendar/v3/calendars/' + email + '/events/'+ meetingGId;
+  console.log(url);
+  options = { headers: { Authorization: 'Bearer '+ user.google.accessToken }};
+  needle.delete(url, null, options, function(error, response) {
+              if (!error && response.statusCode == 204) {
+
+                console.log('Success! event has been deleted!');               
+              } else if (response.statusCode === 401) {
+                // Access token expired.
+                // Try to fetch a new one.
+                refreshAccessToken(organizer,makeRequest);
+              } else {
+                // There was another error, handle it appropriately.
+                console.log('some other error happened');
+                res.sendStatus(response.statusCode);
+              }   
+            }); //needle.post ends here
+          }; //makeRequest ends here
+        makeRequest();
+
+}); //end router.delete
 
 
 
@@ -227,6 +264,7 @@ function createMeeting(participantIDs, organizerId, res, sendResponse) {
   newMeeting.description = res.description;
   newMeeting.location = res.location;
   newMeeting.organizer = new mongoose.Types.ObjectId(organizerId);
+  newMeeting.organizerId = organizerId;
   newMeeting.isInternal = true;
 
   participantObjectIds = [];
