@@ -1,7 +1,6 @@
 // PACKAGES //
 router = require('express').Router();
 var Notification = require('../models/notification');
-async = require('async');
 moment = require('moment');
 
 // Handler for GET requests to /notifications/after='timestamp'
@@ -11,7 +10,6 @@ router.get('/', ensureAuthenticated, function(req, res) {
 		time = moment(req.query.after).toDate();
 	}
 	console.log('>>> Time = ' + time);
-	//returns most recent 20 notifications if no timestamp is specified
 	Notification.find({ $and:[ { timeStamp: { $gte: time } }, {user: req.session.user._id} ]})
 	.populate('meeting').populate('user')
 	.sort({timeStamp: -1}).limit(20).exec(function(err, notifications) {
