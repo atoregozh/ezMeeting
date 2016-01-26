@@ -18,9 +18,11 @@
 	color: white;
 	font-size: 18px;
 	margin-top: 8px;
-	height: 700px;
+	height: 900px;
 	overflow: hidden;
 	position: relative;
+	background: url('/img/bg2.png') no-repeat center center fixed;
+    background-size: cover;
 }
 
 #div2 {
@@ -54,6 +56,7 @@
 	transition: 0.2s;
 	z-index: 100;
 	text-decoration: none;
+	border: 1px solid #fff;
 	/*transform: translateX(-50%);*/
 }
 
