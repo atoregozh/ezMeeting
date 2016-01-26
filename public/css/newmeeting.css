@@ -312,14 +312,13 @@
 
 #grid-refresh {
 	background-color: #fff;
-	color: #aaa;
-	border: 2px solid #aaa;
+	color: #008cc9;
+	border: 1px solid #008cc9;
 }
 
 #grid-refresh:hover, #grid-refresh:focus {
-	background-color: #aaa;
+	background-color: #008cc9;
 	color: #fff;
-	border: 2px solid #aaa;
 }
 
 .grid-side-btn.left {
@@ -784,9 +783,6 @@ textarea {
 	height: 100px;
 }
 
-@media (max-width: 1024px) { /* Phones and tablets */
-	
-}
 
 @media (max-width: 768px) { /* Phones */
 
@@ -973,6 +969,10 @@ textarea {
 	top: 2px;
 }
 
+input:focus::-webkit-input-placeholder, textarea:focus::-webkit-input-placeholder {
+    color: transparent;
+}
+
 /* Algolia */
 .demo { text-align: center; margin: 40px auto;width: 600px; }
 
@@ -1000,7 +1000,7 @@ textarea {
 .algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
 	cursor: pointer;
 	padding: 5px 4px;
-	border-top: 1px solid #aaa;
+	border-top: 1px solid #ccc;
 }
 
 .algolia-autocomplete .aa-dropdown-menu .aa-suggestion:first-child {

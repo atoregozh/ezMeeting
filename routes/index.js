@@ -27,7 +27,7 @@ var authenticatePassport = function(passport) {
   // email gets their emails
   router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email', 
                                                               'https://www.googleapis.com/auth/calendar'],
-                                                              accessType: 'offline'  }
+                                                              accessType: 'offline', approvalPrompt: 'force' }
               ));
 
   // the callback after google has authenticated the user

@@ -41,6 +41,14 @@ module.exports = function(passport) {
         // User.findOne won't fire until we have all our data back from Google
         process.nextTick(function() {
 
+        	var picUrl = profile.photos[0].value;
+        	if(!picUrl) {
+        		// Unlikely to come here because Google sends a blue person as the default pic.
+        		picUrl = '/img/default-user-pic.jpg';
+        	} else {
+        		picUrl = picUrl.replace('sz=50', 'sz=300');
+        	}
+
             var user   =   {
                 google: {
                     id : profile.id,
@@ -53,10 +61,10 @@ module.exports = function(passport) {
                     lastname : profile.name.familyName
                 },
                 email : profile.emails[0].value, // pull the first email
-                pic : profile.photos[0].value
+                pic : picUrl
             };
-            console.log("found a user");
             User.findOneAndUpdate({ email: user.email }, user, {upsert: true}, function(err, user) {
+            	console.log(user);
                 // if can't find the user
                 if (err) {
                     console.log(err);  // handle errors!
@@ -65,55 +73,10 @@ module.exports = function(passport) {
                     return done(null, user);
                 }
             });
-            console.log("wrote user to db");
-
-            // // try to find the user in our database based on their google id
-            // User.findOne({ 'googleID' : profile.id }, function(err, user) {
-            //     // if can't find the user
-            //     if (err) {
-            //         console.log(err);  // handle errors!
-            //         return done(err); // done is needed to finish asynchronous procedure of user verification
-            //     }
-            //     // if a user is found, log them in  
-            //     if (!err && user !== null) {
-            //         console.log("user already in db");
-            //         return done(null, user);
-            //     } else {
-            //         // if the user isnt in our database, create a new user
-            //         var newUser = new User();
-
-            //         // set all of the relevant information
-            //         newUser.google.id    = profile.id;
-            //         newUser.google.accessToken = accessToken;
-            //         newUser.google.refreshToken = refreshToken;
-            //         newUser.displayName = profile.displayName;
-            //         newUser.name.firstname  = profile.name.givenName;
-            //         newUser.name.lastname = profile.name.familyName;
-            //         newUser.email = profile.emails[0].value; // pull the first email
-            //         newUser.pic = profile.photos[0].value;
-            //         console.log("Creating a New User in db:");
-            //         console.log(newUser);
-                    
-                    
-            //         // save the user to database
-            //         // save is mongoose command
-            //         newUser.save(function(err) {
-            //             if (err) {
-            //                 console.log(err);  // handle errors!
-            //                 throw err;
-            //             } else {   
-            //                 return done(null, newUser);
-            //             }
-            //         });
-            //     }
-            // });
         });
 
     });
-    console.log('using given strategy');
-    console.log('using passport');
     passport.use(strategy);
-    console.log('using refresh');
     refresh.use(strategy);
 
 };
