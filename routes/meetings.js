@@ -307,7 +307,7 @@ function createNotification(typeString, meetingId, userId) {
 
 
 function refreshAccessToken(user, functiontoRepeat) {
-  console.log('refresh token used to be:' + user.google.refreshToken);
+  console.log('access token used to be:' + user.google.accessToken);
   refresh.requestNewAccessToken('google', user.google.refreshToken, 
     function(err, accessToken) {
       if (err || !accessToken) {
@@ -324,7 +324,7 @@ function refreshAccessToken(user, functiontoRepeat) {
         } else {   
           // Retry the request.
           console.log('calling makeRequest again');
-          console.log('now refresh token is ' + user.google.refreshToken);
+          console.log('now access token is ' + user.google.accessToken);
           functiontoRepeat();
         }
       });

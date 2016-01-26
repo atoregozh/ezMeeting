@@ -533,6 +533,10 @@ function getAndDisplayUserEvents(userIdList, startDate, endDate) {
 }
 
 function addNewParticipant(userId, displayName, picUrl) {
+	if($.inArray(userId, userIdList) > -1) {
+		console.log(userId + ' already added');
+		return; // It mea
+	}
 	userIdList.push(userId);
     addUserToNameList(userId, displayName);
     addUserToPicsPanel(userId, displayName, picUrl);

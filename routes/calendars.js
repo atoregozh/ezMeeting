@@ -4,6 +4,7 @@ var utils = require('../utils');
 var User = require('../models/user');
 var needle = require('needle');
 async = require("async");
+var refresh = require('passport-oauth2-refresh');
 
 
 // Handler for GET requests to /calendars/?users=id1,id2&from=ISOString1to=ISOString2
@@ -23,7 +24,7 @@ router.get('/', function(req, res) {
 
     	listOfFunctions = users.map(function(user){
     		return function(callback){
-    			getGCalendarEventsPerUser2(callback, user,fromTime, toTime);	
+    			getDataFromGoogle(callback, true, {user: user, fromTime: fromTime, toTime: toTime});
     		};
     	});
 
@@ -61,85 +62,7 @@ router.get('/', function(req, res) {
 			*/
     }
 	});
-});
-
-function getGCalendarEventsPerUser2(callback, user, fromTime, toTime) {
-	var retries = 2;
-  console.log('starting out getGCalendarEventsPerUser2');
-
-  var makeRequest = function(callback) {
-    retries--;
-    if(!retries) {
-      // Couldn't refresh the access token.
-      callback({error: "Couldn't refresh the access token for " + userId} , null);
-    }
-  var url = 'https://www.googleapis.com/calendar/v3/calendars/' + user.email + '/events'+
-            '?orderBy=startTime&singleEvents=true&timeMax='+ toTime +'&timeMin='+fromTime;
-  console.log(url);
-  console.log('user access Token is: ' + user.google.accessToken);
-  console.log('user refresh Token is: ' + user.google.refreshToken);
-  needle.get(url, 
-            { headers: { Authorization: 'Bearer '+ user.google.accessToken } },  
-    function(error, googleResponse) {
-      if (!error && googleResponse.statusCode == 200) {
-
-        console.log('Success! calling filterUserCalData()');
-        var jsonUserMap = filterUserCalData(user,googleResponse.body);
-        console.log('returning from filterUserCalData');
-        callback(null, jsonUserMap);
-      } else if (googleResponse.statusCode === 401) {
-      // Access token expired.
-      // Try to fetch a new one.
-        refreshAccessToken(user,makeRequest);
-      } else {
-        callback({error: "Bad request for " + userId}, null);
-      }       
-    }); //end needle get
-  };
-
-  makeRequest(callback);
-	return;
-}    			
-
-
-function getGCalendarEventsPerUser(user,fromTime, toTime, res) {
-  var retries = 2;
-  console.log('starting out getGCalendarEventsPerUser');
-
-  var makeRequest = function() {
-    retries--;
-    if(!retries) {
-      // Couldn't refresh the access token.
-      utils.sendErrResponse(res, 401, "Couldn't refresh the access token");
-    }
-  var url = 'https://www.googleapis.com/calendar/v3/calendars/' + user.email + '/events'+
-            '?orderBy=startTime&singleEvents=true&timeMax='+ toTime +'&timeMin='+fromTime;
-  console.log(url);
-  console.log('user access Token is: ' + user.google.accessToken);
-  console.log('user refresh Token is: ' + user.google.refreshToken);
-  needle.get(url, 
-            { headers: { Authorization: 'Bearer '+ user.google.accessToken } },  
-    function(error, googleResponse) {
-      if (!error && googleResponse.statusCode == 200) {
-
-        console.log('Success! calling filterUserCalData()');
-        var jsonUserMap = filterUserCalData(user,googleResponse.body);
-        console.log('returning from filterUserCalData');
-        return jsonUserMap;
-      } else if (googleResponse.statusCode === 401) {
-      // Access token expired.
-      // Try to fetch a new one.
-        refreshAccessToken(user,makeRequest);
-      } else {
-        // There was another error, handle it appropriately.
-        console.log('some other error happened');
-        console.log(googleResponse.body);
-        utils.sendErrResponse(res, 500, 'Bad Request');
-      }   
-    }); //end needle get
-  };
-  makeRequest();
-}
+});		
 
 function filterUserCalData(user,data) {
   var filteredJsonArr = [];
@@ -166,29 +89,59 @@ function filterUserCalData(user,data) {
   return userMap;
 }
 
+function getDataFromGoogle (callback, refreshAccessTokenOnFailure, params) {
+		var user = params.user;
+  	var url = 'https://www.googleapis.com/calendar/v3/calendars/' + user.email + '/events'+
+            '?orderBy=startTime&singleEvents=true&timeMax='+ params.toTime +'&timeMin='+ params.fromTime;
+	  console.log(url);
+	  console.log('user access Token is: ' + user.google.accessToken);
+	  console.log('user refresh Token is: ' + user.google.refreshToken);
+	  needle.get(url, 
+	            { headers: { Authorization: 'Bearer '+ user.google.accessToken } },  
+					    function(error, googleResponse) {
+					      if (!error && googleResponse.statusCode == 200) {
 
-function refreshAccessToken(user, functiontoRepeat) {
-  console.log('refresh token used to be:' + user.google.refreshToken);
-  refresh.requestNewAccessToken('google', user.google.refreshToken, 
-    function(err, accessToken) {
-      if (err || !accessToken) {
+					        console.log('Success! calling filterUserCalData()');
+					        var jsonUserMap = filterUserCalData(user,googleResponse.body);
+					        console.log('returning from filterUserCalData');
+					        callback(null, jsonUserMap);
+					      } else if (googleResponse.statusCode === 401 && refreshAccessTokenOnFailure) {
+						      // Access token expired.
+						      // Try to fetch a new one.
+						      refreshAccessToken(getDataFromGoogle, callback, params);
+					      } 
+					      else {
+					        callback({error: "Bad request for " + userId}, null);
+					      }       
+		}); //end needle get
+}
+
+function refreshAccessToken(functionToRepeat, callback, params) {
+	var user = params.user;
+	console.log('refreshing access token for user: ' + user._id);
+  console.log('access token used to be:' + user.google.accessToken);
+  refresh.requestNewAccessToken(
+  	'google', user.google.refreshToken,
+    function(err, newAccessToken) {
+      if (err || !newAccessToken) {
         console.log('error! couldnt refresh the token!'); //couldn't refresh the token
-        return res.status(401).end(); 
+        callback({error: "Couldn't refresh the access token for " + user._id} , null);
       }
 
       // Save the new accessToken for future use
-      user.save( { google: { accessToken: accessToken} }, function(err) {
-        if (err) {
-          console.log('problems with saving new accessToken to db!');
-          console.log(err);  // problems with saving into db; errors!
-          throw err;
-        } else {   
-          // Retry the request.
-          console.log('calling makeRequest again');
-          console.log('now refresh token is ' + user.google.refreshToken);
-          functiontoRepeat();
-        }
-      });
+      user.save( { google: { accessToken: newAccessToken} },
+      	function(err) {
+	        if (err) {
+	          console.log('problems with saving new accessToken to db!');
+	          console.log(err);  // problems with saving into db; errors!
+	     			callback({error: "Couldn't save the new access token for " + user._id} , null);     
+	        } else {
+	          // Retry the request.
+	          console.log('calling makeRequest again');
+	          console.log('now access token is ' + user.google.accessToken);
+	          functionToRepeat(callback, false, params);
+	        }
+	      });
     });
 }
 
