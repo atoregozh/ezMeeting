@@ -4,7 +4,6 @@ var utils = require('../utils');
 var User = require('../models/user');
 var needle = require('needle');
 async = require("async");
-var refresh = require('passport-oauth2-refresh');
 
 
 // Handler for GET requests to /calendars/?users=id1,id2&from=ISOString1to=ISOString2
@@ -105,7 +104,7 @@ function getDataFromGoogle (callback, refreshAccessTokenOnFailure, params) {
 					        var jsonUserMap = filterUserCalData(user,googleResponse.body);
 					        console.log('returning from filterUserCalData');
 					        callback(null, jsonUserMap);
-					      } else if (googleResponse.statusCode === 401 && refreshAccessTokenOnFailure) {
+					      } else if (googleResponse.statusCode == 401 && refreshAccessTokenOnFailure) {
 						      // Access token expired.
 						      // Try to fetch a new one.
 						      refreshAccessToken(getDataFromGoogle, callback, params);
@@ -117,32 +116,73 @@ function getDataFromGoogle (callback, refreshAccessTokenOnFailure, params) {
 }
 
 function refreshAccessToken(functionToRepeat, callback, params) {
+  console.log("calling refreshaccessToken()");
 	var user = params.user;
-	console.log('refreshing access token for user: ' + user._id);
-  console.log('access token used to be:' + user.google.accessToken);
-  refresh.requestNewAccessToken(
-  	'google', user.google.refreshToken,
-    function(err, newAccessToken) {
-      if (err || !newAccessToken) {
-        console.log('error! couldnt refresh the token!'); //couldn't refresh the token
-        callback({error: "Couldn't refresh the access token for " + user._id} , null);
-      }
+	var url = 'https://www.googleapis.com/oauth2/v4/token?client_id=' + configAuth.googleAuth.clientID +
+            '&client_secret=' + configAuth.googleAuth.clientSecret +
+            '&refresh_token' + user.google.refreshToken +
+            'grant_type=refresh_token';
 
+  console.log(url);
+
+  console.log('user access Token before calling refreshAccessToken: ' + user.google.accessToken);
+  console.log('user refresh Token before calling refreshAccessToken: ' + user.google.refreshToken);
+  
+
+  needle.post(url, {}, function(error, accessToken) {
+     if (err || !accessToken) {
+      console.log('error! couldnt refresh the token!'); //couldn't refresh the token
+      callback({error: "Couldn't refresh the access token for " + user._id} , null);
+
+    } else {
       // Save the new accessToken for future use
-      user.save( { google: { accessToken: newAccessToken} },
-      	function(err) {
-	        if (err) {
-	          console.log('problems with saving new accessToken to db!');
-	          console.log(err);  // problems with saving into db; errors!
-	     			callback({error: "Couldn't save the new access token for " + user._id} , null);     
-	        } else {
-	          // Retry the request.
-	          console.log('calling makeRequest again');
-	          console.log('now access token is ' + user.google.accessToken);
-	          functionToRepeat(callback, false, params);
-	        }
-	      });
-    });
+      user.save( { google: { accessToken: response.body.access_token} }, function(err) {
+        if (err) {
+          console.log('problems with saving new accessToken to db!');
+          console.log(err);  // problems with saving into db; errors!
+          callback({error: "Couldn't save the new access token for " + user._id} , null);  
+        } else {   
+          // Retry the request.
+          console.log('calling makeRequest again');
+          console.log('now access token is ' + user.google.accessToken);
+          functionToRepeat(callback, false, params);
+        }
+      }); //user.save ends here
+    }
+  }); //needle post ends here
+}
+
+function refreshAccessToken(user, functiontoRepeat) {
+
+  var url = 'https://www.googleapis.com/oauth2/v4/token?client_id=' + configAuth.googleAuth.clientID +
+            '&client_secret=' + configAuth.googleAuth.clientSecret +
+            '&refresh_token' + user.google.refreshToken +
+            'grant_type=refresh_token';
+
+  console.log(url);
+
+  console.log('user access Token before calling refreshAccessToken: ' + user.google.accessToken);
+  console.log('user refresh Token before calling refreshAccessToken: ' + user.google.refreshToken);
+  needle.post(url, {}, function(error, accessToken) {
+     if (err || !accessToken) {
+      console.log('error! couldnt refresh the token!'); //couldn't refresh the token
+      return res.status(401).end(); 
+    } else {
+      // Save the new accessToken for future use
+      user.save( { google: { accessToken: response.body.access_token} }, function(err) {
+        if (err) {
+          console.log('problems with saving new accessToken to db!');
+          console.log(err);  // problems with saving into db; errors!
+          throw err;
+        } else {   
+          // Retry the request.
+          console.log('calling makeRequest again');
+          console.log('now access token is ' + user.google.accessToken);
+          functiontoRepeat();
+        }
+      }); //user.save ends here
+    }
+  }); //needle post ends here
 }
 
 module.exports = router;
