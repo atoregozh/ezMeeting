@@ -11,13 +11,13 @@ var utils = require('../utils');
 
 
 // Handler for POST requests to /meetings
-router.post('/', function(req, res, next) {
+router.post('/', ensureAuthenticated, function(req, res, next) {
   //@DEBUG console.log('ip2>>>>', req.connection.remoteAddress); this is to see where does the request coming from
   inviteToMeeting(req, res);
 });
 
 // Handler for DELETE requests to /meetings/:id
-router.delete('/:id', function(req, res) {
+router.delete('/:id', ensureAuthenticated, function(req, res) {
   var id = req.params.id;
   
 
@@ -26,7 +26,7 @@ router.delete('/:id', function(req, res) {
 
 
 // Handler for GET requests to /meetings/:id
-router.get('/:id', function(req, res, next) {
+router.get('/:id', ensureAuthenticated, function(req, res, next) {
    var meetingJson = {};
    
    var id = req.params.id;
@@ -289,9 +289,9 @@ function createNotification(typeString, meetingId, userId) {
   var newNotification = new Notification();
   // set all of the relevant information
   newNotification.type = typeString;
-  newNotification.meetingId = new mongoose.Types.ObjectId(meetingId);
-  newNotification.userId = new mongoose.Types.ObjectId(userId);
-  newNotification.timeStamp = moment();
+  newNotification.meeting = new mongoose.Types.ObjectId(meetingId);
+  newNotification.user = new mongoose.Types.ObjectId(userId);
+  newNotification.timeStamp = moment.utc();
 
   newNotification.save(function(err, res) {
     if (err) {

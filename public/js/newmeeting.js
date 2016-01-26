@@ -329,7 +329,8 @@ $(document).ready(function(){
 	var client = algoliasearch('SE79GLOIEP', '2de5e4f53a32c9e9db7dbde79a203965');
 	// Replace the following value by the name of the index you want to query.
 	// var index = client.initIndex('ezmeeting_users_test');
-	var index = client.initIndex('autocomplete_tutorial');
+	//var index = client.initIndex('autocomplete_tutorial');
+	var index = client.initIndex('ezmeeting_users_test');
 
 	// basic autocomplete 
 	/*
@@ -339,14 +340,15 @@ $(document).ready(function(){
     });
 */
 // with a template and highlighting
-    var template = Hogan.compile('<picture><img src="{{{image_url}}}" /></picture>' +
+    var template = Hogan.compile(
       '<div>{{{_highlightResult.email.value}}}</div>' +
-      '<div class="text-right"><small>{{{_highlightResult.name.value}}}</span></div>');
+      '<div class="text-right"><small>{{{_highlightResult.displayName.value}}}</span></div>');
     $('#m-guest-search').autocomplete(null, {
       source: $.fn.autocomplete.sources.hits(index, {hitsPerPage: 10}),
       displayKey: 'name',
       templates: {
         suggestion: function(hit) {
+        	addNewParticipant(hit.objectID, hit.displayNname, hit.pic);
           return template.render(hit);
         }
       }

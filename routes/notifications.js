@@ -1,70 +1,51 @@
 // PACKAGES //
 router = require('express').Router();
 var Notification = require('../models/notification');
-async = require("async");
+async = require('async');
+moment = require('moment');
 
-// Handler for GET requests to /notifications/?user=id&after='timestamp'
-router.get('/', function(req, res) {
-  if (!req.query.after) {
-    now = Date.now();
-    //returns most recent 20 notifications if no timestamp is specified
-    Notification.find({ $and:[ { timeStamp: { $lte: now } }, {userId: req.query.user} ]}).
-    sort({timeStamp: -1}).limit(20).exec(function(err, notifications) {
-      if (err) {
-        console.log(err);  // handle errors!
-        res.status(503).end();   // problems with finding notification docs in db; errors!
-      } else {
-        var listOfFunctions = [];
+// Handler for GET requests to /notifications/after='timestamp'
+router.get('/', ensureAuthenticated, function(req, res) {
+	var time = moment('1900-01-01').toDate(); // A randomly chosen date in the past that's earlier than all our timestamps.
+	if (req.query.after) {
+		time = moment(req.query.after).toDate();
+	}
+	console.log('>>> Time = ' + time);
+	//returns most recent 20 notifications if no timestamp is specified
+	Notification.find({ $and:[ { timeStamp: { $gte: time } }, {user: req.session.user._id} ]})
+	.populate('meeting').populate('user')
+	.sort({timeStamp: -1}).limit(20).exec(function(err, notifications) {
+	  if (err) {
+	    console.log(err);  // handle errors!
+	    res.status(503).end();   // problems with finding notification docs in db; errors!
+	  } else {
 
-        listOfFunctions = notifications.map(function(notification){
-          return {
-            type: notification.type,
-            userDisplayName: notification.userId.displayName,
-            meetingName: notification.meetingId.name,
-            meetingId: notification.meetingId._id,
-            startTime: notification.meetingId.startTime
-          };
-        });
-
-        async.parallel(listOfFunctions, function(err, results){
-          if(err){
-            utils.sendErrResponse(res, 503, err);
-          }else {
-            res.send(results);
-          }
-        });
-      }
-    });
-  } else {
-    //returns all notifications after timestamp
-    Notification.find({ $and:[ { timeStamp: { $lte: req.query.after } }, {userId: req.query.user} ]}).
-    sort({timeStamp: -1}).exec(function(err, notifications) {
-      if (err) {
-        console.log(err);  // handle errors!
-        res.status(503).end();   // problems with finding notification docs in db; errors!
-      } else {
-        var listOfFunctions = [];
-
-        listOfFunctions = notifications.map(function(notification){
-          return {
-            type: notification.type,
-            userDisplayName: notification.userId.displayName,
-            meetingName: notification.meetingId.name,
-            meetingId: notification.meetingId._id,
-            startTime: notification.meetingId.startTime
-          };
-        });
-
-        async.parallel(listOfFunctions, function(err, results){
-          if(err){
-            utils.sendErrResponse(res, 503, err);
-          }else {
-            res.send(results);
-          }
-        });
-      }
-    });
-  } //end else
+	    var listOfNotifications = notifications.map(function(notification){
+	      return {
+	        type: notification.type,
+	        userDisplayName: notification.user.displayName,
+	        meetingName: notification.meeting.name,
+	        meetingId: notification.meeting._id,
+	        startTime: notification.meeting.startTime,
+	        timeStamp: notification.timeStamp
+	      };
+	    });
+	    console.log('>>> pretty notification');
+	    console.log(listOfNotifications.length);
+	    console.log(listOfNotifications);
+	    res.send(listOfNotifications);
+	  } // End of else
+	});
 });
+
+// route middleware to make sure a user is logged in
+function ensureAuthenticated(req, res, next) {
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.redirect('/');
+}
 
 module.exports = router;
