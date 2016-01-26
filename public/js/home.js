@@ -72,13 +72,13 @@ function removeExtraParticipants() {
         }
     });
 
-    $('.meeting-location-div').each(function(){
-        if(!$(this).children('.location-text2').first().html()){
-            $(this).children('.location-icon').css({
-                'visibility':'hidden'
-            });
-        }
-    });
+    // $('.meeting-location-div').each(function(){
+    //     if(!$(this).children('.location-text2').first().html()){
+    //         $(this).children('.location-icon').css({
+    //             'visibility':'hidden'
+    //         });
+    //     }
+    // });
 }
 
 function getNotificationMessage(type, displayName, meetingName, meetingId, meetingTime){
