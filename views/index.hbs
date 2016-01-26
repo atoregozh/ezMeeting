@@ -5,21 +5,28 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel='stylesheet' href='/css/style.css' />
-    <link rel='stylesheet' href='/css/index.css' />
+    <link rel='stylesheet' href='/css/nav.css'/>
+    <link rel='stylesheet' href='/css/root.css' />
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>>
+    <script type="text/javascript" src="/js/nav.js"></script>
   </head>
   <body>
-    <div class="row">
-      <div class="col-xs-10 text-center">
-        <h2>Welcome & login page</h2>
-      </div>
+    <!-- Navigation -->
+    {{> navbar1}}
+    <!--End Navigation -->
+    <div class="container-fluid">
+      	<div id="div1">
+	      	<!--<img id="img1" src="/img/bg1.png">-->
+	      	<img id="img1" src="/img/bg2.png">
+	      	<a id="login-btn" href="/auth/google"><span id="sp1" class="fa fa-google"></span><span> Login with Google </span></a>
+	  		<div id="div2">
+	  			<p id="p1">ezMeeting<p>
+	  			<p id="p2">The easiest way to schedule group meetings</p>
+	  		</div>
+      	</div>
     </div>
-    <div class="row">
-      <div class="text-center">
-        <a href="/auth/google"><span class="fa fa-google-plus"></span> Login With Google</a>
-      </div>
   </body>
 </html>
