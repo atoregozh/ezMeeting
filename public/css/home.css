@@ -136,7 +136,7 @@
     position: relative;
     z-index: 20;
     border-radius: 50%;
-    border: 1px solid #fff;
+    border: 1px solid #777;
 }
 
 .meeting-location-div {
@@ -227,7 +227,7 @@
     position: relative;
     z-index: 20;
     border-radius: 50%;
-    border: 1px solid #fff;
+    border: 1px solid #999;
     margin-right: 1.5px;
 }
 
@@ -251,7 +251,7 @@ a.plain:hover, a.plain:focus {
 }
 
 .participant-number {
-    border: 1px solid #ccc;
+    border: 1px solid #999;
     background-color: white;
     color: #999;
     border-radius: 50%;
