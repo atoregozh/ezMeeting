@@ -111,7 +111,7 @@ function getDataFromGoogle (callback, refreshAccessTokenOnFailure, params) {
 						      refreshAccessToken(getDataFromGoogle, callback, params);
 					      } 
 					      else {
-					        callback({error: "Bad request for " + userId}, null);
+					        callback({error: "Bad request for " + user._id}, null);
 					      }       
 		}); //end needle get
 }

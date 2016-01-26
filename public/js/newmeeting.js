@@ -36,6 +36,15 @@ var userIdList = [];
 var CALENDER_ENDPOINT = '/calendars';
 var CALENDER_ENDPOINT = '/calendars';
 
+// ~~~~~~~~~~~~~ Algolia ~~~~~~~~~~~~~ 
+	// Replace the following values by your ApplicationID and ApiKey.
+	var client;
+	// Replace the following value by the name of the index you want to query.
+	// var index = client.initIndex('ezmeeting_users_test');
+	//var index = client.initIndex('autocomplete_tutorial');
+	var index;
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /* 
 cellKeyToUserSet simulates a list of HashSets. Each field corresponds to a given cell (i.e. 30min slot) while 
 the value is an object with fields names that are the ID of each user that is busy in that time slot.
@@ -265,6 +274,7 @@ $(document).ready(function(){
 	});
 
 	$("#m-guest-search").keyup(function(e) {
+		/*
 	    if (e.keyCode == 13) { // Enter key
 	        var input = $("#m-guest-search").val().trim();
 	        $("#m-guest-search").val("");
@@ -287,6 +297,7 @@ $(document).ready(function(){
 	        addNewParticipant(user.id, user.name, user.pic);
 
 	    }
+	    */
 	});
 
 	$("#m-title").keyup(function(e) {
@@ -325,13 +336,11 @@ $(document).ready(function(){
 	});
 
 	// ~~~~~~~~~~~~~ Algolia ~~~~~~~~~~~~~ 
-	// Replace the following values by your ApplicationID and ApiKey.
-	var client = algoliasearch('SE79GLOIEP', '2de5e4f53a32c9e9db7dbde79a203965');
+	client = algoliasearch('SE79GLOIEP', '2de5e4f53a32c9e9db7dbde79a203965');
 	// Replace the following value by the name of the index you want to query.
 	// var index = client.initIndex('ezmeeting_users_test');
 	//var index = client.initIndex('autocomplete_tutorial');
-	var index = client.initIndex('ezmeeting_users_test');
-
+	index = client.initIndex('ezmeeting_users_test');
 	// basic autocomplete 
 	/*
     $('#m-guest-search').autocomplete(null, {
@@ -452,9 +461,6 @@ $(document).ready(function(){
 
 	addNewParticipant(S_USER_ID, S_DISPLAY_NAME, S_PIC_URL);
 
-	// Algolia
-	var client = algoliasearch("SE79GLOIEP", "2de5e4f53a32c9e9db7dbde79a203965");
-	index = client.initIndex('ezmeeting_users_test');
 	
 }); // End of $(document).ready()
 
