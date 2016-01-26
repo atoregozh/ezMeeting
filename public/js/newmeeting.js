@@ -376,6 +376,7 @@ $(document).ready(function(){
 	// ***************************************************************************
 
 	switchToTab1();
+	addTimesToGrid();
 
 	if(!S_MEETING_ID){ // This variable gets set by the server
 		console.log('Creating empty grid');
@@ -444,7 +445,6 @@ $(document).ready(function(){
 
 
 function createEmptyGridForNewMeeting() {
-	addTimesToGrid();
 	addNext7DaysToGrid();
 	scrollCalendarToNineAm();
 	$("#m-date").prop('disabled', true);
