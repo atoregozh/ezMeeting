@@ -320,7 +320,7 @@ a.plain:hover, a.plain:focus {
 .notification-text {
   /*border: 1px solid;*/
   display: inline-block;
-  font-size: 13px;
+  font-size: 14px;
   position: relative;
   width: 100%;
   padding-left: 21px;
