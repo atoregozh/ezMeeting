@@ -331,6 +331,13 @@
 	color: #fff;
 }
 
+#grid-refresh.disabled, #grid-refresh.disabled:hover, #grid-refresh.disabled:focus {
+	color: #ccc;
+	border-color: #ccc;
+	background-color: #fff;
+	cursor: default;
+}
+
 .grid-side-btn.left {
 	border-top-left-radius: 10px;
 	border-bottom-left-radius: 10px;

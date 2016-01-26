@@ -26,6 +26,7 @@ var gridStartDate; // A moment js day beginning obtained using .startOf('day')
 var gridEndDate; // A moment js day beginning obtained using .endOf('day')
 var firstSelectedDay; // String of format 'yyyy-mm-dd'
 var isdragging = false;
+var viewOnlyMode = false;
 
 var currentTab; // Stores the ID of the current tab to one of TAB1_ID, TAB2_ID or TAB3_ID
 var user_count = 0;
@@ -291,6 +292,10 @@ $(document).ready(function(){
 
 
 	$('#grid-refresh').click(function(){
+		if(viewOnlyMode) {
+			return;
+		}
+
 		if(!isSpecifiedDateRangeValid()) {
 			showError("The start date should be earlier than the end date");
 			return;
@@ -384,6 +389,7 @@ $(document).ready(function(){
 	}
 	else {
 		// Ajax call to retrieve meeting details.
+		viewOnlyMode = true;
 		console.log('Showing previously-created meeting');
 		$.ajax({
 	        url: '/meetings/data/' + S_MEETING_ID,
@@ -415,9 +421,12 @@ $(document).ready(function(){
 				$("#m-desc").prop('disabled', true);
 				$(".guests-header").hide();
 				$("#m-details-btns").css({'visibility':'hidden'});
+				$("#grid-refresh").addClass('disabled');
+				$("#dp1").prop('disabled', true);
+				$("#dp2").prop('disabled', true);
 
 
-				for(var d = moment(startTime).subtract(2, 'd'); d <= moment(startTime).add(3, 'd'); d.add(1, 'd')){
+				for(var d = moment(startTime).subtract(1, 'd'); d <= moment(startTime).add(4, 'd'); d.add(1, 'd')){
 					addDayToGrid(d);
 				}
 
@@ -425,8 +434,20 @@ $(document).ready(function(){
 					var user = participantsList[i];
 					addNewParticipant(user.id, user.name, user.pic);
 				}
+				
+				for(var d = moment(startTime) ; d <= moment(endTime); d.add(30, 'minutes')) {
+					var cellKey = getCellWithKey(getCellKey(d)).addClass(SELECTED_CELL_CLASS);
+				}
+
 				$(".name-list-close").hide();
 
+				var topHour = startTime.hour() - 1;
+				if(topHour < 0) {
+					topHour = 0;
+				}else if(topHour > 15){
+					topHour = 15;
+				}
+				scrollCalendarToHour(topHour);
 	        },
 	        error: function(xhr, status, error) {
 	            console.log("Error: " + error);
@@ -446,7 +467,7 @@ $(document).ready(function(){
 
 function createEmptyGridForNewMeeting() {
 	addNext7DaysToGrid();
-	scrollCalendarToNineAm();
+	scrollCalendarToHour(9); // Set the top at 9am
 	$("#m-date").prop('disabled', true);
 	addNewParticipant(S_USER_ID, S_DISPLAY_NAME, S_PIC_URL);
 }
@@ -675,7 +696,7 @@ function roundUpTimeTo30Minutes(time) {
 }
 
 function mouseEnterCell(key) {
-	if(isdragging && (getDayStringFromKey(key) === firstSelectedDay)) {
+	if(isdragging && (getDayStringFromKey(key) === firstSelectedDay) && !viewOnlyMode) {
 		getCellWithKey(key).addClass(SELECTED_CELL_CLASS);
 	}
 	var objectOfUserIDs = cellKeyToUserSet[key];
@@ -732,6 +753,10 @@ function clearThisSelectedCell(cell, doNotUpdateUI) {
 }
 
 function mouseDownOnCell(key) {
+	if(viewOnlyMode){
+		return;
+	}
+
 	if(firstSelectedDay && (firstSelectedDay != getDayStringFromKey(key))) {
 		// Clear the grid if slots from a different day were already highlighted.
 		clearAllSelectedCells(true);
@@ -1205,9 +1230,9 @@ function showError(mssg) {
 	}, ALERT_TIMEOUT);
 }
 
-function scrollCalendarToNineAm() {
+function scrollCalendarToHour(hour) {
 	var gridRowHeight = $($('.c-row')[0]).outerHeight();
-	$('#bl').scrollTop(gridRowHeight * 18); // Scroll to 9am
+	$('#bl').scrollTop(gridRowHeight * 2 * hour); // Scroll to 9am
 }
 
 function activateCalendarSideBtns() {
