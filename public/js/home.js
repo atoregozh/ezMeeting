@@ -13,8 +13,8 @@ iconMap[CANCEL_MEETING] = '<i class="fa fa-calendar-times-o calendar-cancel"></i
 
 $(document).ready(function(){
     formatMeetingTimes();
-
     alignMeetingCards();
+    removeExtraParticipants();
   
     $(window).resize(function() {
         alignMeetingCards();
@@ -63,6 +63,23 @@ $(document).ready(function(){
     });
 
 });
+
+function removeExtraParticipants() {
+    $('.participant-number').each(function(){
+        var count = $(this).html();
+        if(count == "+0"){
+            $(this).remove();
+        }
+    });
+
+    $('.meeting-location-div').each(function(){
+        if(!$(this).children('.location-text2').first().html()){
+            $(this).children('.location-icon').css({
+                'visibility':'hidden'
+            });
+        }
+    });
+}
 
 function getNotificationMessage(type, displayName, meetingName, meetingId, meetingTime){
     if(type === CANCEL_MEETING) {

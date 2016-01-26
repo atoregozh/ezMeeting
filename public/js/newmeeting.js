@@ -139,41 +139,6 @@ $(document).ready(function(){
 	}).data('datepicker');
 	// ~~~~~ Finished initializing datepicker ~~~~~
 
-	// // ~~~~~ Start initializing timepicker ~~~~~
-
-	//  $('#m-start').timepicker({
-	//  	minuteStep: 5,
-	//  	template: 'modal',
-	// 	appendWidgetTo: 'body',
-	// 	showSeconds: false,
-	// 	showMeridian: true, // true ==> 12hr mode, false ==> 24hr mode
-	// 	defaultTime: '09:00', // could be 'current', 'false' or a value like '11:45AM'
-	// });
-
-	// $('#m-start').timepicker().on('changeTime.timepicker', function(e) {
-	// 	meetingStartTime = e;
-	// 	console.log("1");
-	// 	// console.log('The start hour is ' + e.time.hours);
-	// 	// console.log('The start minute is ' + e.time.minutes);
-	// });
-
-	// $('#m-end').timepicker({
-	// 	minuteStep: 5,
-	// 	template: 'modal',
-	// 	appendWidgetTo: 'body',
-	// 	showSeconds: false,
-	// 	showMeridian: true, // true ==> 12hr mode, false ==> 24hr mode
-	// 	defaultTime: '09:00', // could be 'current', 'false' or a value like '11:45AM'
-	// });
-
-	// $('#m-end').timepicker().on('changeTime.timepicker', function(e) {
-	// 	console.log("2");
-	// 	meetingEndTime = e;
-	// });
-
-	// // ~~~~~ Finished initializing timepicker ~~~~~
-
-
 	$('#tr').on('scroll', function (e) {
 		e.stopPropagation();
 	    e.preventDefault();
@@ -225,35 +190,6 @@ $(document).ready(function(){
 	$('.container').on('click', '#alert-panel .close', function() {
 		$(this).parent().parent().remove();
 	});
-
-
-	// ~~~~~ Start of test div ~~~~~
-
-	$('#b1').click(function() {
-		showInfo('Yay! New info :)');
-	});
-
-	$('#b2').click(function() {
-		showError('Uh oh! New Error :(');
-	});
-
-	$('#b3').click(function() {
-		showWarning('Be careful! This is a warning.');
-	});
-
-	$('#b4').click(function() {
-		counter = user_count++; 
-		userId = counter;
-		name = 'Will Smith ' + counter;
-		addUserToPicsPanel(userId, name, '/img/default-user-pic.jpg');
-		addUserToNameList(userId, name);
-	});
-
-	$('#b5').click(function() {
-		showLoading("I am loading");
-	});
-
-	// ~~~~~ End of test div ~~~~~
 
 	$("#m-guest-search").focus(function(){
 		$("#m-guest-search-btn").hide();
@@ -348,8 +284,6 @@ $(document).ready(function(){
 	  		$("#m-guest-search").val("");
 	  	}, 5);
   	});
-  
-
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
@@ -435,23 +369,49 @@ $(document).ready(function(){
 
 	}); // End of grid refresh event handler.
 
+
+	// ***************************************************************************
+	// Beginning of the grid layout
+	// ***************************************************************************
+
 	switchToTab1();
-	addTimesToGrid();
-	addNext7DaysToGrid();
-	scrollCalendarToNineAm();
 
-	// $('#m-start').timepicker('setTime', DEFAULT_TIME);
-	// $('#m-end').timepicker('setTime', DEFAULT_TIME);
+	if(!S_MEETING_ID){ // This variable gets set by the server
+		console.log('Creating empty grid');
+		createEmptyGridForNewMeeting();
+	}
+	else {
+		// Ajax call to retrieve meeting details.
+		console.log('Showing previously-created meeting');
+		$.ajax({
+	        url: '/meetings/data/' + S_MEETING_ID,
+	        type: "GET",
+	        data: {},
+	        success: function(data) {
+	            console.log(data);
+	        },
+	        error: function(xhr, status, error) {
+	            console.log("Error: " + error);
+	            showError('Unable to load meeting with ID: ' + S_MEETING_ID);
+	        }
+	    });
+	}
 
-	$("#m-date").prop('disabled', true);
-	// $("#m-start").prop('disabled', true);
-	// $("#m-end").prop('disabled', true);
-
-	addNewParticipant(S_USER_ID, S_DISPLAY_NAME, S_PIC_URL);
+	// ***************************************************************************
+	// End of the grid layout
+	// ***************************************************************************
 
 	
 }); // End of $(document).ready()
 
+
+function createEmptyGridForNewMeeting() {
+	addTimesToGrid();
+	addNext7DaysToGrid();
+	scrollCalendarToNineAm();
+	$("#m-date").prop('disabled', true);
+	addNewParticipant(S_USER_ID, S_DISPLAY_NAME, S_PIC_URL);
+}
 
 function searchCallback(err, content) {
   if (err) {

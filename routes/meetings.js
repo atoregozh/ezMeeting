@@ -63,7 +63,7 @@ router.delete('/:id', ensureAuthenticated, function(req, res) {
 
 
 // Handler for GET requests to /meetings/:id
-router.get('/:id', ensureAuthenticated, function(req, res, next) {
+router.get('/data/:id', ensureAuthenticated, function(req, res, next) {
    var meetingJson = {};
    
    var id = req.params.id;
@@ -116,6 +116,11 @@ router.get('/:id', ensureAuthenticated, function(req, res, next) {
     } //end else
   }); // end find from db
 });
+
+router.get('/:id', ensureAuthenticated, function(req, res, next) {
+  res.render('newmeeting', {user: req.user,'title':'Schedule a meeting', 'meetingId' : req.params.id});
+});
+
 
 function inviteToMeeting(req, res) {
   /*

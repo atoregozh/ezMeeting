@@ -81,7 +81,6 @@ var db =
 		console.log(content);
 	});
 
-    var listOfUserMeetings = [];
     Meeting.find( { $and:[ { isDeleted: false }, {organizerId: req.session.user._id } ] } )
     .populate('participants')
     .sort({startTime: -1}).limit(18).exec(function(err, userMeetings) {
@@ -89,7 +88,13 @@ var db =
         console.log(err);  // handle errors!
         res.status(503).end();   // problems with finding notification docs in db; errors!
       } else {
-        listOfUserMeetings = userMeetings.map(function(userMeeting){
+        var listOfUserMeetings = userMeetings.map(function(userMeeting){
+          var participantsList = userMeeting.participants;
+          var extraParticipants = 0;
+          if(participantsList.length > 7){
+            extraParticipants = participantsList.length - 7;
+            participantsList = participantsList.slice(0, 7);
+          }
           return {
             name : userMeeting.name,
             id : userMeeting._id,
@@ -97,10 +102,9 @@ var db =
             description: userMeeting.description,
             startTime : userMeeting.startTime,
             endTime : userMeeting.endTime,
+            extraParticipants: extraParticipants,
             organizerPic : req.session.user.pic,
-            participants : [{
-              pic: participants.pic
-            }]
+            participantsList : participantsList
           };
         });
         console.log('>>> user meetings');
@@ -109,17 +113,15 @@ var db =
         console.log(listOfUserMeetings);
         extraParticipants = listOfUserMeetings.length - 7;
         listOfUserMeetings.push({"extraParticipants": extraParticipants});
+        console.log('Authenticated the user! Here are the details of user:');
+        console.log(req.user); 
+        res.render('home', {
+              user : req.user, // get the user out of session and pass to template
+              meetings: listOfUserMeetings
+        });
       } // End of else
     }); //end of exec
 
-      console.log('Authenticated the user! Here are the details of user:');
-      console.log(req.user); 
-      res.render('home', {
-            user : req.user, // get the user out of session and pass to template
-            meetings: listOfUserMeetings
-            }
-
-    );
 }); //end of router.get
 
 // route middleware to make sure a user is logged in

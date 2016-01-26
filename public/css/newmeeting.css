@@ -825,19 +825,6 @@ textarea {
 
 /* ~~~~~ End of set placeholder color  ~~~~~ */
 
-#test-div {
-	/*Todo: delete me*/
-	display: none;
-	position: absolute;
-	bottom: 5px;
-	right: 5px;
-	border: 1px solid gray;
-	margin: 5px;
-	padding: 5px;
-	z-index: 1000;
-	background-color: gray;
-}
-
 #add-people {
 	padding: 2px 5px;
     color: white;

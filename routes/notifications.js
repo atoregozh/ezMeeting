@@ -9,7 +9,6 @@ router.get('/', ensureAuthenticated, function(req, res) {
 	if (req.query.after) {
 		time = moment(req.query.after).toDate();
 	}
-	console.log('>>> Time = ' + time);
 	Notification.find({ $and:[ { timeStamp: { $gte: time } }, {user: req.session.user._id} ]})
 	.populate('meeting').populate('user')
 	.sort({timeStamp: -1}).limit(20).exec(function(err, notifications) {
@@ -28,9 +27,9 @@ router.get('/', ensureAuthenticated, function(req, res) {
 	        timeStamp: notification.timeStamp
 	      };
 	    });
-	    console.log('>>> pretty notification');
-	    console.log(listOfNotifications.length);
-	    console.log(listOfNotifications);
+	    // console.log('>>> pretty notification');
+	    // console.log(listOfNotifications.length);
+	    // console.log(listOfNotifications);
 	    res.send(listOfNotifications);
 	  } // End of else
 	});

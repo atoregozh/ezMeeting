@@ -52,14 +52,14 @@
 	                        <i class="fa fa-map-marker"></i>  
 	                      </div>
 	                      <div class="location-text">
-	                        <p>{{ location }}</p>
+	                        <p class="location-text2">{{ location }}</p>
 	                      </div>
 	                    </div>
 	                    <div class="meeting-descrpt-div">
 	                      <p>{{ description }}</p>
 	                    </div>
 	                    <div class="participants-row">
-	                    	{{#each participants}}
+	                    	{{#each participantsList}}
 							<img class="participant-img" src="{{ pic }}" alt="profile pic" />	
 	                    	{{/each}}
 	                        <span class="participant-number plain">+{{ extraParticipants }}</span>
