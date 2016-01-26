@@ -54,8 +54,13 @@
   border: 1px solid #D8D8D8;
   margin: 10px;
   height: 240px;
-  width: 265px;
+  width: 260px;
   background-color: #fff;
+}
+
+.meeting-card:hover, .meeting-card:focus{
+  border-color: #008cc9;
+  cursor: pointer;
 }
 
 .meeting-card-inviz {

@@ -45,87 +45,28 @@
 	                      </div>
 	                    </div>
 	                    <div class="meeting-organizer">
-	                      <img class="organizer-img" src="{{ organizerPic }}" alt="profile pic">
+	                      <img class="organizer-img" src="{{organizerPic}}" alt="profile pic">
 	                    </div>
 	                    <div class="meeting-location-div">
 	                      <div class="location-icon">
 	                        <i class="fa fa-map-marker"></i>  
 	                      </div>
 	                      <div class="location-text">
-	                        <p class="location-text2">{{ location }}</p>
+	                        <p class="location-text2">{{location}}</p>
 	                      </div>
 	                    </div>
 	                    <div class="meeting-descrpt-div">
-	                      <p>{{ description }}</p>
+	                      <p>{{description}}</p>
 	                    </div>
 	                    <div class="participants-row">
 	                    	{{#each participantsList}}
-							<img class="participant-img" src="{{ pic }}" alt="profile pic" />	
+							<img class="participant-img" src="{{pic}}" alt="profile pic" />	
 	                    	{{/each}}
-	                        <span class="participant-number plain">+{{ extraParticipants }}</span>
+	                        <span class="participant-number plain">+{{extraParticipants}}</span>
 	                    </div>
 	                  </div>
 	                </div>
-	              {{/each }}
-
-	              <!-- xxxxxxxxxxxxxxx-->
-	            
-	                {{!-- <div class="meeting-card">
-	                  <button type="button" class="btn btn-default meeting-options">
-	                    <i class="fa fa-ellipsis-v"></i>
-	                  </button>
-	                  <div class="meeting">
-	                    <div class="meeting-name">
-	                      <p>Really Long Meeting Name That could possibly happen to see what happens
-	                      </p>
-	                    </div>
-	                    <div class="meeting-datetime">
-	                      <div class="datetime-icon">
-	                        <i class="fa fa-clock-o"></i>  
-	                      </div>
-	                      <div class="datetime-text">
-	                        <p> Sun, Jan 17, 2016 </p>
-	                        <p> 10:30am-11:30am </p>
-	                      </div>
-	                    </div>
-	                    <div class="meeting-organizer">
-	                      <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
-	                    </div>
-	                    <div class="meeting-location-div">
-	                      <div class="location-icon">
-	                        <a href="#"> <i class="fa fa-map-marker"></i> </a>  
-	                      </div>
-	                      <div class="location-text">
-	                        <p>405 East 42nd Street, New York City, NY 10017 we could be adding more text and see what happens</p>
-	                      </div>
-	                    </div>
-	                    <div class="meeting-descrpt-div">
-	                      <p>Meeting Description</p>
-	                    </div>
-	                    <div class="participants-row">
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                    
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	    
-	                    </div>
-	                  </div>
-	                </div> --}} <!-- End of meeting card 2-->
-	               	
+	              {{/each}}
 	              </div>
 	          </div>    
 	        </div>
@@ -141,51 +82,7 @@
 	              <h2 class="dashboard-header">Notifications</h2>
 	            </div>
 	            <div id="notifications-panel">
-	              {{!-- <div class="notification-div">
-	                <div class="notification-timestamp">
-	                  1m
-	                </div>
-	                <div class="notification-icon">
-	                  <i class="fa fa-calendar-times-o calendar-cancel"></i> 
-	                </div>
-	                <div class="notification-text">
-	                  Organizer1 cancelled <a href="#">Meeting1</a>.
-	                </div>
-	              </div>
-
-	              <div class="notification-div">
-	                <div class="notification-timestamp">
-	                  2h
-	                </div>
-	                <div class="notification-icon">
-	                  <i class="fa fa-calendar-plus-o calendar-invite"></i> 
-	                </div>
-	                <div class="notification-text">
-	                  Organizer2 invited you to <a href="#">Meeting2</a>.
-	                </div>
-	              </div>
-	              <div class="notification-div">
-	                <div class="notification-timestamp">
-	                  19h
-	                </div>
-	                <div class="notification-icon">
-	                  <i class="fa fa-calendar-check-o calendar-reschedule"></i> 
-	                </div>
-	                <div class="notification-text">
-	                  Organizer3 rescheduled <a href="#">Meeting3</a>.
-	                </div>
-	              </div>
-	              <div class="notification-div">
-	                <div class="notification-timestamp">
-	                  5d
-	                </div>
-	                <div class="notification-icon">
-	                  <i class="fa fa-calendar-check-o calendar-schedule"></i> 
-	                </div>
-	                <div class="notification-text">
-	                  <a href="#">MeetingName</a> is scheduled for Saturday, January 8 at 11am.
-	                </div>
-	              </div> --}}
+	              
 	            </div>
 	          </div>
 	        </div>
