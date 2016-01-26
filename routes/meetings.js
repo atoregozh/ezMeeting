@@ -300,13 +300,14 @@ function createMeeting(participantIDs, organizerId, res, sendResponse) {
         console.log('Started createNotification');
         for(var k=0; k< participantIDs.length; k++) {
           if(participantIDs[k] === organizerId) {
-            console.log('organizerId and participantIDs are equal');
-            createNotification("scheduledYourMeeting", meetingId, participantIDs[k]);
+            continue;
           } else {
-          	console.log('organizerId and participantIDs are not equal');
-            createNotification("inviteToMeeting", meetingId, organizerId);
+          	console.log('creating Invite to meeting for participants');
+            createNotification("inviteToMeeting", meetingId, organizerId, participantIDs[k]);
           }
         }
+        console.log('creating Schedule Meeting for organizer');
+        createNotification("scheduledYourMeeting", meetingId, organizerId, organizerId);
         console.log('finished creating notifications');
         console.log('sending ID as response for meeting ID: ' + meetingId);
         sendResponse.send(meetingId);
@@ -328,12 +329,13 @@ function addNewMeetingToUsers(participantObjectIds, meetingId) {
   });
 }
 
-function createNotification(typeString, meetingId, userId) {
+function createNotification(typeString, meetingId, organizerId, recipientId) {
   var newNotification = new Notification();
   // set all of the relevant information
   newNotification.type = typeString;
   newNotification.meeting = new mongoose.Types.ObjectId(meetingId);
-  newNotification.user = new mongoose.Types.ObjectId(userId);
+  newNotification.organizer = new mongoose.Types.ObjectId(organizerId);
+  newNotification.recipient = new mongoose.Types.ObjectId(recipientId);
   newNotification.timeStamp = moment.utc();
 
   newNotification.save(function(err, res) {

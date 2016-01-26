@@ -12,13 +12,16 @@ var notificationSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Meeting'
   },
-  user: {//organizer or a participant
+  organizer: {//organizer or a participant
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
   timeStamp: {
     type: Date,
     requred: true // created_at
+  }, 
+  recipient: { 
+    type: mongoose.Schema.Types.ObjectId  //logged in user, notification is meant to show for this user
   }
 });
 

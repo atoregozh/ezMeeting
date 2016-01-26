@@ -9,8 +9,8 @@ router.get('/', ensureAuthenticated, function(req, res) {
 	if (req.query.after) {
 		time = moment(req.query.after).toDate();
 	}
-	Notification.find({ $and:[ { timeStamp: { $gte: time } }, {user: req.session.user._id} ]})
-	.populate('meeting').populate('user')
+	Notification.find({ $and:[ { timeStamp: { $gte: time } }, {recipient: req.session.user._id} ]})
+	.populate('meeting').populate('organizer')
 	.sort({timeStamp: -1}).limit(20).exec(function(err, notifications) {
 	  if (err) {
 	    console.log(err);  // handle errors!
@@ -20,7 +20,7 @@ router.get('/', ensureAuthenticated, function(req, res) {
 	    var listOfNotifications = notifications.map(function(notification){
 	      return {
 	        type: notification.type,
-	        userDisplayName: notification.user.displayName,
+	        userDisplayName: notification.organizer.displayName,
 	        meetingName: notification.meeting.name,
 	        meetingId: notification.meeting._id,
 	        startTime: notification.meeting.startTime,
