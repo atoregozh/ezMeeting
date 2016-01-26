@@ -32,16 +32,16 @@ var user_count = 0;
 // Contains the list of IDs of all the users currently displayed on the screen. This array may be 
 // empty but it should never be null or undefined.
 var userIdList = []; 
+// Used to set the colors of the bubbles. This is used instead of the length of userIdList because if you use 
+// the length of userIdList and then add 2 users, remove the 1st one and then add someone else, the final 2 users 
+// on the panel would have the same color.
+var numOfAddedUsers = 0;
 
 var CALENDER_ENDPOINT = '/calendars';
 var CALENDER_ENDPOINT = '/calendars';
 
 // ~~~~~~~~~~~~~ Algolia ~~~~~~~~~~~~~ 
-	// Replace the following values by your ApplicationID and ApiKey.
 	var client;
-	// Replace the following value by the name of the index you want to query.
-	// var index = client.initIndex('ezmeeting_users_test');
-	//var index = client.initIndex('autocomplete_tutorial');
 	var index;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -273,33 +273,6 @@ $(document).ready(function(){
 		cancelMeetingNotYetCreated();
 	});
 
-	$("#m-guest-search").keyup(function(e) {
-		/*
-	    if (e.keyCode == 13) { // Enter key
-	        var input = $("#m-guest-search").val().trim();
-	        $("#m-guest-search").val("");
-	        if(!input) {
-	        	return;
-	        }
-
-	        // Todo: delete this test code that creates a fake
-	        // ~~~~~~~~~~~~~~~~~~~~~
-	        if(typeof testUserId === 'undefined') {
-	        	testUserId = 0;
-	        }
-	        user = {
-	        	id: testUserId++,
-	        	name: input,
-	        	pic: '/img/default-user-pic.jpg',
-	        };
-	        // ~~~~~~~~~~~~~~~~~~~~~
-
-	        addNewParticipant(user.id, user.name, user.pic);
-
-	    }
-	    */
-	});
-
 	$("#m-title").keyup(function(e) {
 	    if (e.keyCode == 13) { // Enter key
 	    	$("#m-location").focus();
@@ -337,31 +310,37 @@ $(document).ready(function(){
 
 	// ~~~~~~~~~~~~~ Algolia ~~~~~~~~~~~~~ 
 	client = algoliasearch('SE79GLOIEP', '2de5e4f53a32c9e9db7dbde79a203965');
-	// Replace the following value by the name of the index you want to query.
-	// var index = client.initIndex('ezmeeting_users_test');
-	//var index = client.initIndex('autocomplete_tutorial');
-	index = client.initIndex('ezmeeting_users_test');
-	// basic autocomplete 
-	/*
-    $('#m-guest-search').autocomplete(null, {
-      source: $.fn.autocomplete.sources.hits(index),
-      displayKey: 'name'
-    });
-*/
-// with a template and highlighting
-    var template = Hogan.compile(
-      '<div>{{{_highlightResult.email.value}}}</div>' +
-      '<div class="text-right"><small>{{{_highlightResult.displayName.value}}}</span></div>');
-    $('#m-guest-search').autocomplete(null, {
-      source: $.fn.autocomplete.sources.hits(index, {hitsPerPage: 10}),
-      displayKey: 'name',
-      templates: {
-        suggestion: function(hit) {
-        	addNewParticipant(hit.objectID, hit.displayNname, hit.pic);
-          return template.render(hit);
-        }
-      }
-    });
+	index = client.initIndex('ezmeeting_users');
+	
+	autocomplete('#m-guest-search', { hint: true }, [
+	    {
+	      source: autocomplete.sources.hits(index, { hitsPerPage: 5 }),
+	      displayKey: 'displayName', // The text that gets displayed in the input field
+	      templates: {
+	        suggestion: function(suggestion) {
+	          // return suggestion._highlightResult.name.value; // The html that gets shown in the search dropdown
+	          return  '<div>' +
+	                    '<span class="search-left">' +
+	                        '<img src="' + suggestion.pic + '" alt="pic">' +
+	                    '</span>' +
+	                    '<span class="search-right">' +
+	                        suggestion._highlightResult.displayName.value +
+	                    '</span>' +
+	                  '</div>';
+	        }
+	      }
+	    }
+	  ]).on('autocomplete:selected', function(event, suggestion, dataset) {
+	    var pic = suggestion.pic;
+	    var displayName = suggestion.displayName;
+	    var userId = suggestion.objectID;
+	    console.log(displayName);
+	    console.log(userId);
+	    console.log(pic);
+	    addNewParticipant(userId, displayName, pic);
+	    $("#m-guest-search").val("");
+	  });
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
@@ -463,6 +442,23 @@ $(document).ready(function(){
 
 	
 }); // End of $(document).ready()
+
+
+function searchCallback(err, content) {
+  if (err) {
+    return err;
+  }
+
+  console.log('number of hits: ' + content.hits.length);
+  console.log('-----------------');
+  console.log(content.hits);
+  console.log('=================');
+  /*
+  content.hits.forEach(function(hit) {
+    console.log(hit);
+  });
+*/
+}
 
 function clearAllGridDisplayedDays() {
 	// Removes all the cells from the grid (including their headings). Leaves only the time cells. This can be 
@@ -936,7 +932,7 @@ function userIdToGridPicId(userId) {
 function addUserToPicsPanel(userId, name, picUrl) {
 	// The user's ID should be part of userIdList before calling this function.
 	var id = userIdToGridPicId(userId);
-	var color = colorPalette[ (userIdList.length - 1) % colorPalette.length];
+	var color = colorPalette[ numOfAddedUsers++ % colorPalette.length];
 	var currentColor = color;
 	if(currentTab != TAB1_ID) {
 		currentColor = DEFAULT_PERSON_BLUE;
