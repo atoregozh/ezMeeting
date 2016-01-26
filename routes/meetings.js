@@ -304,7 +304,7 @@ function createMeeting(participantIDs, organizerId, res, sendResponse) {
             createNotification("scheduledYourMeeting", meetingId, participantIDs[k]);
           } else {
           	console.log('organizerId and participantIDs are not equal');
-            createNotification("inviteToMeeting", meetingId, participantIDs[k]);
+            createNotification("inviteToMeeting", meetingId, organizerId);
           }
         }
         console.log('finished creating notifications');

@@ -1,13 +1,23 @@
 
 #m-details-btns {
 	padding-bottom: 10px;
+	padding-top: 10px;
 }
 
 .m-top span {
 	padding: 2px;
-    width: 75px;
+    width: 85px;
     font-size: 14px;
     text-align: center;
+}
+
+.m-top-label {
+	font-size: 15px;
+    font-weight: bold;
+    margin-top: 6px;
+    position: relative;
+    top: 7px;
+    display: none;
 }
 
 #save-btn {
@@ -726,7 +736,7 @@ textarea {
 .m-panel2 {
 	font-size: 0;
 	display: none;
-	padding-left: 5px;
+	/*padding-left: 5px;*/
 }
 
 .m-panel2a {
@@ -769,6 +779,12 @@ textarea {
 .m-panel2 input[disabled] {
 	background-color: transparent;
 	cursor: text;
+}
+
+input[disabled], textarea[disabled] {
+	background-color: transparent;
+	cursor: text;
+	border: none;
 }
 
 #m-location {
