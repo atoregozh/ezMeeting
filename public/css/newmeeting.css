@@ -726,7 +726,7 @@ textarea {
 .m-panel2 {
 	font-size: 0;
 	display: none;
-	padding-left: 5px;
+	/*padding-left: 5px;*/
 }
 
 .m-panel2a {
@@ -769,6 +769,12 @@ textarea {
 .m-panel2 input[disabled] {
 	background-color: transparent;
 	cursor: text;
+}
+
+input[disabled], textarea[disabled] {
+	background-color: transparent;
+	cursor: text;
+	border: none;
 }
 
 #m-location {

@@ -4,58 +4,8 @@ var Meeting = require('../models/meeting');
 var algoliasearch = require('algoliasearch');
 var client = algoliasearch("SE79GLOIEP", "9bc3123e557c4da31d1388f9a26da8b4");
 //index = client.initIndex('ezmeeting_users_test');
-index = client.initIndex('ezmeeting_users');
+index = client.initIndex('ezmeeting_users_test');
 
-var db = 
-        [{
-          'name': 'New Meeting Name',
-          'id': 'asafsaddsa',
-          'location': '77 mass av',
-          'description': 'The meeting description',
-          'startTime': "2016-01-25T02:01:07-05:00", 
-          'endTime': "2016-01-25T03:01:50-05:00",
-          'extraParticipants': 3,
-          'organizer': {
-            'id': 'asdfknnljodsf',
-            'name': 'John Smith',
-            'pic': '/img/default-user-pic.jpg'
-          },
-          'participants': [
-          {
-            'pic': '/img/default-user-pic.jpg'
-          },
-          {
-            'id': 'asfsdafdsfa',
-            'name': 'Michael Jordan',
-            'pic': '/img/default-user-pic.jpg'
-          },
-          {
-            'id': 'asfsdafdsfa',
-            'name': 'Michael Jordan',
-            'pic': '/img/default-user-pic.jpg'
-          },
-          {
-            'id': 'asfsdafdsfa',
-            'name': 'Michael Jordan',
-            'pic': '/img/default-user-pic.jpg'
-          },
-          {
-            'id': 'asfsdafdsfa',
-            'name': 'Michael Jordan',
-            'pic': '/img/default-user-pic.jpg'
-          },
-          {
-            'id': 'asfsdafdsfa',
-            'name': 'Michael Jordan',
-            'pic': '/img/default-user-pic.jpg'
-          },
-          {
-            'id': 'asfsdafdsfa',
-            'name': 'Michael Jordan',
-            'pic': '/img/default-user-pic.jpg'
-          }
-          ]}]
-    
   // =====================================
   // DASHBOARD ===========================
   // route for showing the dashboard page
@@ -111,10 +61,12 @@ var db =
         console.log(listOfUserMeetings.length);
         console.log(listOfUserMeetings.length - 7);
         console.log(listOfUserMeetings);
-        extraParticipants = listOfUserMeetings.length - 7;
-        listOfUserMeetings.push({"extraParticipants": extraParticipants});
         console.log('Authenticated the user! Here are the details of user:');
         console.log(req.user); 
+        if(!listOfUserMeetings) {
+          listOfUserMeetings = [];
+          extraParticipants = 0;
+        }
         res.render('home', {
               user : req.user, // get the user out of session and pass to template
               meetings: listOfUserMeetings

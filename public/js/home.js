@@ -64,6 +64,7 @@ $(document).ready(function(){
 
 });
 
+
 function removeExtraParticipants() {
     $('.participant-number').each(function(){
         var count = $(this).html();

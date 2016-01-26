@@ -6,6 +6,7 @@ var ALERT_TIMEOUT = 5000;
 var ALERT_FADEOUT = 2000;
 var SELECTED_CELL_CLASS = 'selected'; // CSS class add edto a selected grid while dragging.
 var DEFAULT_TIME = "00:00";
+var TIME_FORMAT = 'hh:mma';
 // CSS attribute added to each selected grid. The value would be = the key of the cell 
 // that contains the close button for this cell.
 var CLOSE_BTN_ATTR_KEY = 'close-btn';
@@ -389,10 +390,46 @@ $(document).ready(function(){
 	        data: {},
 	        success: function(data) {
 	            console.log(data);
+	            var startTime = moment(data.startTime);
+	            var endTime = moment(data.endTime);
+	            var description = data.description;
+	            var location = data.location;
+	            var organizer = data.organizer;
+	            var participantsList = data.participants;
+				
+				$('#m-title').val(data.name);
+				$("#m-title").prop('disabled', true);
+				$('#m-date').datepicker("update", moment(startTime).startOf('day').toDate());
+				$("#m-date").prop('disabled', true);
+				$('#m-start').html(startTime.format(TIME_FORMAT));
+				$("#m-start").prop('disabled', true);
+				$('#m-end').html(endTime.format(TIME_FORMAT));
+				$("#m-end").prop('disabled', true);
+				$('.m-panel2c').hide(); // Hide the instructions
+				$('.m-panel2').slideDown(); // Reveal the date and time.
+				$("#m-location").val(location);
+				$("#m-location").prop('disabled', true);
+				$("#m-desc").val(description);
+				$("#m-desc").prop('disabled', true);
+				$(".guests-header").hide();
+				$("#m-details-btn").css({'visibility':'hidden'});
+
+
+				for(var d = moment(startTime).subtract(2, 'd'); d <= moment(startTime).add(3, 'd'); d.add(1, 'd')){
+					addDayToGrid(d);
+				}
+
+				for(var i = 0; i < participantsList.length; i++){
+					var user = participantsList[i];
+					addNewParticipant(user.id, user.name, user.pic);
+				}
+				$(".name-list-close").hide();
+
 	        },
 	        error: function(xhr, status, error) {
 	            console.log("Error: " + error);
-	            showError('Unable to load meeting with ID: ' + S_MEETING_ID);
+	            showError('Did not find any meeting with ID: ' + S_MEETING_ID);
+	            createEmptyGridForNewMeeting();
 	        }
 	    });
 	}

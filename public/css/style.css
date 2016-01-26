@@ -55,11 +55,11 @@ table {
   border-spacing: 0;
 }
 
-html input[disabled] {
+/*html input[disabled] {
     cursor: not-allowed;
     background-color: #ccc;
 }
-
+*/
 /* Hide all scroll bars */
 ::-webkit-scrollbar { 
     display: none; 
