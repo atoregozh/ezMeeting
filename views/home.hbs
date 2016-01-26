@@ -6,13 +6,14 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel='stylesheet' href='/css/style.css' />
     <link rel='stylesheet' href='/css/nav.css'/>
-    <link rel='stylesheet' href='/css/dashboard.css' />
+    <link rel='stylesheet' href='/css/home.css' />
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/home.js"></script>
     <script type="text/javascript" src="/js/nav.js"></script>
+    <script type='text/javascript' src='/js/moment.min.js'/></script>
   </head>
   <body>
     <!-- Navigation -->
@@ -40,60 +41,36 @@
 	                      </div>
 	                      <div class="datetime-text">
 	                        <p class="meeting-date"></p>
-	                        <p> <span class="start-time">{{startTime}}</span>-<span class="end-time">{{endTime}}</span></p>
-
-	                  {{!--       <p> {{getTime startTime endTime }} HANDLEBARS func--}} 
+	                        <p> <span class="start-time">{{startTime}}</span> &ndash; <span class="end-time">{{endTime}}</span></p>
 	                      </div>
 	                    </div>
 	                    <div class="meeting-organizer">
-	                      <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
+	                      <img class="organizer-img" src="{{ organizer.pic }}" alt="profile pic">
 	                    </div>
 	                    <div class="meeting-location-div">
 	                      <div class="location-icon">
-	                        <a href="#"> <i class="fa fa-map-marker"></i> </a>  
+	                        <i class="fa fa-map-marker"></i>  
 	                      </div>
 	                      <div class="location-text">
-	                        <p>32 Vassar street, Cambridge, MA</p>
+	                        <p>{{ location }}</p>
 	                      </div>
 	                    </div>
 	                    <div class="meeting-descrpt-div">
-	                      <p>Meeting Description</p>
+	                      <p>{{ description }}</p>
 	                    </div>
 	                    <div class="participants-row">
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                    
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                      
-	                      <a href="#" class="participant-link">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                      <a href="#" class="participant-number plain">
-	                        +33
-	                      </a>
+	                    	{{#each participants}}
+							<img class="participant-img" src="{{ pic }}" alt="profile pic" />	
+	                    	{{/each}}
+	                        <span class="participant-number plain">+{{ extraParticipants }}</span>
 	                    </div>
 	                  </div>
 	                </div>
 	              {{/each }}
-	               {{!--  <!-- Meeting Card 2 -->
-	                <div class="meeting-card">
+
+	              <!-- xxxxxxxxxxxxxxx-->
+	            
+	                {{!-- <div class="meeting-card">
 	                  <button type="button" class="btn btn-default meeting-options">
 	                    <i class="fa fa-ellipsis-v"></i>
 	                  </button>
@@ -147,131 +124,8 @@
 	    
 	                    </div>
 	                  </div>
-	                </div>
-	                <!-- Meeting Card 3 -->
-	                <div class="meeting-card">
-	                  <button type="button" class="btn btn-default meeting-options">
-	                    <i class="fa fa-ellipsis-v"></i>
-	                  </button>
-	                  <div class="meeting">
-	                    <div class="meeting-name">
-	                      <p>Really Long Meeting Name That could possibly happen to see what happens
-	                      </p>
-	                    </div>
-	                    <div class="meeting-datetime">
-	                      <div class="datetime-icon">
-	                        <i class="fa fa-clock-o"></i>  
-	                      </div>
-	                      <div class="datetime-text">
-	                        <p> Sun, Jan 17, 2016 </p>
-	                        <p> 10:30am-11:30am </p>
-	                      </div>
-	                    </div>
-	                    <div class="meeting-organizer">
-	                      <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
-	                    </div>
-	                    <div class="meeting-location-div">
-	                      <div class="location-icon">
-	                        <a href="#"> <i class="fa fa-map-marker"></i> </a>  
-	                      </div>
-	                      <div class="location-text">
-	                        <p>405 East 42nd Street, New York City, NY 10017 we could be adding more text and see what happens</p>
-	                      </div>
-	                    </div>
-	                    <div class="meeting-descrpt-div">
-	                      <p>Meeting Description</p>
-	                    </div>
-	                    <div class="participants-row">
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                    
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	    
-	                    </div>
-	                  </div>
-	                </div>
-
-	                <!-- Meeting Card 4 -->
-	                <div class="meeting-card">
-	                  <button type="button" class="btn btn-default meeting-options">
-	                    <i class="fa fa-ellipsis-v"></i>
-	                  </button>
-	                  <div class="meeting">
-	                    <div class="meeting-name">
-	                      <p>Short Meeting Name</p>
-	                    </div>
-	                    <div class="meeting-datetime">
-	                      <div class="datetime-icon">
-	                        <i class="fa fa-clock-o"></i>  
-	                      </div>
-	                      <div class="datetime-text">
-	                        <p> Sun, Jan 17, 2016 </p>
-	                        <p> 10:30am-11:30am </p>
-	                      </div>
-	                    </div>
-	                    <div class="meeting-organizer">
-	                      <img class="organizer-img" src="/img/default-user-pic.jpg" alt="User Profile Picture">
-	                    </div>
-	                    <div class="meeting-location-div">
-	                      <div class="location-icon">
-	                        <a href="#"> <i class="fa fa-map-marker"></i> </a>  
-	                      </div>
-	                      <div class="location-text">
-	                        <p>32 Vassar street, Cambridge, MA</p>
-	                      </div>
-	                    </div>
-	                    <div class="meeting-descrpt-div">
-	                      <p>This is a test Meeting Description that might overflow the content just to see what happens to it. I'm going to add a scroll. Let's see how it goes? Maybe that's enough of text, but I'm not sure so I'll just keep going on and on. Kes, do you think I should add ellipsis and clip the content instead?</p>
-	                    </div>
-	                    <div class="participants-row">
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                    
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                      <a href="#" class="participant-link plain">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                      
-	                      <a href="#" class="participant-link">
-	                        <img class="participant-img" src="/img/default-user-pic.jpg" alt="User Profile Picture" />
-	                      </a>
-	                      <a href="#" class="participant-number plain">
-	                        +2
-	                      </a>
-	                    </div>
-	                  </div>
-	                </div> --}}
-
-	                {{!-- <div class="meeting-card-inviz"></div>
-	                <div class="meeting-card-inviz"></div> --}}
+	                </div> --}} <!-- End of meeting card 2-->
+	               	
 	              </div>
 	          </div>    
 	        </div>
@@ -286,8 +140,8 @@
 	            <div class="header-div">
 	              <h2 class="dashboard-header">Notifications</h2>
 	            </div>
-	            <div>
-	              <div class="notification-div">
+	            <div id="notifications-panel">
+	              {{!-- <div class="notification-div">
 	                <div class="notification-timestamp">
 	                  1m
 	                </div>
@@ -298,6 +152,7 @@
 	                  Organizer1 cancelled <a href="#">Meeting1</a>.
 	                </div>
 	              </div>
+
 	              <div class="notification-div">
 	                <div class="notification-timestamp">
 	                  2h
@@ -328,9 +183,9 @@
 	                  <i class="fa fa-calendar-check-o calendar-schedule"></i> 
 	                </div>
 	                <div class="notification-text">
-	                  Meeting <a href="#">MeetingName</a> is scheduled for Saturday, January 8 at 11am.
+	                  <a href="#">MeetingName</a> is scheduled for Saturday, January 8 at 11am.
 	                </div>
-	              </div>
+	              </div> --}}
 	            </div>
 	          </div>
 	        </div>

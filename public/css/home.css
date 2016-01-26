@@ -246,7 +246,7 @@ a.plain:hover, a.plain:focus {
 }
 
 .participant-number {
-    border: 1px solid #999;
+    border: 1px solid #ccc;
     background-color: white;
     color: #999;
     border-radius: 50%;
@@ -258,11 +258,6 @@ a.plain:hover, a.plain:focus {
     font-size: 11px;
     padding: 7px 0px;
     text-align: center;
-}
-
-.participant-number:hover, .participant-number:focus {
-    border-color: #00aeef;
-    color: #00aeef;
 }
 
 #notifications {

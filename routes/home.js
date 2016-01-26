@@ -7,8 +7,56 @@ var client = algoliasearch("SE79GLOIEP", "9bc3123e557c4da31d1388f9a26da8b4");
 index = client.initIndex('ezmeeting_users');
 
 var db = 
-        [{'name': 'New Meeting Name', 'id': 'asafsaddsa',
-  'location': '77 mass av', 'description': 'The meeting description', 'startTime':"2016-01-25T02:01:07-05:00", 'endTime':"2016-01-25T03:01:50-05:00"}]
+        [{
+          'name': 'New Meeting Name',
+          'id': 'asafsaddsa',
+          'location': '77 mass av',
+          'description': 'The meeting description',
+          'startTime': "2016-01-25T02:01:07-05:00", 
+          'endTime': "2016-01-25T03:01:50-05:00",
+          'extraParticipants': 3,
+          'organizer': {
+            'id': 'asdfknnljodsf',
+            'name': 'John Smith',
+            'pic': '/img/default-user-pic.jpg'
+          },
+          'participants': [
+          {
+            'id': 'asfsdafdsfa',
+            'name': 'Michael Jordan',
+            'pic': '/img/default-user-pic.jpg'
+          },
+          {
+            'id': 'asfsdafdsfa',
+            'name': 'Michael Jordan',
+            'pic': '/img/default-user-pic.jpg'
+          },
+          {
+            'id': 'asfsdafdsfa',
+            'name': 'Michael Jordan',
+            'pic': '/img/default-user-pic.jpg'
+          },
+          {
+            'id': 'asfsdafdsfa',
+            'name': 'Michael Jordan',
+            'pic': '/img/default-user-pic.jpg'
+          },
+          {
+            'id': 'asfsdafdsfa',
+            'name': 'Michael Jordan',
+            'pic': '/img/default-user-pic.jpg'
+          },
+          {
+            'id': 'asfsdafdsfa',
+            'name': 'Michael Jordan',
+            'pic': '/img/default-user-pic.jpg'
+          },
+          {
+            'id': 'asfsdafdsfa',
+            'name': 'Michael Jordan',
+            'pic': '/img/default-user-pic.jpg'
+          }
+          ]}]
 
 //var db = []
 
