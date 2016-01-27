@@ -4,7 +4,7 @@ var utils = require('../utils');
 var User = require('../models/user');
 var needle = require('needle');
 async = require("async");
-var refresh = require('passport-oauth2-refresh');
+var configAuth = require('../config/auth');
 
 
 // Handler for GET requests to /calendars/?users=id1,id2&from=ISOString1to=ISOString2
@@ -24,7 +24,7 @@ router.get('/', function(req, res) {
 
     	listOfFunctions = users.map(function(user){
     		return function(callback){
-    			getDataFromGoogle(callback, true, {user: user, fromTime: fromTime, toTime: toTime});
+    			getDataFromGoogle(callback, {user: user, fromTime: fromTime, toTime: toTime});
     		};
     	});
 
@@ -35,31 +35,6 @@ router.get('/', function(req, res) {
     			res.send(results);
     		}
     	});
-
-      /**** Async example *****
-
-      var allResults = [];
-    	console.log('--------');
-    	var optionalCallback = function(err, results){
-    		console.log(results);
-    		console.log("Tada!");
-    		console.log(allResults);
-    	};
-
-    	var listOfFunctions = [];
-    	for(var i = 0; i < 5; i++){
-    		listOfFunctions.push(function(innerCallback){
-    			// getGCalendarEventsPerUser(usersList[i],fromTime, toTime, res);
-    			setTimeout(function(){
-    				allResults.push('result');
-    				innerCallback(null, 'func-' + i);    				
-    			}, 200);
-    		});
-    	}
-    	console.log('1');
-    	async.parallel(listOfFunctions, optionalCallback);
-    	console.log('2');
-			*/
     }
 	});
 });		
@@ -89,13 +64,13 @@ function filterUserCalData(user,data) {
   return userMap;
 }
 
-function getDataFromGoogle (callback, refreshAccessTokenOnFailure, params) {
+function getDataFromGoogle (callback, params) {
 		var user = params.user;
   	var url = 'https://www.googleapis.com/calendar/v3/calendars/' + user.email + '/events'+
             '?orderBy=startTime&singleEvents=true&timeMax='+ params.toTime +'&timeMin='+ params.fromTime;
 	  console.log(url);
-	  console.log('user access Token is: ' + user.google.accessToken);
-	  console.log('user refresh Token is: ' + user.google.refreshToken);
+	  console.log('user access Token for ' + user.displayName + ' is: ' + user.google.accessToken);
+	  console.log('user refresh Token for ' + user.displayName + ' is: ' + user.google.refreshToken);
 	  needle.get(url, 
 	            { headers: { Authorization: 'Bearer '+ user.google.accessToken } },  
 					    function(error, googleResponse) {
@@ -105,10 +80,10 @@ function getDataFromGoogle (callback, refreshAccessTokenOnFailure, params) {
 					        var jsonUserMap = filterUserCalData(user,googleResponse.body);
 					        console.log('returning from filterUserCalData');
 					        callback(null, jsonUserMap);
-					      } else if (googleResponse.statusCode === 401 && refreshAccessTokenOnFailure) {
+					      } else if (googleResponse.statusCode == 401) {
 						      // Access token expired.
 						      // Try to fetch a new one.
-						      refreshAccessToken(getDataFromGoogle, callback, params);
+						      refreshAccessToken(callback, params);
 					      } 
 					      else {
 					        callback({error: "Bad request for " + user._id}, null);
@@ -116,33 +91,69 @@ function getDataFromGoogle (callback, refreshAccessTokenOnFailure, params) {
 		}); //end needle get
 }
 
-function refreshAccessToken(functionToRepeat, callback, params) {
+function refreshAccessToken(callback, params) {
+  console.log("calling refreshaccessToken()");
 	var user = params.user;
-	console.log('refreshing access token for user: ' + user._id);
-  console.log('access token used to be:' + user.google.accessToken);
-  refresh.requestNewAccessToken(
-  	'google', user.google.refreshToken,
-    function(err, newAccessToken) {
-      if (err || !newAccessToken) {
-        console.log('error! couldnt refresh the token!'); //couldn't refresh the token
-        callback({error: "Couldn't refresh the access token for " + user._id} , null);
-      }
+	var url = 'https://www.googleapis.com/oauth2/v4/token?client_id=' + configAuth.googleAuth.clientID +
+            '&client_secret=' + configAuth.googleAuth.clientSecret +
+            '&refresh_token=' + user.google.refreshToken +
+            '&grant_type=refresh_token';
 
+  console.log(url);
+
+  console.log('user access Token before calling refreshAccessToken: ' + user.google.accessToken);
+  console.log('user refresh Token before calling refreshAccessToken: ' + user.google.refreshToken);
+  
+  var data = {};
+  var options = {json: true };
+
+  needle.post(url, data, options, function(error, response) {
+     if (error || !response) {
+      console.log('error! couldnt refresh the token!'); //couldn't refresh the token
+      callback({error: "Couldn't refresh the access token for " + user._id} , null);
+
+    } else {
+      var newAccessToken = response.body.access_token;
+      console.log("New Access Token for " + user.displayName + ' is ' + newAccessToken);
+      console.log("Saving to to database"); 
       // Save the new accessToken for future use
-      user.save( { google: { accessToken: newAccessToken} },
-      	function(err) {
-	        if (err) {
-	          console.log('problems with saving new accessToken to db!');
-	          console.log(err);  // problems with saving into db; errors!
-	     			callback({error: "Couldn't save the new access token for " + user._id} , null);     
-	        } else {
-	          // Retry the request.
-	          console.log('calling makeRequest again');
-	          console.log('now access token is ' + user.google.accessToken);
-	          functionToRepeat(callback, false, params);
-	        }
-	      });
-    });
+      User.update({_id: user._id}, { $set: { 'google.accessToken': newAccessToken } }, {new: true}, function(err) {
+        if (err) {
+          console.log('problems with saving new accessToken to db!');
+          console.log(err);  // problems with saving into db; errors!
+          callback({error: "Couldn't save the new access token for " + user._id} , null);  
+        } else {   
+          // Retry the request.
+          console.log('calling makeRequest again');
+          console.log('now access token for ' + user.displayName + ' is ' + user.google.accessToken);
+          getDatafromGoogleAgain(callback, params, newAccessToken);
+        }
+      }); //user.update ends here
+    }
+  }); //needle post ends here
+}
+
+function getDatafromGoogleAgain(callback, params, newAccessToken ) {
+  var user = params.user;
+  var url = 'https://www.googleapis.com/calendar/v3/calendars/' + user.email + '/events'+
+            '?orderBy=startTime&singleEvents=true&timeMax='+ params.toTime +'&timeMin='+ params.fromTime;
+  console.log(url);
+  console.log('user access Token for ' + user.displayName + ' is: ' + newAccessToken);
+  console.log('user refresh Token for ' + user.displayName + ' is: ' + user.google.refreshToken);
+  needle.get(url, 
+            { headers: { Authorization: 'Bearer '+ newAccessToken } },  
+            function(error, googleResponseNew) {
+              if (!error && googleResponseNew.statusCode == 200) {
+
+                console.log('Success! calling filterUserCalData()');
+                var jsonUserMap = filterUserCalData(user,googleResponseNew.body);
+                console.log('returning from filterUserCalData');
+                callback(null, jsonUserMap);
+              } 
+              else {
+                callback({error: "Bad request for " + user._id}, null);
+              }       
+  }); //end needle get
 }
 
 module.exports = router;

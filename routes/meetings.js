@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var needle = require('needle');
-var refresh = require('passport-oauth2-refresh');
 var User = require('../models/user');
 var Meeting = require('../models/meeting');
 var moment = require('moment');
 var mongoose = require('mongoose');
 var Notification = require('../models/notification');
 var utils = require('../utils');
+var configAuth = require('../config/auth');
 
 
 // Handler for POST requests to /meetings
@@ -236,7 +236,7 @@ function inviteToMeeting(req, res) {
                 console.log('Returning from inviteToMeeting()');
                 console.log('Calling createMeeting()');
                 createMeeting(participantIDs, organizerId, response.body, res);                
-              } else if (response.statusCode === 401) {
+              } else if (response.statusCode == 401) {
               // Access token expired.
               // Try to fetch a new one.
                 refreshAccessToken(organizer,makeRequest);
@@ -352,16 +352,23 @@ function createNotification(typeString, meetingId, organizerId, recipientId) {
 
 
 function refreshAccessToken(user, functiontoRepeat) {
-  console.log('access token used to be:' + user.google.accessToken);
-  refresh.requestNewAccessToken('google', user.google.refreshToken, 
-    function(err, accessToken) {
-      if (err || !accessToken) {
-        console.log('error! couldnt refresh the token!'); //couldn't refresh the token
-        return res.status(401).end(); 
-      }
 
+  var url = 'https://www.googleapis.com/oauth2/v4/token?client_id=' + configAuth.googleAuth.clientID +
+            '&client_secret=' + configAuth.googleAuth.clientSecret +
+            '&refresh_token' + user.google.refreshToken +
+            'grant_type=refresh_token';
+
+  console.log(url);
+
+  console.log('user access Token before calling refreshAccessToken: ' + user.google.accessToken);
+  console.log('user refresh Token before calling refreshAccessToken: ' + user.google.refreshToken);
+  needle.post(url, {}, function(error, accessToken) {
+     if (err || !accessToken) {
+      console.log('error! couldnt refresh the token!'); //couldn't refresh the token
+      return res.status(401).end(); 
+    } else {
       // Save the new accessToken for future use
-      user.save( { google: { accessToken: accessToken} }, function(err) {
+      user.save( { google: { accessToken: response.body.access_token} }, function(err) {
         if (err) {
           console.log('problems with saving new accessToken to db!');
           console.log(err);  // problems with saving into db; errors!
@@ -373,7 +380,8 @@ function refreshAccessToken(user, functiontoRepeat) {
           functiontoRepeat();
         }
       });
-    });
+    }
+  }); //needle post ends here
 }
 
 
