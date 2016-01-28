@@ -36,7 +36,7 @@ mongoose.connect(configDB.url, function (err, res) { // connect to our database
   if (err) {
       console.log ('ERROR connecting to database. ' + err);
   } else {
-    console.log ('Succeeded connected to database.');
+    console.log ('Succeeded connecting to database.');
   }
 }); 
 
