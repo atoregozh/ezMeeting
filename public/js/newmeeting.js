@@ -247,8 +247,8 @@ $(document).ready(function(){
 	});
 
 	// ~~~~~~~~~~~~~ Algolia ~~~~~~~~~~~~~ 
-	client = algoliasearch('SE79GLOIEP', '2de5e4f53a32c9e9db7dbde79a203965');
-	index = client.initIndex('ezmeeting_users_test');
+	client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
+	index = client.initIndex(ALGOLIA_INDEX);
 	
 	autocomplete('#m-guest-search', { hint: true }, [
 	    {
