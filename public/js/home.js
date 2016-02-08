@@ -11,10 +11,11 @@ iconMap[SCHEDULED_YOUR_MEETING] = '<i class="fa fa-calendar-check-o calendar-sch
 iconMap[INVITE_TO_MEETING] = '<i class="fa fa-calendar-plus-o calendar-invite"></i>';
 iconMap[CANCEL_MEETING] = '<i class="fa fa-calendar-times-o calendar-cancel"></i>';
 
-$(document).ready(function(){
+$(window).on("load", function(){
     formatMeetingTimes();
     alignMeetingCards();
     removeExtraParticipants();
+    hideLocationIcon();
   
     $(window).resize(function() {
         alignMeetingCards();
@@ -67,7 +68,13 @@ $(document).ready(function(){
         window.location.href = '/meetings/' + meetingId;
     });
 
-});
+    /* 
+     .hide() without any arguments doesn't use the effects queue (and won't have to wait for .delay()). 
+     We ensure it has to wait by using hide(0)
+    */
+    $('#main-overlay').delay(300).hide(0);
+
+}); // End of $(window).on("load", ...);
 
 
 function removeExtraParticipants() {
@@ -77,14 +84,16 @@ function removeExtraParticipants() {
             $(this).remove();
         }
     });
+}
 
-    // $('.meeting-location-div').each(function(){
-    //     if(!$(this).children('.location-text2').first().html()){
-    //         $(this).children('.location-icon').css({
-    //             'visibility':'hidden'
-    //         });
-    //     }
-    // });
+function hideLocationIcon(){
+    $('.meeting-location-div').each(function(){
+        if(!$(this).find('.location-text2').first().html()){
+            $(this).find('.location-icon').css({
+                'visibility':'hidden'
+            });
+        }
+    });
 }
 
 function getNotificationMessage(type, displayName, meetingName, meetingId, meetingTime){

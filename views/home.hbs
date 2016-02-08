@@ -5,16 +5,9 @@
     <title>{{ title }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel='stylesheet' href='/css/style.css' />
-    <link rel='stylesheet' href='/css/nav.css'/>
-    <link rel='stylesheet' href='/css/home.css' />
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/home.js"></script>
-    <script type="text/javascript" src="/js/nav.js"></script>
-    <script type='text/javascript' src='/js/moment.min.js'/></script>
+    <link rel="stylesheet" href='/css/style.css' />
+    <link rel="stylesheet" href='/css/nav.css'/>
+    <link rel="stylesheet" href='/css/home.css' />
   </head>
   <body>
     <!-- Navigation -->
@@ -56,9 +49,6 @@
 	                        <p class="location-text2">{{location}}</p>
 	                      </div>
 	                    </div>
-	                    <div class="meeting-descrpt-div">
-	                      <p>{{description}}</p>
-	                    </div>
 	                    <div class="participants-row">
 	                    	{{#each participantsList}}
 							<img class="participant-img" src="{{pic}}" alt="profile pic" />	
@@ -91,5 +81,12 @@
 	      <!-- end Notifications -->
       </div>
     </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="/js/home.js"></script>
+    <script src="/js/nav.js"></script>
+    <script src='/js/moment.min.js'/></script>
   </body>
 </html>
