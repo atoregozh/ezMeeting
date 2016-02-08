@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var configAuth = require('../config/auth');
 
 
 router.get('/', ensureAuthenticated, function(req, res, next) {
-  res.render('newmeeting', {user: req.user,'title':'Schedule a meeting'});
+  res.render('newmeeting', {user: req.user,'title':'Schedule a meeting', algolia:configAuth.algoliaAuth});
 });
 
 // route middleware to make sure a user is logged in

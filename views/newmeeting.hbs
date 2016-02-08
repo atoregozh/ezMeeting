@@ -5,25 +5,11 @@
     <title>{{ title }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel='stylesheet' href='/css/style.css'/>
-    <link rel='stylesheet' href='/css/nav.css'/>
-    <link rel='stylesheet' href='/css/newmeeting.css'/>
-    <link rel='stylesheet' href='/css/bootstrap-datepicker.standalone.min.css'/>
-    <link rel='stylesheet' href='/css/bootstrap-timepicker.min.css'/>
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script type='text/javascript' src='/js/newmeeting.js'/></script>
-    <script type="text/javascript" src="/js/nav.js"></script>
-    <!-- Datepicker: http://bootstrap-datepicker.readthedocs.org/en/latest/ -->
-    <script type='text/javascript' src='/js/bootstrap-datepicker.min.js'/></script>
-    <!-- https://github.com/jdewit/bootstrap-timepicker -->
-    <script type='text/javascript' src='/js/bootstrap-timepicker.min.js'/></script>
-    <script type='text/javascript' src='/js/moment.min.js'/></script>
-    <!-- Algolia is used for autocomplete: https://www.algolia.com -->
-    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
-    <script src="//cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
+    <link rel="stylesheet" href='/css/style.css'/>
+    <link rel="stylesheet" href='/css/nav.css'/>
+    <link rel="stylesheet" href='/css/newmeeting.css'/>
+    <link rel="stylesheet" href='/css/bootstrap-datepicker.standalone.min.css'/>
+    <link rel="stylesheet" href='/css/bootstrap-timepicker.min.css'/>
 
   </head>
   <body>
@@ -193,5 +179,18 @@
         var ALGOLIA_SEARCH_KEY = '{{ algolia.searchKey }}';
         var ALGOLIA_INDEX = '{{ algolia.index }}'
     </script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src='/js/newmeeting.js'/></script>
+    <script src="/js/nav.js"></script>
+    <!-- Datepicker: http://bootstrap-datepicker.readthedocs.org/en/latest/ -->
+    <script src='/js/bootstrap-datepicker.min.js'/></script>
+    <!-- https://github.com/jdewit/bootstrap-timepicker -->
+    <script src='/js/bootstrap-timepicker.min.js'/></script>
+    <script src='/js/moment.min.js'/></script>
+    <!-- Algolia is used for autocomplete: https://www.algolia.com -->
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script src="//cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
   </body>
 </html>

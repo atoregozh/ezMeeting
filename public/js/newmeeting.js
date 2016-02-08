@@ -79,7 +79,7 @@ Color source: https://www.google.com/design/spec/style/color.html#color-color-pa
 var colorPalette = ['#FF8F00', '#EA80FC', '#2E7D32', '#C2185B', '#64B5F6', '#FDD835', '#6A1B9A', '#00E676', '#A1887F'];
 
 
-$(document).ready(function(){
+$(window).on("load", function(){
 
 	$('.tab-btn').click(function(e){
 		$('.tab-btn').removeClass('active');
@@ -413,11 +413,13 @@ $(document).ready(function(){
 				$('#m-end').html(endTime.format(TIME_FORMAT));
 				$("#m-end").prop('disabled', true);
 				$('.m-panel2c').hide(); // Hide the instructions
-				$('.m-panel2').slideDown(); // Reveal the date and time.
+				$('.m-panel2').show(); // Reveal the date and time.
 				$("#m-location").val(location);
 				$(".m-top-label").show();
 				$("#m-location").prop('disabled', true);
+				$("#m-location").removeAttr('placeholder');
 				$("#m-desc").val(description);
+				$("#m-desc").removeAttr('placeholder');
 				$("#m-desc").prop('disabled', true);
 				$(".guests-header").hide();
 				$("#m-details-btns").css({'visibility':'hidden'});
@@ -432,7 +434,7 @@ $(document).ready(function(){
 
 				for(var i = 0; i < participantsList.length; i++){
 					var user = participantsList[i];
-					addNewParticipant(user.id, user.name, user.pic);
+					addNewParticipant(user.id, user.name, user.pic, true);
 				}
 				
 				for(var d = moment(startTime) ; d <= moment(endTime); d.add(30, 'minutes')) {
@@ -461,8 +463,13 @@ $(document).ready(function(){
 	// End of the grid layout
 	// ***************************************************************************
 
+	/* 
+	 .hide() without any arguments doesn't use the effects queue (and won't have to wait for .delay()). 
+	 We ensure it has to wait by using hide(0)
+	*/
+	$('#main-overlay').delay(300).hide(0);
 	
-}); // End of $(document).ready()
+}); // End of $(window).on("load", ...);
 
 
 function createEmptyGridForNewMeeting() {
@@ -562,13 +569,13 @@ function getAndDisplayUserEvents(userIdList, startDate, endDate) {
 	});
 }
 
-function addNewParticipant(userId, displayName, picUrl) {
+function addNewParticipant(userId, displayName, picUrl, showInstantly) {
 	if($.inArray(userId, userIdList) > -1) {
 		console.log(userId + ' already added');
 		return; // It mea
 	}
 	userIdList.push(userId);
-    addUserToNameList(userId, displayName);
+    addUserToNameList(userId, displayName, showInstantly);
     addUserToPicsPanel(userId, displayName, picUrl);
     getAndDisplayUserEvents([userId], gridStartDate, gridEndDate);
 }
@@ -996,7 +1003,7 @@ function userIdToListId(userId) {
 	return 'user-list-' + userId;
 }
 
-function addUserToNameList(userId, name) {
+function addUserToNameList(userId, name, showInstantly) {
 	var id = userIdToListId(userId);
 	$('#guests-content').prepend(
 		'<div class="guests-row inviz" id="' + id + '">' +
@@ -1004,9 +1011,13 @@ function addUserToNameList(userId, name) {
             '<p class="name">' + name + '</p>' +
         '</div>'
 	);
-	$('#'+id).slideDown(function(){
-		$(this).removeClass('inviz');
-	});
+	if(showInstantly){
+		$('#'+id).removeClass('inviz');
+	}else {
+		$('#'+id).slideDown(function(){
+			$(this).removeClass('inviz');
+		});
+	}
 	$('#guests-count').html($('.guests-row').length);
 }
 
