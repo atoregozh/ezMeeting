@@ -32,8 +32,13 @@ index.saveObject({
 	console.log(content);
 });
 
-  Meeting.find( { $and:[ { isDeleted: false }, {organizerId: req.session.user._id } ] } )
+  Meeting.find( { 
+    $and:[ 
+      { isDeleted: false }, 
+      { $or: [ {organizerId: req.session.user._id}, {participants:req.session.user._id} ] } 
+      ] } )
   .populate('participants')
+  .populate('organizer')
   .sort({startTime: -1}).limit(18).exec(function(err, userMeetings) {
     if (err) {
       console.log(err);  // handle errors!
@@ -41,6 +46,8 @@ index.saveObject({
     } else {
       var listOfUserMeetings = userMeetings.map(function(userMeeting){
         var participantsList = userMeeting.participants;
+        var orgTest = userMeeting.organizer;
+        console.log("This infor is about the organizer " + orgTest);
         var extraParticipants = 0;
         if(participantsList.length > 7){
           extraParticipants = participantsList.length - 7;
@@ -54,7 +61,7 @@ index.saveObject({
           startTime : userMeeting.startTime,
           endTime : userMeeting.endTime,
           extraParticipants: extraParticipants,
-          organizerPic : req.session.user.pic,
+          organizerPic : userMeeting.organizer.pic,
           participantsList : participantsList
         };
       });
