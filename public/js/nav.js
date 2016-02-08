@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(window).on("load", function(){
   $("#nav-profile").popover({
       placement: 'bottom',
       // trigger: 'hover',
@@ -15,4 +15,4 @@ $(document).ready(function(){
           ref.popover('hide');
       }, 200);
   });
-}); // End of $(document).ready()
+}); // End of $(window).on("load", ...);

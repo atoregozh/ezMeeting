@@ -87,8 +87,8 @@ router.get('/data/:id', ensureAuthenticated, function(req, res, next) {
       meetingJson = {
         "id": meeting._id,
         "name": meeting.name,
-        "startTime": meeting.startTime,
-        "endTime": meeting.endTime,
+        "startTime": meeting.startTime.toString(),
+        "endTime": meeting.endTime.toString(),
         "description": meeting.description,
         "location": meeting.location,
         "organizer": {
@@ -118,7 +118,7 @@ router.get('/data/:id', ensureAuthenticated, function(req, res, next) {
 });
 
 router.get('/:id', ensureAuthenticated, function(req, res, next) {
-  res.render('newmeeting', {user: req.user,'title':'Schedule a meeting', 'meetingId' : req.params.id});
+  res.render('newmeeting', {user: req.user,'title':'Schedule a meeting', 'meetingId' : req.params.id, algolia:configAuth.algoliaAuth});
 });
 
 
