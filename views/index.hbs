@@ -1,40 +1,177 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
     <title>{{ title }}</title>
+    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lato|Montserrat">
+    <link rel="stylesheet" href="css/animations.css" >
     <link rel='stylesheet' href='/css/style.css' />
     <link rel='stylesheet' href='/css/nav.css'/>
     <link rel='stylesheet' href='/css/root.css' />
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/nav.js"></script>
   </head>
   <body>
     <!-- Navigation -->
-    {{> navbar1}}
-    <!--End Navigation -->
-    <div class="container-fluid">
-      	<div id="div1">
-	      	<!--<img id="img1" src="/img/bg2.png">-->
-	      	<a id="login-btn" href="/auth/google"><span id="sp1" class="fa fa-google"></span><span> Login with Google </span></a>
-	  		<div id="div2">
-	  			<p id="p1">ezMeeting<p>
-	  			<p id="p2">Schedule group meetings the easy way</p>
-	  		</div>
-      	</div>
-      	<!--
-      	<div id="blueLayer">
-      		<p></p>
-      	</div>
-      	<div id="about"></div>
-      	<div id="team"></div>
-      	-->
+    {{> navbar-root}}
+    <!-- End Navigation -->
+    <!-- Intro -->
+{{!--     <section id="intro"> --}}
+      <div class="intro">
+          <div class="intro-text">
+              <h1>ezMeeting</h1>
+              <h4>schedule group meetings the easy way</h4>  
+              <a id="login-btn" href="/auth/google">
+                <span id="login-text" class="fa fa-google"></span><span> Continue with Google </span>
+              </a>
+          </div>
+      </div>
+{{!--     </section> --}}
+    <!-- End Intro --> 
+    <!-- Summary --> 
+    <section id="post-home-summary">
+        <div class="row">
+            <div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8">
+                <p>Say goodbye to manually setting timeslots of your availability for scheduling appointments, group project meetings, calls and much more. Get more done with the saved time. </p>
+            </div>
+        </div>
+    </section>
+    <!-- end Summary --> 
+    <!-- Section: team -->
 
+    <!-- Section: how it works -->
+      <section id="howitworks" class="head-section text-center">
+        <div class="row">
+          <div class="col-xs-10 col-xs-offset-1 text-center">
+            <h1 class="section-header">How it works</h1>
+            <i class="fa fa-2x fa-angle-down"></i>
+            <hr class="section-divider">
+          </div>
+        </div>
+        <div class='row'>
+          <div class="col-md-6 col-md-offset-1">
+            <div class="how-to">
+              <h3>Add meeting participants.</h3>
+              <p>ezMeeting syncs with users' Google calendars so you can have an interactive realtime display of participants' availability.
+              </p>
+              <img src="/img/howto1.png" class="howtopics" id="howto1"/>
+            </div>
+          </div>
+        </div>
+        <div class='row'>
+          <div class="col-md-6 col-md-offset-3">
+            <div class="how-to">
+              <h3>Choose time that works for everyone.</h3>
+              <p>Application will display empty timeslots when everyone is available as well as color out the slots when people are unavailable. Three customized display tabs will help you get a better sense of participants' availability so you can choose the time that works for everyone!
+              </p>
+              <img src="/img/howto2.png" class="howtopics" id="howto2"/>
+            </div>
+          </div>
+        </div>
+        <div class='row'>
+          <div class="col-md-6 col-md-offset-5">
+            <div class="how-to">
+              <h3>Done! Send an invitation to all participants.</h3>
+              <p>When you select a time and send an invite, the application will automatically send a Google calendar invitation to all participants. The meeting will appear on your calendar as well!
+              </p>
+              <img src="/img/howto3.png" class="howtopics" id="howto3"/>
+            <div>
+          </div>
+        </div>
+      </section>
+    <!-- end Section: how it works -->
+    <section class="section-pic" id="pre-team-pic">
+    </section>
+    <!-- Section: team -->
+      <section id="team" class="head-section text-center">
+        <div class="row">
+          <div class="col-xs-10 col-xs-offset-1">
+            <h1 class="section-header">Team</h1>
+            <i class="fa fa-2x fa-angle-down"></i>
+            <hr class="section-divider">
+          </div>
+        </div>
+        <div class="row team-row">
+          <!-- Teammate 1 --> 
+          <div class="col-md-4 person-holder">
+            <div class="boxed-grey">
+              <div class="inner">
+                <h5>Otega Owho</h5>
+                  <a href="https://www.linkedin.com/in/otegao" class="team-link">
+                    <div class="avatar">
+                        <img alt="Otega Owho" class="person-img" src="/img/otega.jpg" />
+                    </div>
+                  </a>
+              </div>
+            </div>
+          </div>
+          <!-- End Teammate 1 --> 
+          <!-- Teammate 2 --> 
+          <div class="col-md-4 person-holder">
+            <div class="boxed-grey">
+              <div class="inner">
+                <h5>Aizhan Toregozhina</h5>
+                <a href="https://www.linkedin.com/in/aizhantoregozhina" class="team-link">
+                    <div class="avatar">
+                        <img alt="Aizhan Toregozhina" class="person-img" src="/img/aizhan2.png" />
+                    </div>
+                  </a>
+              </div>
+            </div>
+          </div>
+          <!-- End Teammate 2 --> 
+          <!-- Teammate 3 --> 
+          <div class="col-md-4 person-holder">
+            <div class="boxed-grey">
+              <div class="inner">
+                <h5>Kesiena Owho-Ovuakporie</h5>
+                <a href="https://www.linkedin.com/in/kesiena115" class="team-link">
+                    <div class="avatar">
+                        <img alt="Kesiena Owho-Ovuakporie" class="person-img" src="/img/kesiena2.png" />
+                    </div>
+                  </a>
+              </div>
+            </div>
+          </div>
+          <!-- End Teammate 3 --> 
+        </div>
+      </section>
+      <!-- End Section: team -->
+     <!-- Pre-Footer Pic Section --> 
+    <section class="section-pic" id="pre-footer-pic">
+    </section>
+    <section id="share" class="head-section text-center">
+      <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">
+          <h1 class="section-header">Share  </h1>
+          <i class="fa fa-2x fa-angle-down"></i>
+          <hr class="section-divider">
+        </div>
+            <a href="https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Ftwitter.com%2Fabout%2Fresources%2Fbuttons&text=Group%20scheduling%20reimagined.%20This%20web%20app%20is%20so%20useful!%20Check%20it%20out%20here&tw_p=tweetbutton&url=http%3A%2F%2Fwww.easymeeting.us&via=AToregozhina" class="cta" target="blank">
+            <img src="/img/twitter-bird-light-bgs.png" alt="Twitter logo" class="pulse">
+            </a>
+            <h2>If you found this project useful, spread the word on Twitter!</h2>
+            <p class="contact">Direct your questions, comments, concerns, love letters, and cat videos to our <a href="mailto:ezmeeting@gmail.com">email</a>.
+            </p>
+      </div>
+
+    </section>
+    {{!-- Footer  --}}
+    <div class="footer">
+      Made with ♥ by the TIMCoders team<br>
+      <a href="http://6.148.scripts.mit.edu/2016/">6.148 Web Programming Competition 2016</a>
     </div>
+    {{!-- End Footer --}}
+
   </body>
 </html>

@@ -101,6 +101,7 @@ float: right!important;
   font-size: 24px;
   text-decoration: none;
   color: #fff;
+  text-shadow: black 3px 1px 3px;
 }
 
 @media (max-width: 1024px) { /* Phones and tablets */

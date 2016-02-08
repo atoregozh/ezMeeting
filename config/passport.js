@@ -4,8 +4,6 @@ var User = require('../models/user');
 // load the auth variables
 var configAuth = require('./auth');
 
-var refresh = require('passport-oauth2-refresh');
-
 module.exports = function(passport) {
 
     // used to serialize the user for the session
@@ -77,6 +75,4 @@ module.exports = function(passport) {
 
     });
     passport.use(strategy);
-    refresh.use(strategy);
-
 };

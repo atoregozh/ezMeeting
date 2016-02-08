@@ -1,10 +1,11 @@
 // PACKAGES //
 router = require('express').Router();
 var Meeting = require('../models/meeting');
+var configAuth = require('../config/auth');
 var algoliasearch = require('algoliasearch');
-var client = algoliasearch("SE79GLOIEP", "9bc3123e557c4da31d1388f9a26da8b4");
+var client = algoliasearch(configAuth.algoliaAuth.applicationID, configAuth.algoliaAuth.adminKey);
 //index = client.initIndex('ezmeeting_users_test');
-index = client.initIndex('ezmeeting_users');
+index = client.initIndex(configAuth.algoliaAuth.index);
 
   // =====================================
   // DASHBOARD ===========================
