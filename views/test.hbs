@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test Page</title>    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel='stylesheet' href='/css/style.css' />
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <h1>Test Page</h1>
+    <div class="container" style="display:none; border: 1px solid #ddd; background-color: white; box-shadow: 0 1px 1px rgba(0,0,0,0.15),-1px 0 0 rgba(0,0,0,0.03),1px 0 0 rgba(0,0,0,0.03),0 1px 0 rgba(0,0,0,0.12);">
+    	<div class="row">
+    		<div class="col-md-4 col-sm-6 col-xs-12" style="background-color:#a00;">
+    			<div class="fa fa-user-plus" style="font-size:40px; margin:20px; color:white;">
+    			</div>
+    		</div>
+    		<div class="col-md-4 col-sm-6 col-xs-12" style="background-color:#0a0;">
+    			<div class="fa fa-user-plus" style="font-size:40px; margin:20px; color:white;">
+    			</div>
+    		</div>
+    		<div class="col-md-4 col-sm-6 col-xs-12" style="background-color:#00a;">
+    			<div>
+					<i class="fa fa-user" style="font-size:40px; margin:20px; color:white;" ></i>
+				</div>
+    		</div>
+    	</div>
+    	<div class="row">
+    		{{#each notifications}}
+				{{> notification_partial}}
+			{{/each }}
+    	</div>
+    </div>
+    <script>
+    	$(document).ready(function() {
+    		$(".container").slideDown('slow').delay(300).slideUp('slow').delay(300).slideDown('slow');
+    	});
+    </script>
+  </body>
+</html>
