@@ -313,6 +313,7 @@ $(window).on("load", function(){
 	    console.log(pic);
 	    addNewParticipant(userId, displayName, pic);
 	    $("#m-guest-search").val("");
+	    $('#m-guest-search').typeahead('val', '');
     });
 
 
