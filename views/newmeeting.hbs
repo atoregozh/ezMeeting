@@ -175,9 +175,7 @@
     	var S_DISPLAY_NAME = '{{ user.displayName }}';
     	var S_PIC_URL = '{{ user.pic }}';
         var S_MEETING_ID = '{{ meetingId }}';
-        var ALGOLIA_APP_ID = '{{ algolia.applicationID }}';
-        var ALGOLIA_SEARCH_KEY = '{{ algolia.searchKey }}';
-        var ALGOLIA_INDEX = '{{ algolia.index }}'
+        var ELASTIC_SEARCH_URL = '{{elasticSearch.host}}:{{elasticSearch.port}}/{{elasticSearch.index}}/{{elasticSearch.type}}'
     </script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -189,8 +187,8 @@
     <!-- https://github.com/jdewit/bootstrap-timepicker -->
     <script src='/js/bootstrap-timepicker.min.js'/></script>
     <script src='/js/moment.min.js'/></script>
-    <!-- Algolia is used for autocomplete: https://www.algolia.com -->
-    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
-    <script src="//cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
+    <!-- ElasticSearch is used for autocomplete -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/0.11.1/typeahead.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/0.11.1/bloodhound.min.js"></script>
   </body>
 </html>

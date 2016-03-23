@@ -42,11 +42,6 @@ var numOfAddedUsers = 0;
 var CALENDER_ENDPOINT = '/calendars';
 var CALENDER_ENDPOINT = '/calendars';
 
-// ~~~~~~~~~~~~~ Algolia ~~~~~~~~~~~~~ 
-	var client;
-	var index;
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 /* 
 cellKeyToUserSet simulates a list of HashSets. Each field corresponds to a given cell (i.e. 30min slot) while 
 the value is an object with fields names that are the ID of each user that is busy in that time slot.
@@ -246,40 +241,7 @@ $(window).on("load", function(){
 		}
 	});
 
-	// ~~~~~~~~~~~~~ Algolia ~~~~~~~~~~~~~ 
-	client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
-	index = client.initIndex(ALGOLIA_INDEX);
-	
-	autocomplete('#m-guest-search', { hint: true }, [
-	    {
-	      source: autocomplete.sources.hits(index, { hitsPerPage: 5 }),
-	      displayKey: 'displayName', // The text that gets displayed in the input field
-	      templates: {
-	        suggestion: function(suggestion) {
-	          // return suggestion._highlightResult.name.value; // The html that gets shown in the search dropdown
-	          return  '<div>' +
-	                    '<span class="search-left">' +
-	                        '<img src="' + suggestion.pic + '" alt="pic">' +
-	                    '</span>' +
-	                    '<span class="search-right">' +
-	                        suggestion._highlightResult.displayName.value +
-	                    '</span>' +
-	                  '</div>';
-	        }
-	      }
-	    }
-	  ]).on('autocomplete:selected', function(event, suggestion, dataset) {
-	    var pic = suggestion.pic;
-	    var displayName = suggestion.displayName;
-	    var userId = suggestion.objectID;
-	    console.log(displayName);
-	    console.log(userId);
-	    console.log(pic);
-	    addNewParticipant(userId, displayName, pic);
-	    $("#m-guest-search").val("");
-	  });
-
-	  $("#m-guest-search").focusout(function() {
+  	$("#m-guest-search").focusout(function() {
 	  	setTimeout(function(){
 	  		// To clear the search box when the user tabs out of the box. For some reason, focusout() alone doesn't clear it,
 	  		// hence the timeout.
@@ -287,9 +249,75 @@ $(window).on("load", function(){
 	  	}, 5);
   	});
 
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+	// ~~~~~~~~~~~~ Start of Elastic Search ~~~~~~~~~~~~~
+
+	//Set up "Bloodhound" Options 
+    var ezmeeting_suggestion = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('displayName'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url: ELASTIC_SEARCH_URL + "/_search?analyze_wildcard=true&q=displayName:*%QUERY*+OR+email:*%QUERY*",
+            // url: "http://localhost:9200/ezmeeting/prod/_search?analyze_wildcard=true&q=displayName:*%QUERY*+OR+email:*%QUERY*",
+            prepare: function(query, settings) {
+                // So long as we're analyzing wildcards, we don't need to escape the query for '-' to work.
+                var escapedQuery = query.replace(/[+-=&\/\\#,()|$~%.'":*?<>{}\[\]]/g,'\\$&');
+                settings.url = settings.url.replace(new RegExp('%QUERY', 'g'), escapedQuery);
+                return settings;
+            },
+            transform: function(x) {
+                resultList = x.hits.hits
+                return $.map(resultList, function(item) {
+                    return {displayName: item._source.displayName, url: item._source.pic, email: item._source.email, 
+                    	objectID: item._source.objectID, googleID: item._source.googleId};
+                });
+            }
+        }
+    });
+
+	ezmeeting_suggestion.initialize();
+    var typeahead_elem = $('#m-guest-search');
+    typeahead_elem.typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 1
+    },
+    {
+        // `ttAdapter` wraps the suggestion engine in an adapter that
+        // is compatible with the typeahead jQuery plugin
+        name: 'userProfile',
+        displayKey: 'displayName',
+        source: ezmeeting_suggestion.ttAdapter(),
+        templates: {
+        	suggestion: function(data) {
+        		return '<div>' +
+        					'<img class="search-img" src="' + data.url + '" alt="pic">' +
+		                    '<span class="search-right">' +
+		                        data.displayName +
+		                    '</span>' +
+			            '</div>';
+        	},
+        	empty: [
+                '<div class="no-items">',
+                'No user found',
+                '</div>'
+            ].join('\n')
+        }
+    });
+
+    $('#m-guest-search').on('typeahead:selected', function(event, data) {
+    	var pic = data.url;
+	    var displayName = data.displayName;
+	    var userId = data.objectID;
+	    console.log(displayName);
+	    console.log(userId);
+	    console.log(pic);
+	    addNewParticipant(userId, displayName, pic);
+	    $("#m-guest-search").val("");
+    });
 
 
+
+    // ~~~~~~~~~~~~ End of Elastic Search ~~~~~~~~~~~~~
 
 	$('#grid-refresh').click(function(){
 		if(viewOnlyMode) {
@@ -423,12 +451,13 @@ $(window).on("load", function(){
 				$("#m-desc").prop('disabled', true);
 				$(".guests-header").hide();
 				$("#m-details-btns").css({'visibility':'hidden'});
-				$("#grid-refresh").addClass('disabled');
+				$("#grid-refresh").hide();
 				$("#dp1").prop('disabled', true);
 				$("#dp2").prop('disabled', true);
+				$(".container").addClass("m-view");
 
 
-				for(var d = moment(startTime).subtract(1, 'd'); d <= moment(startTime).add(4, 'd'); d.add(1, 'd')){
+				for(var d = moment(startTime); d <= moment(startTime).add(5, 'd'); d.add(1, 'd')){
 					addDayToGrid(d);
 				}
 

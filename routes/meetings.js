@@ -118,7 +118,7 @@ router.get('/data/:id', ensureAuthenticated, function(req, res, next) {
 });
 
 router.get('/:id', ensureAuthenticated, function(req, res, next) {
-  res.render('newmeeting', {user: req.user,'title':'Schedule a meeting', 'meetingId' : req.params.id, algolia:configAuth.algoliaAuth});
+  res.render('newmeeting', {user: req.user,'title':'Schedule a meeting', 'meetingId' : req.params.id, elasticSearch:configAuth.elasticSearchAuth});
 });
 
 

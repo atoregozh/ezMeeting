@@ -4,7 +4,7 @@ var configAuth = require('../config/auth');
 
 
 router.get('/', ensureAuthenticated, function(req, res, next) {
-  res.render('newmeeting', {user: req.user,'title':'Schedule a meeting', algolia:configAuth.algoliaAuth});
+  res.render('newmeeting', {user: req.user,'title':'Schedule a meeting', elasticSearch:configAuth.elasticSearchAuth});
 });
 
 // route middleware to make sure a user is logged in

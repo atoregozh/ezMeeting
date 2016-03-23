@@ -2,10 +2,10 @@
 router = require('express').Router();
 var Meeting = require('../models/meeting');
 var configAuth = require('../config/auth');
-var algoliasearch = require('algoliasearch');
-var client = algoliasearch(configAuth.algoliaAuth.applicationID, configAuth.algoliaAuth.adminKey);
-//index = client.initIndex('ezmeeting_users_test');
-index = client.initIndex(configAuth.algoliaAuth.index);
+var request = require('request');
+
+var eSearchConfig = configAuth.elasticSearchAuth;
+var eSearchUrl = eSearchConfig.host + ":" + eSearchConfig.port + "/" + eSearchConfig.index + "/" + eSearchConfig.type;
 
 // =====================================
 // DASHBOARD ===========================
@@ -14,23 +14,35 @@ index = client.initIndex(configAuth.algoliaAuth.index);
 // we will want this protected so you have to be logged in to visit
 // we will use route middleware to verify this (the ensureAuthenticated function)
 router.get('/', ensureAuthenticated, function(req, res) {
-	// Save user details to Algolia for autocomplete
+	// Save user details to ElasticSearch for autocomplete
 	var user = req.user;
-index.saveObject({
-	googleId: user.google.id,
-	displayName: user.displayName,
-	email: user.email,
-	pic: user.pic,
-	objectID: user._id
-}, function(err, content) {
-	if (err) {
-		console.log("Error occured while trying to index: " + user._id);
-		console.log(err);
-		return;
-	}
-	console.log("Successfully indexed: " + user._id);
-	console.log(content);
-});
+  var options = {
+    url: eSearchUrl + "/" + user.email, // Specifying the user's email as the record ID
+    method: "POST",
+    json: true,
+    headers: {
+      "content-type": "application/json",
+      "authorization" : eSearchConfig.authorization
+    },
+    json: {
+      googleId: user.google.id,
+      displayName: user.displayName,
+      email: user.email,
+      pic: user.pic,
+      objectID: user._id
+    }
+  };
+  
+  request(options, function (error, response, body) {
+    if (error || response.statusCode == 200) {
+      console.log("Error occured while trying to index: " + user._id);
+      console.log(error);
+      return;
+    }else{
+      console.log("Successfully indexed: " + user._id);
+      console.log(body);  
+    }
+  });
 
   Meeting.find( { 
     $and:[ 
